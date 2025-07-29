@@ -35,6 +35,7 @@
 | `password` | `VARCHAR(255)` | `NOT NULL` | 해시된 비밀번호 |
 | `nickname` | `VARCHAR(100)` | `UNIQUE`, `NOT NULL` | 사용자 닉네임 |
 | `favorite_team_id` | `INT` | `FK` | 응원팀 ID (`teams.id`) |
+| `refresh_token` | `VARCHAR(512)` | | 리프레시 토큰 |
 | `created_at` | `DATETIME` | `NOT NULL`, `DEFAULT CURRENT_TIMESTAMP` | 생성 일시 |
 | `updated_at` | `DATETIME` | `NOT NULL`, `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 수정 일시 |
 

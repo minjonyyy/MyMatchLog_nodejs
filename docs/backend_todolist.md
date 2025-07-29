@@ -17,8 +17,8 @@
 - [x] `cors`, `helmet` 등 기본 보안 미들웨어 적용
 - [x] API 성공/실패 응답을 위한 공통 응답 형식 래퍼(Wrapper) 구현
 - [x] 전역 예외 처리를 위한 에러 핸들링 미들웨어 (`error.middleware.js`)
-- [x] `BaseError` 및 도메인별 커스텀 에러 클래스 정의 (`/src/errors`)
-- [x] JWT(Access Token) 발급 및 검증을 위한 인증 미들웨어 구현 (`auth.middleware.js`)
+- [x] BaseError 및 도메인별 커스텀 에러 클래스 정의 (`/src/errors`)
+- [x] JWT(Access Token, Refresh Token) 발급 및 검증을 위한 인증 미들웨어 구현 (`auth.middleware.js`)
 
 ### 1.3. 데이터베이스 및 외부 서비스
 - [ ] MySQL 데이터베이스 연결 설정
@@ -36,11 +36,14 @@
   - [ ] 비밀번호 해싱 (bcrypt) 적용
 - [ ] **BE-002: 사용자 로그인 (`POST /api/users/login`)**
   - [ ] Controller, Service, Repository 계층 구현
-  - [ ] 로그인 성공 시 JWT(Access Token) 발급
-- [ ] **BE-003: 내 정보 조회 (`GET /api/users/me`)**
+  - [ ] 로그인 성공 시 JWT(Access Token, Refresh Token) 발급
+- [ ] **BE-003: Access Token 갱신 (`POST /api/users/token`)**
+  - [ ] Controller, Service, Repository 계층 구현
+  - [ ] Refresh Token을 검증하여 새로운 Access Token 발급
+- [ ] **BE-004: 내 정보 조회 (`GET /api/users/me`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] 인증 미들웨어를 통한 사용자 식별
-- [ ] **BE-004: 내 정보 수정 (`PATCH /api/users/me`)**
+- [ ] **BE-005: 내 정보 수정 (`PATCH /api/users/me`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] 닉네임, 응원팀 선택적 업데이트 로직
 
@@ -48,22 +51,22 @@
 
 ## ⚾ 3. 직관 기록 도메인 (Match Log Domain)
 
-- [ ] **BE-005: 티켓 OCR 정보 추출 (`POST /api/ocr/parse-ticket`)**
+- [ ] **BE-006: 티켓 OCR 정보 추출 (`POST /api/ocr/parse-ticket`)**
   - [ ] 외부 OCR 서비스(Naver, Google) API 연동 로직
   - [ ] 이미지 파일을 받아 OCR API로 전송 및 결과 반환
-- [ ] **BE-006: 직관 기록 생성 (`POST /api/match-logs`)**
+- [ ] **BE-007: 직관 기록 생성 (`POST /api/match-logs`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] `multipart/form-data` 요청 처리
   - [ ] 티켓 이미지 S3 업로드 및 URL DB 저장
-- [ ] **BE-007: 내 직관 기록 목록 조회 (`GET /api/match-logs`)**
+- [ ] **BE-008: 내 직관 기록 목록 조회 (`GET /api/match-logs`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] 페이지네이션(Pagination) 기능 구현
-- [ ] **BE-008: 직관 기록 상세 조회 (`GET /api/match-logs/:id`)**
+- [ ] **BE-009: 직관 기록 상세 조회 (`GET /api/match-logs/:id`)**
   - [ ] Controller, Service, Repository 계층 구현
-- [ ] **BE-009: 직관 기록 수정 (`PATCH /api/match-logs/:id`)**
+- [ ] **BE-010: 직관 기록 수정 (`PATCH /api/match-logs/:id`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] 기록 소유권 검증 로직 (본인만 수정 가능)
-- [ ] **BE-010: 직관 기록 삭제 (`DELETE /api/match-logs/:id`)**
+- [ ] **BE-011: 직관 기록 삭제 (`DELETE /api/match-logs/:id`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] 기록 소유권 검증 로직 (본인만 삭제 가능)
 
@@ -71,11 +74,11 @@
 
 ## 🎉 4. 이벤트 도메인 (Event Domain)
 
-- [ ] **BE-011: 진행 중인 이벤트 목록 조회 (`GET /api/events`)**
+- [ ] **BE-012: 진행 중인 이벤트 목록 조회 (`GET /api/events`)**
   - [ ] Controller, Service, Repository 계층 구현
-- [ ] **BE-012: 이벤트 상세 조회 (`GET /api/events/:id`)**
+- [ ] **BE-013: 이벤트 상세 조회 (`GET /api/events/:id`)**
   - [ ] Controller, Service, Repository 계층 구현
-- [ ] **BE-013: 이벤트 선착순 참여 (`POST /api/events/:id/participate`)**
+- [ ] **BE-014: 이벤트 선착순 참여 (`POST /api/events/:id/participate`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] **Redis 분산 락(Distributed Lock)을 이용한 동시성 제어 구현**
   - [ ] 이벤트 참여 가능 기간 검증 로직
@@ -88,9 +91,9 @@
 ## 👑 5. 관리자 기능 (Admin Domain)
 
 - [ ] 관리자 권한을 확인하는 전용 미들웨어 구현
-- [ ] **BE-014: 이벤트 생성 (`POST /api/admin/events`)**
+- [ ] **BE-015: 이벤트 생성 (`POST /api/admin/events`)**
   - [ ] Controller, Service, Repository 계층 구현
-- [ ] **BE-015: 이벤트 참여자 목록 조회 (`GET /api/admin/events/:id/participants`)**
+- [ ] **BE-016: 이벤트 참여자 목록 조회 (`GET /api/admin/events/:id/participants`)**
   - [ ] Controller, Service, Repository 계층 구현
 
 ---
