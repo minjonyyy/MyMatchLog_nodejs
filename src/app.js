@@ -7,6 +7,7 @@ import { testRedisConnection } from './config/redis.js';
 import swaggerUi from 'swagger-ui-express';
 import specs from './config/swagger.js';
 import apiRouter from './routes/index.js';
+import errorMiddleware from './middlewares/error.middleware.js';
 
 dotenv.config();
 
@@ -27,6 +28,9 @@ app.use('/api', apiRouter);
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+// 에러 핸들링 미들웨어는 마지막에 등록
+app.use(errorMiddleware);
 
 const startServer = async () => {
   try {

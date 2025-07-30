@@ -30,3 +30,24 @@ export const refreshAccessToken = async (req, res) => {
     return errorResponse(res, error);
   }
 };
+
+export const getUserMe = async (req, res) => {
+  try {
+    const userId = req.user.userId; // auth 미들웨어에서 설정된 사용자 ID
+    const userInfo = await userService.getUserMe(userId);
+    return successResponse(res, { user: userInfo }, '내 정보 조회에 성공했습니다.');
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};
+
+export const updateUserMe = async (req, res) => {
+  try {
+    const userId = req.user.userId; // auth 미들웨어에서 설정된 사용자 ID
+    const updateData = req.body;
+    const updatedUser = await userService.updateUserMe(userId, updateData);
+    return successResponse(res, { user: updatedUser }, '사용자 정보가 성공적으로 수정되었습니다.');
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};

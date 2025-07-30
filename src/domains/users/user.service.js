@@ -88,3 +88,40 @@ export const refreshAccessToken = async (refreshToken) => {
     throw new UnauthorizedError('유효하지 않거나 만료된 Refresh Token입니다.');
   }
 };
+
+export const getUserMe = async (userId) => {
+  const user = await userRepository.findUserById(userId);
+  if (!user) {
+    throw new NotFoundError('해당 사용자를 찾을 수 없습니다.', 'USER_NOT_FOUND');
+  }
+
+  // 비밀번호와 refresh_token은 응답에서 제외
+  const { password, refresh_token, ...userInfo } = user;
+  return userInfo;
+};
+
+export const updateUserMe = async (userId, updateData) => {
+  const { nickname, favorite_team_id } = updateData;
+
+  // 업데이트할 데이터가 없으면 에러
+  if (!nickname && !favorite_team_id) {
+    throw new BadRequestError('업데이트할 정보를 입력해주세요.', 'COMMON_INVALID_INPUT');
+  }
+
+  // 닉네임 중복 검사 (기존 사용자 제외)
+  if (nickname) {
+    const existingUser = await userRepository.findUserByNickname(nickname);
+    if (existingUser && existingUser.id !== userId) {
+      throw new ConflictError('이미 사용 중인 닉네임입니다.', 'USER_NICKNAME_DUPLICATE');
+    }
+  }
+
+  // 사용자 정보 업데이트
+  await userRepository.updateUser(userId, { nickname, favorite_team_id });
+
+  // 업데이트된 사용자 정보 조회
+  const updatedUser = await userRepository.findUserById(userId);
+  const { password, refresh_token, ...userInfo } = updatedUser;
+  
+  return userInfo;
+};

@@ -42,12 +42,12 @@
 - [x] **BE-003: Access Token 갱신 (`POST /api/users/token`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] Refresh Token을 검증하여 새로운 Access Token 발급
-- [ ] **BE-004: 내 정보 조회 (`GET /api/users/me`)**
-  - [ ] Controller, Service, Repository 계층 구현
-  - [ ] 인증 미들웨어를 통한 사용자 식별
-- [ ] **BE-005: 내 정보 수정 (`PATCH /api/users/me`)**
-  - [ ] Controller, Service, Repository 계층 구현
-  - [ ] 닉네임, 응원팀 선택적 업데이트 로직
+- [x] **BE-004: 내 정보 조회 (`GET /api/users/me`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 인증 미들웨어를 통한 사용자 식별
+- [x] **BE-005: 내 정보 수정 (`PATCH /api/users/me`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 닉네임, 응원팀 선택적 업데이트 로직
 
 ---
 
