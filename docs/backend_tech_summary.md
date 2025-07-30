@@ -12,7 +12,7 @@
     - **Redis**: 이벤트 동시성 제어를 위한 분산 락, 토큰 관리, 캐싱
 - **Authentication**: JWT (JSON Web Token) 기반 인증 (Access/Refresh Token)
 - **File Storage**: AWS S3 (Multer를 통한 티켓 이미지 업로드)
-- **API Documentation**: Swagger (OpenAPI)
+- **API Documentation**: Swagger (OpenAPI)를 사용하며, API 명세는 `src/swagger` 폴더 내의 `.yaml` 파일로 작성하여 관리합니다.
 - **Middleware**:
     - `cors`, `helmet`을 사용한 보안 강화
     - `dotenv`를 활용한 환경변수 관리
@@ -84,6 +84,8 @@ src/
 ├── errors/                # BaseError, 커스텀 에러 클래스
 ├── utils/                 # 공통 유틸리티 함수
 ├── middlewares/           # 인증, 에러 핸들링 등 특정 도메인에 속하지 않는 공통 미들웨어
+├── swagger/               # ⭐️ API 명세(.yaml) 파일 관리
+│   └── users.swagger.yaml
 ├── domains/               # ⭐️ 핵심 도메인별 폴더
 │   ├── users/
 │   │   ├── user.router.js

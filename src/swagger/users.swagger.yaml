@@ -1,0 +1,98 @@
+# src/swagger/users.swagger.yaml
+
+# --------------------------------
+# 태그 정의: API들을 그룹화합니다.
+# --------------------------------
+tags:
+  - name: Users
+    description: 사용자 인증 및 관리를 위한 API
+
+# --------------------------------
+# API 경로 및 명세 정의
+# --------------------------------
+paths:
+  /api/users/signup:
+    post:
+      summary: 새로운 사용자 등록
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSignUpRequest' # 아래 정의된 스키마 참조
+      responses:
+        '201':
+          description: 회원가입 성공
+        '400':
+          description: 잘못된 입력값
+        '409':
+          description: 이미 존재하는 이메일 또는 닉네임
+
+  /api/users/login:
+    post:
+      summary: 사용자 로그인
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest' # 아래 정의된 스키마 참조
+      responses:
+        '200':
+          description: 로그인 성공. Access/Refresh 토큰 반환
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse' # 아래 정의된 스키마 참조
+        '401':
+          description: 인증 실패 (비밀번호 불일치)
+        '404':
+          description: 존재하지 않는 사용자
+
+# --------------------------------
+# 재사용 가능한 데이터 모델 (스키마) 정의
+# --------------------------------
+components:
+  schemas:
+    UserSignUpRequest:
+      type: object
+      required:
+        - email
+        - password
+        - nickname
+      properties:
+        email:
+          type: string
+          format: email
+          example: "test@example.com"
+        password:
+          type: string
+          description: "최소 8자, 대/소문자, 숫자, 특수문자(@$!%*?&) 포함"
+          example: "Password123!"
+        nickname:
+          type: string
+          example: "테스트유저"
+
+    UserLoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "test@example.com"
+        password:
+          type: string
+          example: "Password123!"
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string 

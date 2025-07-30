@@ -29,7 +29,7 @@ const options = {
       },
     ],
   },
-  apis: ['./src/routes/*.js', './src/domains/**/*.router.js'], // Path to the API docs
+  apis: ['./src/swagger/*.yaml'], // 이 부분을 수정합니다.
 };
 
 const specs = swaggerJsdoc(options);
