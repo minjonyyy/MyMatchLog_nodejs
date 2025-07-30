@@ -14,7 +14,7 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(tokenValue, process.env.ACCESS_TOKEN_SECRET_KEY);
-    req.user = decoded; // req.user에 사용자 정보 저장
+    req.user = decoded; // req.user에 사용자 정보 저장 (userId, isAdmin 포함)
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {

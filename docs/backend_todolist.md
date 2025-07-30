@@ -19,6 +19,7 @@
 - [x] 전역 예외 처리를 위한 에러 핸들링 미들웨어 (`error.middleware.js`)
 - [x] BaseError 및 도메인별 커스텀 에러 클래스 정의 (`/src/errors`)
 - [x] JWT(Access Token, Refresh Token) 발급 및 검증을 위한 인증 미들웨어 구현 (`auth.middleware.js`)
+- [x] 관리자 권한을 확인하는 전용 미들웨어 구현 (`admin.middleware.js`)
 
 ### 1.3. 데이터베이스 및 외부 서비스
 - [x] MySQL 데이터베이스 연결 설정
@@ -126,10 +127,12 @@
   - [x] Controller, Service, Repository 계층 구현
   - [x] 이벤트 생성 시 필수 필드 검증 로직
   - [x] 날짜 및 정원 유효성 검증
+  - [x] **관리자 권한 검증 로직 구현** ✅
   - [x] Swagger 문서화 완료
 - [x] **BE-017: 이벤트 참여자 목록 조회 (`GET /api/admin/events/:id/participants`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 이벤트별 참여자 목록 조회 (사용자 정보 포함)
+  - [x] **관리자 권한 검증 로직 구현** ✅
   - [x] Swagger 문서화 완료
 
 ---

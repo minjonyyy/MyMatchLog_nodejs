@@ -47,11 +47,17 @@ export const login = async (email, password) => {
     throw new UnauthorizedError('비밀번호가 일치하지 않습니다.', 'USER_PASSWORD_MISMATCH');
   }
 
-  const accessToken = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
+  // JWT 토큰에 관리자 권한 정보 포함
+  const tokenPayload = { 
+    userId: user.id,
+    isAdmin: user.is_admin || false
+  };
+
+  const accessToken = jwt.sign(tokenPayload, process.env.ACCESS_TOKEN_SECRET_KEY, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '1h',
   });
 
-  const refreshToken = jwt.sign({ userId: user.id }, process.env.REFRESH_TOKEN_SECRET_KEY, {
+  const refreshToken = jwt.sign(tokenPayload, process.env.REFRESH_TOKEN_SECRET_KEY, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '14d',
   });
 
