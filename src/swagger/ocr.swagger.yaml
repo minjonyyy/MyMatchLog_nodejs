@@ -1,0 +1,211 @@
+openapi: 3.0.0
+info:
+  title: OCR API
+  description: 티켓 이미지 OCR 처리 API
+  version: 1.0.0
+
+paths:
+  /api/ocr/parse-ticket:
+    post:
+      summary: 티켓 이미지에서 OCR을 통해 경기 정보를 추출합니다.
+      description: |
+        업로드된 티켓 이미지에서 OCR을 통해 경기 정보를 자동 추출합니다.
+        추출된 정보는 경기 날짜, 경기장, 홈팀, 원정팀 등을 포함합니다.
+      tags:
+        - OCR
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - ticket_image
+              properties:
+                ticket_image:
+                  type: string
+                  format: binary
+                  description: 티켓 이미지 파일 (jpg, png, jpeg 지원)
+                  example: "ticket.jpg"
+      responses:
+        '200':
+          description: OCR 처리 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      extractedInfo:
+                        type: object
+                        properties:
+                          match_date:
+                            type: string
+                            format: date
+                            description: 경기 날짜
+                            example: "2024-07-21"
+                          stadium:
+                            type: object
+                            description: 경기장 정보 (매칭 성공 시)
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              name:
+                                type: string
+                                example: "잠실야구장"
+                              city:
+                                type: string
+                                example: "서울"
+                          home_team:
+                            type: object
+                            description: 홈팀 정보 (매칭 성공 시)
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              name:
+                                type: string
+                                example: "LG 트윈스"
+                          away_team:
+                            type: object
+                            description: 원정팀 정보 (매칭 성공 시)
+                            properties:
+                              id:
+                                type: integer
+                                example: 2
+                              name:
+                                type: string
+                                example: "두산 베어스"
+                          confidence:
+                            type: number
+                            format: float
+                            description: OCR 신뢰도 (0.0 ~ 1.0)
+                            example: 0.85
+                          stadium_text:
+                            type: string
+                            description: 원본 경기장 텍스트 (매칭 실패 시)
+                            example: "잠실구장"
+                          home_team_text:
+                            type: string
+                            description: 원본 홈팀 텍스트 (매칭 실패 시)
+                            example: "LG"
+                          away_team_text:
+                            type: string
+                            description: 원본 원정팀 텍스트 (매칭 실패 시)
+                            example: "두산"
+                  message:
+                    type: string
+                    example: "티켓 정보 추출을 완료했습니다."
+              examples:
+                success:
+                  summary: OCR 성공
+                  value:
+                    success: true
+                    data:
+                      extractedInfo:
+                        match_date: "2024-07-21"
+                        stadium:
+                          id: 1
+                          name: "잠실야구장"
+                          city: "서울"
+                        home_team:
+                          id: 1
+                          name: "LG 트윈스"
+                        away_team:
+                          id: 2
+                          name: "두산 베어스"
+                        confidence: 0.85
+                    message: "티켓 정보 추출을 완료했습니다."
+                partial_success:
+                  summary: 부분 매칭 성공
+                  value:
+                    success: true
+                    data:
+                      extractedInfo:
+                        match_date: "2024-07-21"
+                        stadium:
+                          id: 1
+                          name: "잠실야구장"
+                          city: "서울"
+                        home_team:
+                          id: 1
+                          name: "LG 트윈스"
+                        away_team_text: "두산"
+                        confidence: 0.75
+                    message: "티켓 정보 추출을 완료했습니다."
+                no_match:
+                  summary: 매칭 실패
+                  value:
+                    success: true
+                    data:
+                      extractedInfo: null
+                      error: "티켓 정보를 인식할 수 없습니다."
+                    message: "티켓 정보 추출을 완료했습니다."
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                no_file:
+                  summary: 파일 없음
+                  value:
+                    success: false
+                    error:
+                      code: "COMMON_INVALID_INPUT"
+                      message: "티켓 이미지 파일이 필요합니다."
+                    timestamp: "2024-07-21T10:30:00Z"
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
+          description: 파일 크기 초과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: OCR 서비스 오류
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "SERVER_OCR_ERROR"
+            message:
+              type: string
+              example: "OCR 서비스 처리 중 오류가 발생했습니다."
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-07-21T10:30:00Z"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
