@@ -51,6 +51,35 @@ paths:
         '404':
           description: 존재하지 않는 사용자
 
+  /api/users/token:
+    post:
+      summary: Access Token 갱신
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: "로그인 시 발급받은 Refresh Token"
+      responses:
+        '200':
+          description: Access Token 갱신 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+        '401':
+          description: 유효하지 않거나 만료된 Refresh Token
+
 # --------------------------------
 # 재사용 가능한 데이터 모델 (스키마) 정의
 # --------------------------------

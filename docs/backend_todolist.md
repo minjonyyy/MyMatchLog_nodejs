@@ -39,9 +39,9 @@
 - [x] **BE-002: 사용자 로그인 (`POST /api/users/login`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 로그인 성공 시 JWT(Access Token, Refresh Token) 발급
-- [ ] **BE-003: Access Token 갱신 (`POST /api/users/token`)**
-  - [ ] Controller, Service, Repository 계층 구현
-  - [ ] Refresh Token을 검증하여 새로운 Access Token 발급
+- [x] **BE-003: Access Token 갱신 (`POST /api/users/token`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] Refresh Token을 검증하여 새로운 Access Token 발급
 - [ ] **BE-004: 내 정보 조회 (`GET /api/users/me`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] 인증 미들웨어를 통한 사용자 식별

@@ -20,3 +20,13 @@ export const login = async (req, res) => {
     return errorResponse(res, error);
   }
 };
+
+export const refreshAccessToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    const { accessToken } = await userService.refreshAccessToken(refreshToken);
+    return successResponse(res, { accessToken }, 'Access Token이 성공적으로 갱신되었습니다.');
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};

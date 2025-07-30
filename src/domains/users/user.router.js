@@ -7,4 +7,6 @@ router.post('/signup', userController.signUp);
 
 router.post('/login', userController.login);
 
+router.post('/token', userController.refreshAccessToken);
+
 export default router;

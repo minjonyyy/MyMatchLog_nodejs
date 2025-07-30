@@ -13,7 +13,7 @@ const authMiddleware = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(tokenValue, process.env.JWT_SECRET);
+    const decoded = jwt.verify(tokenValue, process.env.ACCESS_TOKEN_SECRET_KEY);
     req.user = decoded; // req.user에 사용자 정보 저장
     next();
   } catch (error) {

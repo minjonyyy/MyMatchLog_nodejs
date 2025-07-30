@@ -10,6 +10,11 @@ export const findUserByNickname = async (nickname) => {
   return rows[0];
 };
 
+export const findUserById = async (userId) => {
+  const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
+  return rows[0];
+};
+
 export const createUser = async (email, hashedPassword, nickname) => {
   const [result] = await pool.query(
     'INSERT INTO users (email, password, nickname) VALUES (?, ?, ?)',

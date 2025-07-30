@@ -59,3 +59,32 @@ export const login = async (email, password) => {
 
   return { accessToken, refreshToken };
 };
+
+export const refreshAccessToken = async (refreshToken) => {
+  if (!refreshToken) {
+    throw new UnauthorizedError('Refresh Token이 필요합니다.');
+  }
+
+  try {
+    // 1. Refresh Token 검증
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_KEY);
+
+    // 2. DB에서 사용자 정보 조회
+    const user = await userRepository.findUserById(decoded.userId);
+
+    //3. DB에 저장된 토큰과 일치하는지 확인 - String으로 변환하여 비교
+    if (!user || String(user.refresh_token) !== refreshToken) {
+      throw new UnauthorizedError('유효하지 않거나 만료된 Refresh Token입니다.');
+    }
+
+    // 4. 새로운 Access Token 발급 
+    const newAccessToken = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '1h',
+    });
+
+    return { accessToken: newAccessToken };
+  } catch (error) {
+    // JWT 만료 또는 서명 오류 등
+    throw new UnauthorizedError('유효하지 않거나 만료된 Refresh Token입니다.');
+  }
+};
