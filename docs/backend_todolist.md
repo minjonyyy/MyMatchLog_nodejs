@@ -35,6 +35,12 @@
 - [x] **BE-000: 팀 목록 조회 (`GET /api/teams`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] KBO 리그 모든 팀 정보 반환 (캐싱 고려)
+  - [x] Stadium 객체 반환 ✅ (ID, 이름, 도시 포함)
+
+- [x] **BE-001: 경기장 목록 조회 (`GET /api/stadiums`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 경기장 정보 반환 (이름, 도시, 수용인원 등)
+  - [x] Stadium ID 1~10 정리 완료 ✅ (중복 데이터 제거)
 
 ---
 
@@ -66,16 +72,23 @@
   - [ ] 이미지 파일을 받아 OCR API로 전송 및 결과 반환
 - [x] **BE-007: 직관 기록 생성 (`POST /api/match-logs`)**
   - [x] Controller, Service, Repository 계층 구현
-  - [ ] `multipart/form-data` 요청 처리
-  - [ ] 티켓 이미지 S3 업로드 및 URL DB 저장
+  - [x] `multipart/form-data` 요청 처리 ✅ (파일 타입 검증 포함)
+  - [x] 티켓 이미지 S3 업로드 및 URL DB 저장 ✅ (Sharp 이미지 최적화)
+  - [x] Stadium ID 기반 데이터 구조 ✅ (외래키 연결)
+  - [x] 미래 날짜 제한 기능 ✅ (오늘까지만 기록 가능)
 - [x] **BE-008: 내 직관 기록 목록 조회 (`GET /api/match-logs`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 페이지네이션(Pagination) 기능 구현
+  - [x] Stadium 객체 반환 ✅ (ID, 이름, 도시 포함)
 - [x] **BE-009: 직관 기록 상세 조회 (`GET /api/match-logs/:id`)**
   - [x] Controller, Service, Repository 계층 구현
+  - [x] Stadium 객체 반환 ✅ (ID, 이름, 도시 포함)
 - [x] **BE-010: 직관 기록 수정 (`PATCH /api/match-logs/:id`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 기록 소유권 검증 로직 (본인만 수정 가능)
+  - [x] `multipart/form-data` 요청 처리 ✅ (새 이미지 업로드 지원)
+  - [x] Stadium ID 기반 데이터 구조 ✅ (외래키 연결)
+  - [x] 미래 날짜 제한 기능 ✅ (오늘까지만 기록 가능)
 - [x] **BE-011: 직관 기록 삭제 (`DELETE /api/match-logs/:id`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 기록 소유권 검증 로직 (본인만 삭제 가능)

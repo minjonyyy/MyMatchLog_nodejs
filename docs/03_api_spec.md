@@ -21,17 +21,60 @@
         "id": 1,
         "name": "LG 트윈스",
         "logo_url": "https://example.com/lg-logo.png",
-        "home_stadium": "잠실야구장"
+        "stadium": {
+          "id": 1,
+          "name": "잠실야구장",
+          "city": "서울"
+        }
       },
       {
         "id": 2,
         "name": "두산 베어스",
         "logo_url": "https://example.com/doosan-logo.png",
-        "home_stadium": "잠실야구장"
+        "stadium": {
+          "id": 1,
+          "name": "잠실야구장",
+          "city": "서울"
+        }
       }
     ]
   },
   "message": "팀 목록 조회에 성공했습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+
+### 2. 경기장 목록 조회
+- **URL**: `GET /api/stadiums`
+- **설명**: KBO 리그의 모든 경기장 목록을 조회합니다.
+- **인증**: 불필요
+- **요청 본문**: 없음
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "stadiums": [
+      {
+        "id": 1,
+        "name": "잠실야구장",
+        "city": "서울",
+        "capacity": 25000,
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z"
+      },
+      {
+        "id": 2,
+        "name": "고척스카이돔",
+        "city": "서울",
+        "capacity": 16000,
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "updated_at": "2024-01-01T00:00:00.000Z"
+      }
+    ]
+  },
+  "message": "경기장 목록 조회에 성공했습니다."
 }
 ```
 - **주요 상태 코드**:
@@ -189,11 +232,12 @@
 - **인증**: 필요 (Bearer Token)
 - **요청 본문 (Request Body)**: `multipart/form-data`
   - `match_date` (Date): `2024-07-21`
-  - `stadium` (String): `잠실야구장`
+  - `stadium_id` (Integer): `1` (경기장 ID, stadiums 테이블 참조)
   - `home_team_id` (Integer): `1` (팀 ID, teams 테이블 참조)
   - `away_team_id` (Integer): `2` (팀 ID, teams 테이블 참조, home_team_id와 달라야 함)
+  - `result` (String, Optional): `WIN` (WIN, LOSS, DRAW 중 하나)
   - `memo` (String, Optional): `꿀잼 경기!`
-  - `ticket_image` (File, Optional): (binary image data)
+  - `ticket_image` (File, Optional): 티켓 이미지 파일 (jpg, png, jpeg 지원)
 - **응답 (Response)**: `201 CREATED`
 ```json
 {
@@ -233,7 +277,11 @@
           "id": 2,
           "name": "두산 베어스"
         },
-        "stadium": "잠실야구장",
+        "stadium": {
+          "id": 1,
+          "name": "잠실야구장",
+          "city": "서울"
+        },
         "result": "WIN",
         "memo": "꿀잼 경기!",
         "ticket_image_url": "https://mymatchlog-bucket.s3.amazonaws.com/tickets/abc123.jpg",
@@ -280,7 +328,11 @@
         "id": 2,
         "name": "두산 베어스"
       },
-      "stadium": "잠실야구장",
+      "stadium": {
+        "id": 1,
+        "name": "잠실야구장",
+        "city": "서울"
+      },
       "result": "WIN",
       "memo": "꿀잼 경기!",
       "ticket_image_url": "https://mymatchlog-bucket.s3.amazonaws.com/tickets/abc123.jpg",
@@ -303,17 +355,14 @@
 - **인증**: 필요 (Bearer Token)
 - **Path Parameters**:
   - `id` (Integer, required): 직관 기록 ID
-- **요청 본문 (Request Body)**: `application/json`
-```json
-{
-  "match_date": "2024-07-22",
-  "home_team_id": 3,
-  "away_team_id": 4,
-  "stadium": "고척스카이돔",
-  "result": "LOSS",
-  "memo": "아쉬운 경기였지만 재미있었어요!"
-}
-```
+- **요청 본문 (Request Body)**: `multipart/form-data`
+  - `match_date` (Date, Optional): `2024-07-22`
+  - `home_team_id` (Integer, Optional): `3` (팀 ID, teams 테이블 참조)
+  - `away_team_id` (Integer, Optional): `4` (팀 ID, teams 테이블 참조, home_team_id와 달라야 함)
+  - `stadium_id` (Integer, Optional): `2` (경기장 ID, stadiums 테이블 참조)
+  - `result` (String, Optional): `LOSS` (WIN, LOSS, DRAW 중 하나)
+  - `memo` (String, Optional): `아쉬운 경기였지만 재미있었어요!`
+  - `ticket_image` (File, Optional): 새로운 티켓 이미지 파일 (jpg, png, jpeg 지원)
 - **응답 (Response)**: `200 OK`
 ```json
 {
@@ -331,7 +380,11 @@
         "id": 4,
         "name": "삼성 라이온즈"
       },
-      "stadium": "고척스카이돔",
+      "stadium": {
+        "id": 2,
+        "name": "고척스카이돔",
+        "city": "서울"
+      },
       "result": "LOSS",
       "memo": "아쉬운 경기였지만 재미있었어요!",
       "ticket_image_url": "https://mymatchlog-bucket.s3.amazonaws.com/tickets/abc123.jpg",

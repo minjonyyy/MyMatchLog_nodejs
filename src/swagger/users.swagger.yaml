@@ -265,10 +265,11 @@ components:
           nullable: true
           description: 개인 메모 (선택사항)
           example: "정말 재미있는 경기였습니다!"
-        ticket_image_url:
+        ticket_image:
           type: string
+          format: binary
           nullable: true
-          description: 티켓 이미지 URL (선택사항)
+          description: 티켓 이미지 파일 (jpg, png, jpeg 지원)
           example: null
 
     UpdateMatchLogRequest:
@@ -356,4 +357,35 @@ components:
         home_stadium:
           type: string
           description: 홈구장 이름
-          example: "서울종합운동장 야구장" 
+          example: "서울종합운동장 야구장"
+
+    # Stadium Schema
+    Stadium:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 경기장 고유 ID
+          example: 1
+        name:
+          type: string
+          description: 경기장 이름
+          example: "잠실야구장"
+        city:
+          type: string
+          description: 도시
+          example: "서울"
+        capacity:
+          type: integer
+          description: 수용 인원
+          example: 25000
+        created_at:
+          type: string
+          format: date-time
+          description: 생성 일시
+          example: "2024-01-01T00:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: 수정 일시
+          example: "2024-01-01T00:00:00.000Z" 

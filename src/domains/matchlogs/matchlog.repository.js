@@ -4,13 +4,15 @@ import pool from '../../config/database.js';
 export const findMatchLogsByUserId = async (userId, limit = 10, offset = 0) => {
   const [rows] = await pool.query(
     `SELECT 
-       ml.id, ml.match_date, ml.stadium, ml.result, ml.memo, ml.ticket_image_url, 
+       ml.id, ml.match_date, ml.result, ml.memo, ml.ticket_image_url, 
        ml.created_at, ml.updated_at,
        ht.id as home_team_id, ht.name as home_team_name,
-       at.id as away_team_id, at.name as away_team_name
+       at.id as away_team_id, at.name as away_team_name,
+       s.id as stadium_id, s.name as stadium_name, s.city as stadium_city
      FROM match_logs ml
      LEFT JOIN teams ht ON ml.home_team_id = ht.id
      LEFT JOIN teams at ON ml.away_team_id = at.id
+     LEFT JOIN stadiums s ON ml.stadium_id = s.id
      WHERE ml.user_id = ? 
      ORDER BY ml.match_date DESC, ml.created_at DESC 
      LIMIT ? OFFSET ?`,
@@ -29,7 +31,11 @@ export const findMatchLogsByUserId = async (userId, limit = 10, offset = 0) => {
       id: row.away_team_id,
       name: row.away_team_name
     },
-    stadium: row.stadium,
+    stadium: {
+      id: row.stadium_id,
+      name: row.stadium_name,
+      city: row.stadium_city
+    },
     result: row.result,
     memo: row.memo,
     ticket_image_url: row.ticket_image_url,
@@ -53,10 +59,12 @@ export const findMatchLogById = async (matchLogId) => {
     `SELECT 
        ml.*, 
        ht.id as home_team_id, ht.name as home_team_name,
-       at.id as away_team_id, at.name as away_team_name
+       at.id as away_team_id, at.name as away_team_name,
+       s.id as stadium_id, s.name as stadium_name, s.city as stadium_city
      FROM match_logs ml
      LEFT JOIN teams ht ON ml.home_team_id = ht.id
      LEFT JOIN teams at ON ml.away_team_id = at.id
+     LEFT JOIN stadiums s ON ml.stadium_id = s.id
      WHERE ml.id = ?`,
     [matchLogId]
   );
@@ -76,7 +84,11 @@ export const findMatchLogById = async (matchLogId) => {
       id: row.away_team_id,
       name: row.away_team_name
     },
-    stadium: row.stadium,
+    stadium: {
+      id: row.stadium_id,
+      name: row.stadium_name,
+      city: row.stadium_city
+    },
     result: row.result,
     memo: row.memo,
     ticket_image_url: row.ticket_image_url,
@@ -87,12 +99,12 @@ export const findMatchLogById = async (matchLogId) => {
 
 // 직관 기록 생성
 export const createMatchLog = async (matchLogData) => {
-  const { user_id, match_date, home_team_id, away_team_id, stadium, result, memo, ticket_image_url } = matchLogData;
+  const { user_id, match_date, home_team_id, away_team_id, stadium_id, result, memo, ticket_image_url } = matchLogData;
   
   const [insertResult] = await pool.query(
-    `INSERT INTO match_logs (user_id, match_date, home_team_id, away_team_id, stadium, result, memo, ticket_image_url) 
+    `INSERT INTO match_logs (user_id, match_date, home_team_id, away_team_id, stadium_id, result, memo, ticket_image_url) 
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [user_id, match_date, home_team_id, away_team_id, stadium, result, memo, ticket_image_url]
+    [user_id, match_date, home_team_id, away_team_id, stadium_id, result, memo, ticket_image_url]
   );
   
   return { id: insertResult.insertId };
@@ -103,8 +115,8 @@ export const updateMatchLog = async (matchLogId, updateData) => {
   const fields = [];
   const values = [];
 
-  // 허용된 필드만 업데이트 (team_id 포함)
-  const allowedFields = ['match_date', 'home_team_id', 'away_team_id', 'stadium', 'result', 'memo', 'ticket_image_url'];
+  // 허용된 필드만 업데이트 (stadium_id 포함)
+  const allowedFields = ['match_date', 'home_team_id', 'away_team_id', 'stadium_id', 'result', 'memo', 'ticket_image_url'];
   
   allowedFields.forEach(key => {
     if (updateData[key] !== undefined) {

@@ -60,9 +60,45 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CreateMatchLogRequest'
+              type: object
+              required:
+                - match_date
+                - home_team_id
+                - away_team_id
+                - stadium
+              properties:
+                match_date:
+                  type: string
+                  format: date
+                  description: 경기 날짜
+                  example: "2024-07-21"
+                home_team_id:
+                  type: integer
+                  description: 홈팀 ID (teams 테이블 참조)
+                  example: 1
+                away_team_id:
+                  type: integer
+                  description: 원정팀 ID (teams 테이블 참조, home_team_id와 달라야 함)
+                  example: 2
+                stadium_id:
+                  type: integer
+                  description: 경기장 ID (stadiums 테이블 참조)
+                  example: 1
+                result:
+                  type: string
+                  enum: [WIN, LOSS, DRAW]
+                  description: 경기 결과 (선택사항)
+                  example: "WIN"
+                memo:
+                  type: string
+                  description: 개인 메모 (선택사항)
+                  example: "정말 재미있는 경기였습니다!"
+                ticket_image:
+                  type: string
+                  format: binary
+                  description: 티켓 이미지 파일 (jpg, png, jpeg 지원)
       responses:
         '201':
           description: 직관 기록 생성 성공
@@ -147,9 +183,40 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UpdateMatchLogRequest'
+              type: object
+              properties:
+                match_date:
+                  type: string
+                  format: date
+                  description: 경기 날짜
+                  example: "2024-07-21"
+                home_team_id:
+                  type: integer
+                  description: 홈팀 ID (teams 테이블 참조)
+                  example: 1
+                away_team_id:
+                  type: integer
+                  description: 원정팀 ID (teams 테이블 참조, home_team_id와 달라야 함)
+                  example: 2
+                stadium_id:
+                  type: integer
+                  description: 경기장 ID (stadiums 테이블 참조)
+                  example: 1
+                result:
+                  type: string
+                  enum: [WIN, LOSS, DRAW]
+                  description: 경기 결과 (선택사항)
+                  example: "WIN"
+                memo:
+                  type: string
+                  description: 개인 메모 (선택사항)
+                  example: "수정된 메모입니다!"
+                ticket_image:
+                  type: string
+                  format: binary
+                  description: 새로운 티켓 이미지 파일 (jpg, png, jpeg 지원)
       responses:
         '200':
           description: 직관 기록 수정 성공

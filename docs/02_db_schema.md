@@ -5,15 +5,31 @@
 ---
 
 ## 🗂️ 테이블 목록
-1. `teams` - 야구팀 마스터 정보
-2. `users` - 사용자 정보
-3. `match_logs` - 경기 직관 기록
-4. `events` - 선착순 이벤트 정보
-5. `event_participations` - 이벤트 참여 기록
+1. `stadiums` - 경기장 마스터 정보
+2. `teams` - 야구팀 마스터 정보
+3. `users` - 사용자 정보
+4. `match_logs` - 경기 직관 기록
+5. `events` - 선착순 이벤트 정보
+6. `event_participations` - 이벤트 참여 기록
 
 ---
 
-### 1. 테이블명: `teams`
+### 1. 테이블명: `stadiums`
+- **설명**: KBO 리그 경기장 정보를 저장하는 마스터 테이블
+- **컬럼 구조**:
+
+| 컬럼명 | 타입 | 제약조건 | 설명 |
+| :--- | :--- | :--- | :--- |
+| `id` | `INT` | `PK`, `Auto Increment` | 경기장 고유 ID |
+| `name` | `VARCHAR(100)` | `UNIQUE`, `NOT NULL` | 경기장 이름 (예: 잠실야구장) |
+| `city` | `VARCHAR(50)` | | 도시 |
+| `capacity` | `INT` | | 수용 인원 |
+| `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | 생성 일시 |
+| `updated_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 수정 일시 |
+
+---
+
+### 2. 테이블명: `teams`
 - **설명**: KBO 리그 팀 정보를 저장하는 마스터 테이블
 - **컬럼 구조**:
 
@@ -22,11 +38,11 @@
 | `id` | `INT` | `PK`, `Auto Increment` | 팀 고유 ID |
 | `name` | `VARCHAR(50)` | `UNIQUE`, `NOT NULL` | 팀 이름 (예: LG 트윈스) |
 | `logo_url` | `VARCHAR(2048)` | | 팀 로고 이미지 URL |
-| `home_stadium` | `VARCHAR(100)` | | 홈구장 이름 |
+| `stadium_id` | `INT` | `FK` | 홈구장 ID (`stadiums.id`) |
 
 ---
 
-### 2. 테이블명: `users`
+### 3. 테이블명: `users`
 - **설명**: 서비스 사용자의 기본 정보를 저장하는 테이블
 - **컬럼 구조**:
 
@@ -43,14 +59,16 @@
 
 - **관계**:
   - `users.favorite_team_id` → `teams.id` (N:1)
+  - `teams.stadium_id` → `stadiums.id` (N:1)
   - `match_logs.user_id` → `users.id` (1:N)
   - `match_logs.home_team_id` → `teams.id` (N:1)
   - `match_logs.away_team_id` → `teams.id` (N:1)
+  - `match_logs.stadium_id` → `stadiums.id` (N:1)
   - `event_participations.user_id` → `users.id` (1:N)
 
 ---
 
-### 3. 테이블명: `match_logs`
+### 4. 테이블명: `match_logs`
 - **설명**: 사용자가 기록한 야구 직관 정보를 저장하는 테이블
 - **컬럼 구조**:
 
@@ -61,7 +79,7 @@
 | `match_date` | `DATE` | `NOT NULL` | 경기 날짜 |
 | `home_team_id` | `INT` | `FK`, `NOT NULL` | 홈팀 ID (`teams.id`) |
 | `away_team_id` | `INT` | `FK`, `NOT NULL` | 원정팀 ID (`teams.id`) |
-| `stadium` | `VARCHAR(100)` | `NOT NULL` | 경기장 |
+| `stadium_id` | `INT` | `FK`, `NOT NULL` | 경기장 ID (`stadiums.id`) |
 | `result` | `ENUM('WIN', 'LOSS', 'DRAW')` | | 경기 결과 (승/패/무) |
 | `memo` | `TEXT` | | 개인 메모 |
 | `ticket_image_url` | `VARCHAR(2048)` | | 티켓 이미지 S3 URL |
@@ -70,7 +88,7 @@
 
 ---
 
-### 4. 테이블명: `events`
+### 5. 테이블명: `events`
 - **설명**: 선착순 이벤트 정보를 관리하는 테이블
 - **컬럼 구조**:
 
@@ -92,7 +110,7 @@
 
 ---
 
-### 5. 테이블명: `event_participations`
+### 6. 테이블명: `event_participations`
 - **설명**: 사용자의 이벤트 참여 상태를 기록하여 중복 참여를 방지하는 테이블
 - **컬럼 구조**:
 
