@@ -44,6 +44,8 @@
 - **관계**:
   - `users.favorite_team_id` → `teams.id` (N:1)
   - `match_logs.user_id` → `users.id` (1:N)
+  - `match_logs.home_team_id` → `teams.id` (N:1)
+  - `match_logs.away_team_id` → `teams.id` (N:1)
   - `event_participations.user_id` → `users.id` (1:N)
 
 ---
@@ -57,8 +59,8 @@
 | `id` | `BIGINT` | `PK`, `Auto Increment` | 직관 기록 고유 ID |
 | `user_id` | `BIGINT` | `FK`, `NOT NULL` | 기록을 작성한 사용자 ID |
 | `match_date` | `DATE` | `NOT NULL` | 경기 날짜 |
-| `home_team` | `VARCHAR(50)` | `NOT NULL` | 홈팀 이름 |
-| `away_team` | `VARCHAR(50)` | `NOT NULL` | 원정팀 이름 |
+| `home_team_id` | `INT` | `FK`, `NOT NULL` | 홈팀 ID (`teams.id`) |
+| `away_team_id` | `INT` | `FK`, `NOT NULL` | 원정팀 ID (`teams.id`) |
 | `stadium` | `VARCHAR(100)` | `NOT NULL` | 경기장 |
 | `result` | `ENUM('WIN', 'LOSS', 'DRAW')` | | 경기 결과 (승/패/무) |
 | `memo` | `TEXT` | | 개인 메모 |

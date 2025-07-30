@@ -129,7 +129,33 @@
   - `401 UNAUTHORIZED`: 인증 실패
   - `409 CONFLICT`: 닉네임이 이미 존재함
 
-### 4. Access Token 갱신
+### 4. 내 정보 조회
+- **URL**: `GET /api/users/me`
+- **설명**: 현재 로그인된 사용자의 정보를 조회합니다.
+- **인증**: 필요 (Bearer Token)
+- **요청 본문**: 없음
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": 5,
+      "email": "mymatchlog@example.com",
+      "nickname": "열혈야구팬",
+      "favorite_team_id": 1,
+      "created_at": "2024-07-20T10:00:00.000Z",
+      "updated_at": "2024-07-21T15:30:00.000Z"
+    }
+  },
+  "message": "내 정보 조회에 성공했습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+
+### 5. Access Token 갱신
 - **URL**: `POST /api/users/token`
 - **설명**: 유효한 Refresh Token을 사용하여 만료된 Access Token을 갱신합니다.
 - **인증**: 불필요
@@ -164,8 +190,8 @@
 - **요청 본문 (Request Body)**: `multipart/form-data`
   - `match_date` (Date): `2024-07-21`
   - `stadium` (String): `잠실야구장`
-  - `home_team` (String): `LG 트윈스`
-  - `away_team` (String): `두산 베어스`
+  - `home_team_id` (Integer): `1` (팀 ID, teams 테이블 참조)
+  - `away_team_id` (Integer): `2` (팀 ID, teams 테이블 참조, home_team_id와 달라야 함)
   - `memo` (String, Optional): `꿀잼 경기!`
   - `ticket_image` (File, Optional): (binary image data)
 - **응답 (Response)**: `201 CREATED`
@@ -182,6 +208,210 @@
   - `201 CREATED`: 성공
   - `400 BAD REQUEST`: 필수 입력값 누락
   - `401 UNAUTHORIZED`: 인증 실패
+
+### 2. 내 직관 기록 목록 조회
+- **URL**: `GET /api/match-logs`
+- **설명**: 현재 로그인된 사용자의 직관 기록 목록을 페이지네이션과 함께 조회합니다.
+- **인증**: 필요 (Bearer Token)
+- **Query Parameters**:
+  - `page` (Integer, Optional): 페이지 번호 (기본값: 1)
+  - `limit` (Integer, Optional): 페이지당 항목 수 (기본값: 10, 최대: 50)
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "matchLogs": [
+      {
+        "id": 10,
+        "match_date": "2024-07-21T00:00:00.000Z",
+        "home_team": {
+          "id": 1,
+          "name": "LG 트윈스"
+        },
+        "away_team": {
+          "id": 2,
+          "name": "두산 베어스"
+        },
+        "stadium": "잠실야구장",
+        "result": "WIN",
+        "memo": "꿀잼 경기!",
+        "ticket_image_url": "https://mymatchlog-bucket.s3.amazonaws.com/tickets/abc123.jpg",
+        "created_at": "2024-07-21T10:30:00.000Z",
+        "updated_at": "2024-07-21T10:30:00.000Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 3,
+      "totalCount": 25,
+      "hasNextPage": true,
+      "hasPrevPage": false,
+      "limit": 10
+    }
+  },
+  "message": "직관 기록 목록 조회에 성공했습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+
+### 3. 직관 기록 상세 조회
+- **URL**: `GET /api/match-logs/:id`
+- **설명**: 지정된 ID의 직관 기록 상세 정보를 조회합니다. 본인의 기록만 조회 가능합니다.
+- **인증**: 필요 (Bearer Token)
+- **Path Parameters**:
+  - `id` (Integer, required): 직관 기록 ID
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "matchLog": {
+      "id": 10,
+      "user_id": 5,
+      "match_date": "2024-07-21T00:00:00.000Z",
+      "home_team": {
+        "id": 1,
+        "name": "LG 트윈스"
+      },
+      "away_team": {
+        "id": 2,
+        "name": "두산 베어스"
+      },
+      "stadium": "잠실야구장",
+      "result": "WIN",
+      "memo": "꿀잼 경기!",
+      "ticket_image_url": "https://mymatchlog-bucket.s3.amazonaws.com/tickets/abc123.jpg",
+      "created_at": "2024-07-21T10:30:00.000Z",
+      "updated_at": "2024-07-21T10:30:00.000Z"
+    }
+  },
+  "message": "직관 기록 상세 조회에 성공했습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+  - `403 FORBIDDEN`: 접근 권한 없음 (다른 사용자의 기록)
+  - `404 NOT FOUND`: 존재하지 않는 직관 기록
+
+### 4. 직관 기록 수정
+- **URL**: `PATCH /api/match-logs/:id`
+- **설명**: 지정된 ID의 직관 기록을 수정합니다. 본인의 기록만 수정 가능합니다.
+- **인증**: 필요 (Bearer Token)
+- **Path Parameters**:
+  - `id` (Integer, required): 직관 기록 ID
+- **요청 본문 (Request Body)**: `application/json`
+```json
+{
+  "match_date": "2024-07-22",
+  "home_team_id": 3,
+  "away_team_id": 4,
+  "stadium": "고척스카이돔",
+  "result": "LOSS",
+  "memo": "아쉬운 경기였지만 재미있었어요!"
+}
+```
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "matchLog": {
+      "id": 10,
+      "user_id": 5,
+      "match_date": "2024-07-22T00:00:00.000Z",
+      "home_team": {
+        "id": 3,
+        "name": "키움 히어로즈"
+      },
+      "away_team": {
+        "id": 4,
+        "name": "삼성 라이온즈"
+      },
+      "stadium": "고척스카이돔",
+      "result": "LOSS",
+      "memo": "아쉬운 경기였지만 재미있었어요!",
+      "ticket_image_url": "https://mymatchlog-bucket.s3.amazonaws.com/tickets/abc123.jpg",
+      "created_at": "2024-07-21T10:30:00.000Z",
+      "updated_at": "2024-07-22T15:45:00.000Z"
+    }
+  },
+  "message": "직관 기록이 성공적으로 수정되었습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `400 BAD REQUEST`: 유효하지 않은 입력값 (같은 팀 ID, 존재하지 않는 팀 등)
+  - `401 UNAUTHORIZED`: 인증 실패
+  - `403 FORBIDDEN`: 접근 권한 없음 (다른 사용자의 기록)
+  - `404 NOT FOUND`: 존재하지 않는 직관 기록
+
+### 5. 직관 기록 삭제
+- **URL**: `DELETE /api/match-logs/:id`
+- **설명**: 지정된 ID의 직관 기록을 삭제합니다. 본인의 기록만 삭제 가능합니다.
+- **인증**: 필요 (Bearer Token)
+- **Path Parameters**:
+  - `id` (Integer, required): 직관 기록 ID
+- **요청 본문**: 없음
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": null,
+  "message": "직관 기록이 성공적으로 삭제되었습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+  - `403 FORBIDDEN`: 접근 권한 없음 (다른 사용자의 기록)
+  - `404 NOT FOUND`: 존재하지 않는 직관 기록
+
+---
+
+## 🔍 OCR (Optical Character Recognition)
+
+### 1. 티켓 OCR 정보 추출
+- **URL**: `POST /api/ocr/parse-ticket`
+- **설명**: 업로드된 티켓 이미지에서 OCR을 통해 경기 정보를 자동 추출합니다.
+- **인증**: 필요 (Bearer Token)
+- **요청 본문 (Request Body)**: `multipart/form-data`
+  - `ticket_image` (File, required): 티켓 이미지 파일 (jpg, png, jpeg 지원)
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "extractedInfo": {
+      "match_date": "2024-07-21",
+      "stadium": "잠실야구장",
+      "home_team": "LG 트윈스",
+      "away_team": "두산 베어스",
+      "confidence": 0.85
+    }
+  },
+  "message": "티켓 정보 추출에 성공했습니다."
+}
+```
+- **응답 (OCR 실패 시)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "extractedInfo": null,
+    "error": "티켓 정보를 인식할 수 없습니다."
+  },
+  "message": "티켓 정보 추출을 완료했습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공 (OCR 성공/실패 관계없이)
+  - `400 BAD REQUEST`: 지원하지 않는 파일 형식
+  - `401 UNAUTHORIZED`: 인증 실패
+  - `413 PAYLOAD TOO LARGE`: 파일 크기 초과
 
 ---
 

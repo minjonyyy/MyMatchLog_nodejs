@@ -6,6 +6,11 @@
 .env.*
 !.env.example
 
+# Database data (MySQL volumes)
+.db-data/
+*.ibd
+*.frm
+
 # Logs
 logs
 *.log
