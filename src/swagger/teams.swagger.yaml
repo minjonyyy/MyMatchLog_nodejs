@@ -27,25 +27,4 @@ paths:
                     type: string
                     example: "팀 목록 조회에 성공했습니다."
 
-components:
-  schemas:
-    Team:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: 팀 고유 ID
-          example: 1
-        name:
-          type: string
-          description: 팀 이름
-          example: "LG 트윈스"
-        logo_url:
-          type: string
-          nullable: true
-          description: 팀 로고 이미지 URL
-          example: "https://example.com/lg-logo.png"
-        home_stadium:
-          type: string
-          description: 홈구장 이름
-          example: "서울종합운동장 야구장" 
+ 

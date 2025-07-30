@@ -64,21 +64,21 @@
 - [ ] **BE-006: 티켓 OCR 정보 추출 (`POST /api/ocr/parse-ticket`)**
   - [ ] 외부 OCR 서비스(Naver, Google) API 연동 로직
   - [ ] 이미지 파일을 받아 OCR API로 전송 및 결과 반환
-- [ ] **BE-007: 직관 기록 생성 (`POST /api/match-logs`)**
-  - [ ] Controller, Service, Repository 계층 구현
+- [x] **BE-007: 직관 기록 생성 (`POST /api/match-logs`)**
+  - [x] Controller, Service, Repository 계층 구현
   - [ ] `multipart/form-data` 요청 처리
   - [ ] 티켓 이미지 S3 업로드 및 URL DB 저장
-- [ ] **BE-008: 내 직관 기록 목록 조회 (`GET /api/match-logs`)**
-  - [ ] Controller, Service, Repository 계층 구현
-  - [ ] 페이지네이션(Pagination) 기능 구현
-- [ ] **BE-009: 직관 기록 상세 조회 (`GET /api/match-logs/:id`)**
-  - [ ] Controller, Service, Repository 계층 구현
-- [ ] **BE-010: 직관 기록 수정 (`PATCH /api/match-logs/:id`)**
-  - [ ] Controller, Service, Repository 계층 구현
-  - [ ] 기록 소유권 검증 로직 (본인만 수정 가능)
-- [ ] **BE-011: 직관 기록 삭제 (`DELETE /api/match-logs/:id`)**
-  - [ ] Controller, Service, Repository 계층 구현
-  - [ ] 기록 소유권 검증 로직 (본인만 삭제 가능)
+- [x] **BE-008: 내 직관 기록 목록 조회 (`GET /api/match-logs`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 페이지네이션(Pagination) 기능 구현
+- [x] **BE-009: 직관 기록 상세 조회 (`GET /api/match-logs/:id`)**
+  - [x] Controller, Service, Repository 계층 구현
+- [x] **BE-010: 직관 기록 수정 (`PATCH /api/match-logs/:id`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 기록 소유권 검증 로직 (본인만 수정 가능)
+- [x] **BE-011: 직관 기록 삭제 (`DELETE /api/match-logs/:id`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 기록 소유권 검증 로직 (본인만 삭제 가능)
 
 ---
 

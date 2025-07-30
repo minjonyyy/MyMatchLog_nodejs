@@ -124,4 +124,236 @@ components:
         accessToken:
           type: string
         refreshToken:
-          type: string 
+          type: string
+
+    # Match Logs Schemas
+    MatchLogListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 직관 기록 ID
+          example: 1
+        match_date:
+          type: string
+          format: date
+          description: 경기 날짜
+          example: "2024-07-20"
+        home_team:
+          type: string
+          description: 홈팀
+          example: "LG 트윈스"
+        away_team:
+          type: string
+          description: 원정팀
+          example: "두산 베어스"
+        stadium:
+          type: string
+          description: 경기장
+          example: "잠실야구장"
+        result:
+          type: string
+          nullable: true
+          enum: [WIN, LOSS, DRAW]
+          description: 경기 결과
+          example: "WIN"
+        memo:
+          type: string
+          nullable: true
+          description: 개인 메모
+          example: "정말 재미있는 경기였습니다!"
+        ticket_image_url:
+          type: string
+          nullable: true
+          description: 티켓 이미지 URL
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          description: 생성 일시
+        updated_at:
+          type: string
+          format: date-time
+          description: 수정 일시
+
+    MatchLogDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 직관 기록 ID
+          example: 1
+        user_id:
+          type: integer
+          description: 사용자 ID
+          example: 7
+        match_date:
+          type: string
+          format: date
+          description: 경기 날짜
+          example: "2024-07-20"
+        home_team:
+          type: string
+          description: 홈팀
+          example: "LG 트윈스"
+        away_team:
+          type: string
+          description: 원정팀
+          example: "두산 베어스"
+        stadium:
+          type: string
+          description: 경기장
+          example: "잠실야구장"
+        result:
+          type: string
+          nullable: true
+          enum: [WIN, LOSS, DRAW]
+          description: 경기 결과
+          example: "WIN"
+        memo:
+          type: string
+          nullable: true
+          description: 개인 메모
+          example: "정말 재미있는 경기였습니다!"
+        ticket_image_url:
+          type: string
+          nullable: true
+          description: 티켓 이미지 URL
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          description: 생성 일시
+        updated_at:
+          type: string
+          format: date-time
+          description: 수정 일시
+
+    CreateMatchLogRequest:
+      type: object
+      required:
+        - match_date
+        - home_team_id
+        - away_team_id
+        - stadium
+      properties:
+        match_date:
+          type: string
+          format: date
+          description: 경기 날짜
+          example: "2024-07-20"
+        home_team_id:
+          type: integer
+          description: 홈팀 ID (teams 테이블 참조)
+          example: 1
+        away_team_id:
+          type: integer
+          description: 원정팀 ID (teams 테이블 참조, home_team_id와 달라야 함)
+          example: 2
+        stadium:
+          type: string
+          description: 경기장
+          example: "잠실야구장"
+        result:
+          type: string
+          nullable: true
+          enum: [WIN, LOSS, DRAW]
+          description: 경기 결과 (선택사항)
+          example: "WIN"
+        memo:
+          type: string
+          nullable: true
+          description: 개인 메모 (선택사항)
+          example: "정말 재미있는 경기였습니다!"
+        ticket_image_url:
+          type: string
+          nullable: true
+          description: 티켓 이미지 URL (선택사항)
+          example: null
+
+    UpdateMatchLogRequest:
+      type: object
+      properties:
+        match_date:
+          type: string
+          format: date
+          description: 경기 날짜
+          example: "2024-07-20"
+        home_team_id:
+          type: integer
+          description: 홈팀 ID (teams 테이블 참조)
+          example: 1
+        away_team_id:
+          type: integer
+          description: 원정팀 ID (teams 테이블 참조, home_team_id와 달라야 함)
+          example: 2
+        stadium:
+          type: string
+          description: 경기장
+          example: "잠실야구장"
+        result:
+          type: string
+          nullable: true
+          enum: [WIN, LOSS, DRAW]
+          description: 경기 결과
+          example: "WIN"
+        memo:
+          type: string
+          nullable: true
+          description: 개인 메모
+          example: "수정된 메모입니다."
+        ticket_image_url:
+          type: string
+          nullable: true
+          description: 티켓 이미지 URL
+          example: null
+
+    Pagination:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          description: 현재 페이지
+          example: 1
+        totalPages:
+          type: integer
+          description: 전체 페이지 수
+          example: 5
+        totalCount:
+          type: integer
+          description: 전체 항목 수
+          example: 42
+        hasNextPage:
+          type: boolean
+          description: 다음 페이지 존재 여부
+          example: true
+        hasPrevPage:
+          type: boolean
+          description: 이전 페이지 존재 여부
+          example: false
+        limit:
+          type: integer
+          description: 페이지 당 항목 수
+          example: 10
+
+    # Team Schema  
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 팀 고유 ID
+          example: 1
+        name:
+          type: string
+          description: 팀 이름
+          example: "LG 트윈스"
+        logo_url:
+          type: string
+          nullable: true
+          description: 팀 로고 이미지 URL
+          example: "https://example.com/lg-logo.png"
+        home_stadium:
+          type: string
+          description: 홈구장 이름
+          example: "서울종합운동장 야구장" 
