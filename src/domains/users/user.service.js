@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
-import { BadRequestError, ConflictError } from '../../errors/http.error.js';
+import jwt from 'jsonwebtoken';
+import { BadRequestError, ConflictError, UnauthorizedError, NotFoundError } from '../../errors/http.error.js';
 import * as userRepository from './user.repository.js';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -33,4 +34,28 @@ export const signUp = async (email, password, nickname) => {
 
   const newUser = await userRepository.createUser(email, hashedPassword, nickname);
   return newUser;
+};
+
+export const login = async (email, password) => {
+  const user = await userRepository.findUserByEmail(email);
+  if (!user) {
+    throw new NotFoundError('해당 사용자를 찾을 수 없습니다.', 'USER_NOT_FOUND');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    throw new UnauthorizedError('비밀번호가 일치하지 않습니다.', 'USER_PASSWORD_MISMATCH');
+  }
+
+  const accessToken = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
+    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '1h',
+  });
+
+  const refreshToken = jwt.sign({ userId: user.id }, process.env.REFRESH_TOKEN_SECRET_KEY, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '14d',
+  });
+
+  await userRepository.updateRefreshToken(user.id, refreshToken);
+
+  return { accessToken, refreshToken };
 };

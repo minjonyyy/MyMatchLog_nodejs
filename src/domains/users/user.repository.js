@@ -17,3 +17,7 @@ export const createUser = async (email, hashedPassword, nickname) => {
   );
   return { id: result.insertId };
 };
+
+export const updateRefreshToken = async (userId, refreshToken) => {
+  await pool.query('UPDATE users SET refresh_token = ? WHERE id = ?', [refreshToken, userId]);
+};
