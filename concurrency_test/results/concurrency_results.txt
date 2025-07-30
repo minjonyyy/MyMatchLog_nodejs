@@ -1,0 +1,118 @@
+🚀 동시성 테스트 시작 - 100명이 동시에 이벤트 참여
+이벤트 ID: 2
+시작 시간: 2025년 7월 30일 수요일 16시 23분 06초 KST
+==========================================
+사용자 6: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.231Z"}
+사용자 3: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.252Z"}
+사용자 14: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.265Z"}
+사용자 1: HTTP 200 - {"success":true,"data":{"participationId":40},"message":"이벤트 참여 신청이 완료되었습니다. 결과를 기다려주세요."}
+사용자 5: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.249Z"}
+사용자 7: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.248Z"}
+사용자 12: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.262Z"}
+사용자 8: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.253Z"}
+사용자 13: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.261Z"}
+사용자 2: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.253Z"}
+사용자 10: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.253Z"}
+사용자 9: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.255Z"}
+사용자 17: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.276Z"}
+사용자 20: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.278Z"}
+사용자 19: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.278Z"}
+사용자 16: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.261Z"}
+사용자 11: HTTP 200 - {"success":true,"data":{"participationId":42},"message":"이벤트 참여 신청이 완료되었습니다. 결과를 기다려주세요."}
+사용자 4: HTTP 200 - {"success":true,"data":{"participationId":41},"message":"이벤트 참여 신청이 완료되었습니다. 결과를 기다려주세요."}
+사용자 18: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.269Z"}
+사용자 29: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.282Z"}
+사용자 23: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.282Z"}
+사용자 15: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.269Z"}
+사용자 24: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.290Z"}
+사용자 22: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.282Z"}
+사용자 21: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.279Z"}
+사용자 31: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.297Z"}
+사용자 25: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.297Z"}
+사용자 30: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.303Z"}
+사용자 35: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.319Z"}
+사용자 26: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.297Z"}
+사용자 38: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.325Z"}
+사용자 27: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.303Z"}
+사용자 28: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.303Z"}
+사용자 39: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.335Z"}
+사용자 36: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.325Z"}
+사용자 34: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.329Z"}
+사용자 37: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.335Z"}
+사용자 42: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.352Z"}
+사용자 43: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.351Z"}
+사용자 41: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.353Z"}
+사용자 40: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.353Z"}
+사용자 32: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.334Z"}
+사용자 33: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.324Z"}
+사용자 44: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.373Z"}
+사용자 50: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.373Z"}
+사용자 56: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.396Z"}
+사용자 55: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.392Z"}
+사용자 53: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.392Z"}
+사용자 45: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.363Z"}
+사용자 68: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.414Z"}
+사용자 47: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.364Z"}
+사용자 67: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.417Z"}
+사용자 52: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.410Z"}
+사용자 62: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.417Z"}
+사용자 74: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.433Z"}
+사용자 64: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.427Z"}
+사용자 49: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.392Z"}
+사용자 75: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.435Z"}
+사용자 59: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.406Z"}
+사용자 48: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.364Z"}
+사용자 65: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.440Z"}
+사용자 46: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.377Z"}
+사용자 60: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.414Z"}
+사용자 51: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.390Z"}
+사용자 54: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.397Z"}
+사용자 71: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.436Z"}
+사용자 61: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.414Z"}
+사용자 57: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.414Z"}
+사용자 72: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.429Z"}
+사용자 58: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.397Z"}
+사용자 63: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.429Z"}
+사용자 66: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.426Z"}
+사용자 70: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.472Z"}
+사용자 76: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.472Z"}
+사용자 69: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.470Z"}
+사용자 83: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.475Z"}
+사용자 85: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.484Z"}
+사용자 77: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.485Z"}
+사용자 89: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.483Z"}
+사용자 84: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.483Z"}
+사용자 80: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.485Z"}
+사용자 96: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.484Z"}
+사용자 79: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.484Z"}
+사용자 100: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.485Z"}
+사용자 81: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.485Z"}
+사용자 99: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.488Z"}
+사용자 91: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.491Z"}
+사용자 73: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.491Z"}
+사용자 98: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.493Z"}
+사용자 92: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.492Z"}
+사용자 88: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.492Z"}
+사용자 90: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.493Z"}
+사용자 87: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.494Z"}
+사용자 93: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.500Z"}
+사용자 86: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.494Z"}
+사용자 94: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.500Z"}
+사용자 82: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.500Z"}
+사용자 78: HTTP 409 - {"success":false,"error":{"code":"EVENT_CAPACITY_EXCEEDED","message":"선착순 정원이 마감되었습니다."},"timestamp":"2025-07-30T07:23:15.502Z"}
+사용자 97: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.500Z"}
+사용자 95: HTTP 409 - {"success":false,"error":{"code":"EVENT_PROCESSING","message":"다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요."},"timestamp":"2025-07-30T07:23:15.500Z"}
+==========================================
+종료 시간: 2025년 7월 30일 수요일 16시 23분 15초 KST
+==========================================
+📈 Final Results:
+Successful participations: 3
+Capacity exceeded failures: 40
+Lock acquisition failures: 0
+0
+Other errors: 0
+0
+Max retry exceeded: 0
+0
+Total requests: 100
+최종 이벤트 상태: {"success":true,"data":{"event":{"id":2,"title":"í…ŒìŠ¤íŠ¸ ì´ë²¤íŠ¸","description":"ì§€ê¸ˆ ë°”ë¡œ ì°¸ì—¬ ê°€ëŠ¥í•œ í…ŒìŠ¤íŠ¸ ì´ë²¤íŠ¸ìž…ë‹ˆë‹¤.","start_at":"2025-07-30T06:59:51.000Z","end_at":"2025-07-30T07:59:51.000Z","gift":"í…ŒìŠ¤íŠ¸ ìƒí’ˆ","capacity":3,"participant_count":3,"created_at":"2025-07-30T06:59:51.000Z","updated_at":"2025-07-30T07:23:15.000Z"}},"message":"이벤트 상세 조회에 성공했습니다."}
