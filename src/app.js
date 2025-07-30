@@ -4,6 +4,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { testConnection as testDBConnection } from './config/database.js';
 import { testRedisConnection } from './config/redis.js';
+import swaggerUi from 'swagger-ui-express';
+import specs from './config/swagger.js';
 
 dotenv.config();
 
@@ -14,6 +16,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

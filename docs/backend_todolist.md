@@ -25,8 +25,8 @@
 - [x] 데이터베이스 스키마 생성(Migration) 스크립트 작성
 - [x] `teams` 마스터 데이터 시딩(Seeding) 스크립트 작성
 - [x] Redis 연결 설정 (이벤트 동시성 제어용)
-- [ ] `multer` 및 AWS S3 SDK 연동을 통한 파일 업로드 모듈 구현
-- [ ] `Swagger(OpenAPI)`를 이용한 API 문서 자동화 설정
+- [x] `multer` 및 AWS S3 SDK 연동을 통한 파일 업로드 모듈 구현
+- [x] `Swagger(OpenAPI)`를 이용한 API 문서 자동화 설정
 
 ---
 
