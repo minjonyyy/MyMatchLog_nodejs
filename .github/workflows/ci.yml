@@ -56,6 +56,11 @@ jobs:
           echo "DB_HOST=127.0.0.1" >> .env.test
           echo "REDIS_HOST=127.0.0.1" >> .env.test
 
+      - name: Install Redis CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y redis-tools
+
       - name: Wait for services to be ready
         run: |
           echo "Waiting for MySQL..."
