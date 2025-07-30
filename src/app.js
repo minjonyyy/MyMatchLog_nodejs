@@ -2,7 +2,8 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { testConnection } from './config/database.js';
+import { testConnection as testDBConnection } from './config/database.js';
+import { testRedisConnection } from './config/redis.js';
 
 dotenv.config();
 
@@ -20,7 +21,9 @@ app.get('/', (req, res) => {
 
 const startServer = async () => {
   try {
-    await testConnection();
+    await testDBConnection();
+    await testRedisConnection();
+
     app.listen(port, () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
     });
