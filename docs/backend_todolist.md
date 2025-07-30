@@ -148,7 +148,7 @@
 - [ ] 주요 Service 로직에 대한 단위 테스트(Unit Test) 작성
 - [ ] 주요 API 엔드포인트에 대한 통합 테스트(Integration Test) 작성
 - [ ] `PM2`를 이용한 운영 서버 프로세스 관리 스크립트 작성
-- [ ] (선택) `GitHub Actions`를 이용한 CI/CD 파이프라인 구축
+- [ ] `GitHub Actions`, `AWS`를 이용한 CI/CD 파이프라인 구축
 
 ---
 
