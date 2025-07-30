@@ -4,6 +4,41 @@
 
 ---
 
+## 🏟️ 공통 (Common)
+
+### 1. 팀 목록 조회
+- **URL**: `GET /api/teams`
+- **설명**: KBO 리그의 모든 팀 목록을 조회합니다. 사용자가 응원팀을 선택할 때 사용됩니다.
+- **인증**: 불필요
+- **요청 본문**: 없음
+- **응답 (Response)**: `200 OK`
+```json
+{
+  "success": true,
+  "data": {
+    "teams": [
+      {
+        "id": 1,
+        "name": "LG 트윈스",
+        "logo_url": "https://example.com/lg-logo.png",
+        "home_stadium": "잠실야구장"
+      },
+      {
+        "id": 2,
+        "name": "두산 베어스",
+        "logo_url": "https://example.com/doosan-logo.png",
+        "home_stadium": "잠실야구장"
+      }
+    ]
+  },
+  "message": "팀 목록 조회에 성공했습니다."
+}
+```
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+
+---
+
 ## 👤 사용자 (Users)
 
 ### 1. 사용자 회원가입

@@ -30,6 +30,14 @@
 
 ---
 
+## 🏟️ 1.5. 공통 API (Common APIs)
+
+- [x] **BE-000: 팀 목록 조회 (`GET /api/teams`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] KBO 리그 모든 팀 정보 반환 (캐싱 고려)
+
+---
+
 ## 👤 2. 사용자 도메인 (User Domain)
 
 - [x] **BE-001: 사용자 회원가입 (`POST /api/users/signup`)**
