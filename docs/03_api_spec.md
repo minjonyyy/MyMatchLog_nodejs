@@ -11,10 +11,13 @@
 - **설명**: 새로운 사용자를 시스템에 등록합니다.
 - **인증**: 불필요
 - **요청 본문 (Request Body)**: `application/json`
+  - `email` (string, required): 유효한 이메일 형식이어야 합니다.
+  - `password` (string, required): 최소 8자 이상이며, 대/소문자, 숫자, 특수문자(@$!%*?&)를 모두 포함해야 합니다.
+  - `nickname` (string, required): 중복되지 않는 닉네임이어야 합니다.
 ```json
 {
   "email": "mymatchlog@example.com",
-  "password": "password123!",
+  "password": "Password123!",
   "nickname": "야구팬"
 }
 ```

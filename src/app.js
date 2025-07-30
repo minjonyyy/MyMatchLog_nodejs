@@ -6,6 +6,7 @@ import { testConnection as testDBConnection } from './config/database.js';
 import { testRedisConnection } from './config/redis.js';
 import swaggerUi from 'swagger-ui-express';
 import specs from './config/swagger.js';
+import apiRouter from './routes/index.js';
 
 dotenv.config();
 
@@ -19,6 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+// API 라우터 적용
+app.use('/api', apiRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

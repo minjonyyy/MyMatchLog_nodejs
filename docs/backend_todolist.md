@@ -32,10 +32,10 @@
 
 ## 👤 2. 사용자 도메인 (User Domain)
 
-- [ ] **BE-001: 사용자 회원가입 (`POST /api/users/signup`)**
-  - [ ] Controller, Service, Repository 계층 구현
-  - [ ] 이메일, 닉네임 중복 검사 로직
-  - [ ] 비밀번호 해싱 (bcrypt) 적용
+- [x] **BE-001: 사용자 회원가입 (`POST /api/users/signup`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 이메일, 닉네임 중복 검사 로직
+  - [x] 비밀번호 해싱 (bcrypt) 적용
 - [ ] **BE-002: 사용자 로그인 (`POST /api/users/login`)**
   - [ ] Controller, Service, Repository 계층 구현
   - [ ] 로그인 성공 시 JWT(Access Token, Refresh Token) 발급
