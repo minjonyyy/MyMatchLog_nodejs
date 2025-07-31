@@ -51,15 +51,20 @@ const teamsData = [
 
 const seedStadiums = async (connection) => {
   console.log('🚀 Starting to seed stadiums data...');
-  
+
   // To prevent duplicate entries, clear the table first
   await connection.query('DELETE FROM stadiums');
   // Reset auto-increment counter
   await connection.query('ALTER TABLE stadiums AUTO_INCREMENT = 1');
 
   for (const stadium of stadiumsData) {
-    const query = 'INSERT INTO stadiums (name, city, capacity) VALUES (?, ?, ?)';
-    await connection.query(query, [stadium.name, stadium.city, stadium.capacity]);
+    const query =
+      'INSERT INTO stadiums (name, city, capacity) VALUES (?, ?, ?)';
+    await connection.query(query, [
+      stadium.name,
+      stadium.city,
+      stadium.capacity,
+    ]);
     console.log(`✅ Seeded: ${stadium.name}`);
   }
 
@@ -89,10 +94,10 @@ const runSeeding = async () => {
   try {
     pool = createSeedingPool();
     connection = await pool.getConnection();
-    
+
     await seedStadiums(connection);
     await seedTeams(connection);
-    
+
     console.log('🎉 All seeding completed successfully.');
   } catch (err) {
     console.error('❌ Error during seeding:', err);
