@@ -4,6 +4,7 @@ coverage/
 
 # Documentation
 docs/
+prompt/
 
 # Build outputs
 dist/
