@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.test' });
 
 // 전역 함수 선언
-/* global setTimeout, afterAll */
+/* global setTimeout */
 
 // 테스트 타임아웃 설정
 setTimeout(() => {}, 10000);

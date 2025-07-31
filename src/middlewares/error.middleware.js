@@ -1,6 +1,7 @@
 import { errorResponse } from '../utils/response.util.js';
 import BaseError from '../errors/base.error.js';
 
+// eslint-disable-next-line no-unused-vars
 const errorMiddleware = (err, req, res, _next) => {
   console.error(err);
 

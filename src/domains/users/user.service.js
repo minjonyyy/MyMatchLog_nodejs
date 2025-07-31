@@ -102,7 +102,9 @@ export const getUserMe = async (userId) => {
   }
 
   // 비밀번호와 refresh_token은 응답에서 제외
-  const { password: _, refresh_token: __, ...userInfo } = user;
+  const userInfo = { ...user };
+  delete userInfo.password;
+  delete userInfo.refresh_token;
   return userInfo;
 };
 
@@ -127,7 +129,9 @@ export const updateUserMe = async (userId, updateData) => {
 
   // 업데이트된 사용자 정보 조회
   const updatedUser = await userRepository.findUserById(userId);
-  const { password: _, refresh_token: __, ...userInfo } = updatedUser;
+  const userInfo = { ...updatedUser };
+  delete userInfo.password;
+  delete userInfo.refresh_token;
   
   return userInfo;
 };
