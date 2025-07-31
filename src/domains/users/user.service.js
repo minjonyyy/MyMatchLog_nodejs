@@ -89,7 +89,7 @@ export const refreshAccessToken = async (refreshToken) => {
     });
 
     return { accessToken: newAccessToken };
-  } catch (error) {
+  } catch {
     // JWT 만료 또는 서명 오류 등
     throw new UnauthorizedError('유효하지 않거나 만료된 Refresh Token입니다.');
   }
@@ -102,7 +102,7 @@ export const getUserMe = async (userId) => {
   }
 
   // 비밀번호와 refresh_token은 응답에서 제외
-  const { password, refresh_token, ...userInfo } = user;
+  const { password: _, refresh_token: __, ...userInfo } = user;
   return userInfo;
 };
 
@@ -127,7 +127,7 @@ export const updateUserMe = async (userId, updateData) => {
 
   // 업데이트된 사용자 정보 조회
   const updatedUser = await userRepository.findUserById(userId);
-  const { password, refresh_token, ...userInfo } = updatedUser;
+  const { password: _, refresh_token: __, ...userInfo } = updatedUser;
   
   return userInfo;
 };

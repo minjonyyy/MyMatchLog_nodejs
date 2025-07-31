@@ -1,7 +1,7 @@
 import { errorResponse } from '../utils/response.util.js';
 import BaseError from '../errors/base.error.js';
 
-const errorMiddleware = (err, req, res, next) => {
+const errorMiddleware = (err, req, res, _next) => {
   console.error(err);
 
   if (err instanceof BaseError) {

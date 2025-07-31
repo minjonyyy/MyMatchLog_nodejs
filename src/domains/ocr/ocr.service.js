@@ -1,4 +1,3 @@
-import BaseError from '../../errors/base.error.js';
 import { findAllTeams } from '../teams/team.repository.js';
 import { findAllStadiums } from '../stadiums/stadium.repository.js';
 
