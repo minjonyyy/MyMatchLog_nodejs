@@ -1,4 +1,22 @@
-import pool from '../config/database.js';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// 마이그레이션용 실제 데이터베이스 연결 생성
+const createMigrationPool = () => {
+  return mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'mymatchlog_dev',
+    port: process.env.DB_PORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    timezone: '+09:00', // 한국 시간대 설정
+  });
+};
 
 const migrationQueries = [
   // Drop tables if they exist to ensure a clean slate
@@ -74,7 +92,9 @@ const migrationQueries = [
 
 const runMigrations = async () => {
   let connection;
+  let pool;
   try {
+    pool = createMigrationPool();
     connection = await pool.getConnection();
     console.log('🚀 Starting database migrations...');
 
@@ -87,11 +107,14 @@ const runMigrations = async () => {
     console.log('🎉 Database migrations completed successfully.');
   } catch (err) {
     console.error('❌ Error during migration:', err);
+    process.exit(1);
   } finally {
     if (connection) {
       connection.release();
     }
-    pool.end();
+    if (pool) {
+      await pool.end();
+    }
   }
 };
 

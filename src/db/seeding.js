@@ -1,4 +1,22 @@
-import pool from '../config/database.js';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// 시딩용 실제 데이터베이스 연결 생성
+const createSeedingPool = () => {
+  return mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'mymatchlog_dev',
+    port: process.env.DB_PORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    timezone: '+09:00', // 한국 시간대 설정
+  });
+};
 
 const teamsData = [
   { name: 'LG 트윈스', home_stadium: '서울종합운동장 야구장' },
@@ -15,7 +33,9 @@ const teamsData = [
 
 const seedTeams = async () => {
   let connection;
+  let pool;
   try {
+    pool = createSeedingPool();
     connection = await pool.getConnection();
     console.log('🚀 Starting to seed teams data...');
 
@@ -33,11 +53,14 @@ const seedTeams = async () => {
     console.log('🎉 Teams data seeding completed successfully.');
   } catch (err) {
     console.error('❌ Error during teams data seeding:', err);
+    process.exit(1);
   } finally {
     if (connection) {
       connection.release();
     }
-    pool.end();
+    if (pool) {
+      await pool.end();
+    }
   }
 };
 
