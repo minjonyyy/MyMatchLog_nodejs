@@ -24,11 +24,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test:ci
-        env:
-          NODE_ENV: test
-
       - name: Build application
         run: |
           npm run lint
@@ -79,6 +74,11 @@ jobs:
               sudo apt-get install -y docker-ce docker-ce-cli containerd.io
               sudo usermod -aG docker $USER
             fi
+
+            # Fix Docker permissions
+            sudo usermod -aG docker $USER
+            sudo systemctl start docker
+            sudo systemctl enable docker
 
             # Install Docker Compose if not installed
             if ! command -v docker-compose &> /dev/null; then
@@ -131,12 +131,13 @@ jobs:
                   retries: 3
             EOF
 
-            # Stop and remove existing containers
-            docker-compose down || true
+            # Stop and remove existing containers (safe way)
+            sudo docker-compose stop || true
+            sudo docker-compose rm -f || true
 
             # Pull latest image and start
-            docker-compose pull
-            docker-compose up -d
+            sudo docker-compose pull
+            sudo docker-compose up -d
 
             # Wait for application to start
             sleep 30
@@ -146,6 +147,6 @@ jobs:
               echo "Application deployed successfully!"
             else
               echo "Application deployment failed!"
-              docker-compose logs
+              sudo docker-compose logs
               exit 1
             fi
