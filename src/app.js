@@ -20,16 +20,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
-  swaggerOptions: {
-    url: '/api-docs/swagger.json',
-    docExpansion: 'list',
-    filter: true,
-    showRequestHeaders: true,
-  },
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'MyMatchLog API Documentation',
-}));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(specs, {
+    swaggerOptions: {
+      url: '/api-docs/swagger.json',
+      docExpansion: 'list',
+      filter: true,
+      showRequestHeaders: true,
+    },
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'MyMatchLog API Documentation',
+  }),
+);
 
 // Swagger JSON endpoint
 app.get('/api-docs/swagger.json', (req, res) => {

@@ -4,19 +4,26 @@
   "type": "module",
   "main": "src/app.js",
   "scripts": {
-    "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest",
-    "test:watch": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --watch",
-    "test:coverage": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --coverage",
-    "test:ci": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --ci --coverage --watchAll=false",
     "start": "node src/app.js",
-    "start:dev": "nodemon src/app.js",
-    "db:migrate": "node src/db/migration.js",
-    "db:seed": "node src/db/seeding.js",
+    "dev": "nodemon src/app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "ci:test": "npm run format:check && npm run lint && npm run test:ci",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "ci:test": "npm run lint && npm run format:check && npm run test:ci"
+    "db:migrate": "node src/db/migration.js",
+    "db:seed": "node src/db/seeding.js",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md,yaml,yml}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -42,7 +49,9 @@
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "lint-staged": "^16.1.2",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "supertest": "^7.0.0"
