@@ -19,13 +19,18 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Swagger JSON endpoint (먼저 정의)
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(specs);
+});
+
 // Swagger UI
 app.use(
   '/api-docs',
   swaggerUi.serve,
   swaggerUi.setup(specs, {
     swaggerOptions: {
-      url: '/api-docs/swagger.json',
       docExpansion: 'list',
       filter: true,
       showRequestHeaders: true,
@@ -34,12 +39,6 @@ app.use(
     customSiteTitle: 'MyMatchLog API Documentation',
   }),
 );
-
-// Swagger JSON endpoint
-app.get('/api-docs/swagger.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(specs);
-});
 
 // API 라우터 적용
 app.use('/api', apiRouter);
