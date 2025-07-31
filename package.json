@@ -16,8 +16,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:migrate": "node src/db/migration.js",
-    "db:seed": "node src/db/seeding.js",
-    "prepare": "husky"
+    "db:seed": "node src/db/seeding.js"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md,yaml,yml}": [
