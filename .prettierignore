@@ -2,6 +2,9 @@
 coverage/
 *.html
 
+# Documentation
+docs/
+
 # Build outputs
 dist/
 build/
