@@ -39,12 +39,6 @@ app.use(
     customCss: '.swagger-ui .topbar { display: none }',
     customSiteTitle: 'MyMatchLog API Documentation',
     customfavIcon: '/api-docs/favicon-32x32.png',
-    customJs: [
-      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui-bundle.js',
-      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js',
-    ],
-    customCssUrl:
-      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui.css',
   }),
 );
 
