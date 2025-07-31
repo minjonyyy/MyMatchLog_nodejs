@@ -31,34 +31,121 @@ jobs:
 
       - name: Build application
         run: |
-          # 프로덕션 빌드 준비
           npm run lint
           npm run format:check
           echo "Build completed successfully"
 
-      - name: Deploy to server
-        run: |
-          echo "Deployment would happen here"
-          echo "This is a placeholder for actual deployment logic"
-          echo "You can integrate with your preferred deployment platform:"
-          echo "- AWS EC2/ECS"
-          echo "- Google Cloud Platform"
-          echo "- Azure"
-          echo "- Heroku"
-          echo "- DigitalOcean"
-          echo "- Vercel"
-          echo "- Railway"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-          # 예시: SSH를 통한 배포
-          # - name: Deploy via SSH
-          #   uses: appleboy/ssh-action@v0.1.5
-          #   with:
-          #     host: ${{ secrets.HOST }}
-          #     username: ${{ secrets.USERNAME }}
-          #     key: ${{ secrets.KEY }}
-          #     script: |
-          #       cd /path/to/app
-          #       git pull origin main
-          #       npm install
-          #       npm run db:migrate
-          #       pm2 restart app
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY_NAME }}
+          script: |
+            # Update system packages
+            sudo apt-get update
+            
+            # Install Docker if not installed
+            if ! command -v docker &> /dev/null; then
+              echo "Installing Docker..."
+              sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+              echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+              sudo apt-get update
+              sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+              sudo usermod -aG docker $USER
+            fi
+            
+            # Install Docker Compose if not installed
+            if ! command -v docker-compose &> /dev/null; then
+              echo "Installing Docker Compose..."
+              sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
+            
+            # Install Node.js and PM2 if not installed
+            if ! command -v node &> /dev/null; then
+              echo "Installing Node.js..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+            
+            if ! command -v pm2 &> /dev/null; then
+              echo "Installing PM2..."
+              sudo npm install -g pm2
+            fi
+            
+            # Create application directory
+            sudo mkdir -p /opt/mymatchlog
+            sudo chown $USER:$USER /opt/mymatchlog
+            cd /opt/mymatchlog
+            
+            # Create docker-compose.yml
+            cat > docker-compose.yml << 'EOF'
+            version: '3.8'
+            services:
+              app:
+                image: ${{ steps.build-image.outputs.image }}
+                container_name: mymatchlog-api
+                restart: unless-stopped
+                ports:
+                  - "3000:3000"
+                environment:
+                  - NODE_ENV=production
+                  - DB_HOST=${{ secrets.DB_HOST }}
+                  - DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+                  - REDIS_HOST=${{ secrets.REDIS_HOST }}
+                  - ACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }}
+                  - REFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }}
+                  - AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}
+                  - AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  - AWS_REGION=${{ secrets.AWS_REGION }}
+                healthcheck:
+                  test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+                  interval: 30s
+                  timeout: 10s
+                  retries: 3
+            EOF
+            
+            # Stop and remove existing containers
+            docker-compose down || true
+            
+            # Pull latest image and start
+            docker-compose pull
+            docker-compose up -d
+            
+            # Wait for application to start
+            sleep 30
+            
+            # Check application health
+            if curl -f http://localhost:3000/api/health; then
+              echo "Application deployed successfully!"
+            else
+              echo "Application deployment failed!"
+              docker-compose logs
+              exit 1
+            fi
