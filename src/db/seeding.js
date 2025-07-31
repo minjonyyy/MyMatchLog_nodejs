@@ -69,4 +69,4 @@ const seedTeams = async () => {
   }
 };
 
-seedTeams(); 
+seedTeams();

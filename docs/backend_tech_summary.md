@@ -8,20 +8,20 @@
 
 - **Core**: Node.js (LTS), Express.js
 - **Database**:
-    - **MySQL**: 사용자, 직관 기록 등 핵심 데이터 저장
-    - **Redis**: 이벤트 동시성 제어를 위한 분산 락, 토큰 관리, 캐싱
+  - **MySQL**: 사용자, 직관 기록 등 핵심 데이터 저장
+  - **Redis**: 이벤트 동시성 제어를 위한 분산 락, 토큰 관리, 캐싱
 - **Authentication**: JWT (JSON Web Token) 기반 인증 (Access/Refresh Token)
 - **File Storage**: AWS S3 (Multer를 통한 티켓 이미지 업로드)
 - **API Documentation**: Swagger (OpenAPI)를 사용하며, API 명세는 `src/swagger` 폴더 내의 `.yaml` 파일로 작성하여 관리합니다.
 - **Middleware**:
-    - `cors`, `helmet`을 사용한 보안 강화
-    - `dotenv`를 활용한 환경변수 관리
+  - `cors`, `helmet`을 사용한 보안 강화
+  - `dotenv`를 활용한 환경변수 관리
 - **Testing**:
-    - **Jest**: 단위 및 통합 테스트
-    - **Supertest**: E2E API 테스트
+  - **Jest**: 단위 및 통합 테스트
+  - **Supertest**: E2E API 테스트
 - **External Services**:
-    - **OCR API** (Naver Clova, Google Vision 등): 티켓 이미지 분석
-    - **Web Scraping** (Puppeteer, Cheerio): 경기 결과 데이터 수집 (필요시)
+  - **OCR API** (Naver Clova, Google Vision 등): 티켓 이미지 분석
+  - **Web Scraping** (Puppeteer, Cheerio): 경기 결과 데이터 수집 (필요시)
 
 ---
 
@@ -50,6 +50,7 @@
 
 - **Custom Error**: 모든 비즈니스 로직 상의 에러는 `BaseError`를 상속받는 커스텀 에러 클래스로 정의하여 처리합니다.
 - **성공 응답 형식**:
+
 ```json
 {
   "success": true,
@@ -60,7 +61,9 @@
   "message": "요청에 성공했습니다."
 }
 ```
+
 - **실패/에러 응답 형식**: (`05_exception_policy.md`의 에러 코드를 사용)
+
 ```json
 {
   "success": false,
@@ -121,4 +124,4 @@ src/
 - **소셜 로그인**: 사용자 편의성 증대를 위해 OAuth 2.0 기반의 소셜 로그인(Google, Kakao) 기능을 확장할 수 있습니다.
 - **캐싱 전략 고도화**: Redis를 활용하여 자주 조회되지만 변경이 적은 데이터(예: 팀 목록)에 대한 캐싱 전략을 적용하여 DB 부하를 줄입니다.
 - **모니터링**: `CloudWatch` 또는 `Sentry` 같은 외부 서비스를 연동하여 에러 로깅 및 성능 모니터링을 강화합니다.
-- **CI/CD**: `GitHub Actions`를 이용해 테스트 및 배포 자동화 파이프라인을 구축합니다. 
+- **CI/CD**: `GitHub Actions`를 이용해 테스트 및 배포 자동화 파이프라인을 구축합니다.

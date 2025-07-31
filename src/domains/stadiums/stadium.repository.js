@@ -10,7 +10,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || 'mymatchlog',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
 export const findAllStadiums = async () => {
@@ -23,19 +23,25 @@ export const findAllStadiums = async () => {
 };
 
 export const findStadiumById = async (id) => {
-  const [rows] = await pool.execute(`
+  const [rows] = await pool.execute(
+    `
     SELECT id, name, city, capacity, created_at, updated_at
     FROM stadiums
     WHERE id = ?
-  `, [id]);
+  `,
+    [id],
+  );
   return rows[0];
 };
 
 export const findStadiumByName = async (name) => {
-  const [rows] = await pool.execute(`
+  const [rows] = await pool.execute(
+    `
     SELECT id, name, city, capacity, created_at, updated_at
     FROM stadiums
     WHERE name = ?
-  `, [name]);
+  `,
+    [name],
+  );
   return rows[0];
-}; 
+};

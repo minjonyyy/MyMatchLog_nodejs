@@ -2,7 +2,7 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -48,7 +48,7 @@ jobs:
           echo "- DigitalOcean"
           echo "- Vercel"
           echo "- Railway"
-          
+
           # 예시: SSH를 통한 배포
           # - name: Deploy via SSH
           #   uses: appleboy/ssh-action@v0.1.5
@@ -61,4 +61,4 @@ jobs:
           #       git pull origin main
           #       npm install
           #       npm run db:migrate
-          #       pm2 restart app 
+          #       pm2 restart app

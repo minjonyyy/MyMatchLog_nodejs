@@ -8,6 +8,10 @@ router.get('/', eventController.getEvents);
 
 router.get('/:id', eventController.getEventById);
 
-router.post('/:id/participate', authMiddleware, eventController.participateInEvent);
+router.post(
+  '/:id/participate',
+  authMiddleware,
+  eventController.participateInEvent,
+);
 
-export default router; 
+export default router;

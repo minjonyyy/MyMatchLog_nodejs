@@ -7,18 +7,24 @@ import pool from '../../config/database.js';
  */
 export const createEvent = async (eventData) => {
   const { title, description, start_at, end_at, gift, capacity } = eventData;
-  
-  const [result] = await pool.query(`
+
+  const [result] = await pool.query(
+    `
     INSERT INTO events (title, description, start_at, end_at, gift, capacity, participant_count, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, 0, NOW(), NOW())
-  `, [title, description, start_at, end_at, gift, capacity]);
-  
-  const [event] = await pool.query(`
+  `,
+    [title, description, start_at, end_at, gift, capacity],
+  );
+
+  const [event] = await pool.query(
+    `
     SELECT id, title, description, start_at, end_at, gift, capacity, participant_count, created_at, updated_at
     FROM events
     WHERE id = ?
-  `, [result.insertId]);
-  
+  `,
+    [result.insertId],
+  );
+
   return event[0];
 };
 
@@ -28,12 +34,15 @@ export const createEvent = async (eventData) => {
  * @returns {Object|null} 이벤트 정보
  */
 export const findEventById = async (eventId) => {
-  const [rows] = await pool.query(`
+  const [rows] = await pool.query(
+    `
     SELECT id, title, description, start_at, end_at, gift, capacity, participant_count, created_at, updated_at
     FROM events
     WHERE id = ?
-  `, [eventId]);
-  
+  `,
+    [eventId],
+  );
+
   return rows[0] || null;
 };
 
@@ -43,7 +52,8 @@ export const findEventById = async (eventId) => {
  * @returns {Array} 참여자 목록
  */
 export const findEventParticipants = async (eventId) => {
-  const [rows] = await pool.query(`
+  const [rows] = await pool.query(
+    `
     SELECT 
       ep.id,
       ep.user_id,
@@ -56,7 +66,9 @@ export const findEventParticipants = async (eventId) => {
     JOIN users u ON ep.user_id = u.id
     WHERE ep.event_id = ?
     ORDER BY ep.created_at ASC
-  `, [eventId]);
-  
+  `,
+    [eventId],
+  );
+
   return rows;
-}; 
+};

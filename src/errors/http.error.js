@@ -1,7 +1,10 @@
 import BaseError from './base.error.js';
 
 export class NotFoundError extends BaseError {
-  constructor(message = 'Resource not found', code = 'COMMON_RESOURCE_NOT_FOUND') {
+  constructor(
+    message = 'Resource not found',
+    code = 'COMMON_RESOURCE_NOT_FOUND',
+  ) {
     super(message, 404, code);
   }
 }
@@ -28,4 +31,4 @@ export class ConflictError extends BaseError {
   constructor(message = 'Conflict', code = 'COMMON_CONFLICT') {
     super(message, 409, code);
   }
-} 
+}

@@ -18,9 +18,13 @@ router.post('/', uploadToS3('ticket_image'), matchLogController.createMatchLog);
 router.get('/:id', matchLogController.getMatchLogDetail);
 
 // 직관 기록 수정 (이미지 업로드 포함)
-router.patch('/:id', uploadToS3('ticket_image'), matchLogController.updateMatchLog);
+router.patch(
+  '/:id',
+  uploadToS3('ticket_image'),
+  matchLogController.updateMatchLog,
+);
 
 // 직관 기록 삭제
 router.delete('/:id', matchLogController.deleteMatchLog);
 
-export default router; 
+export default router;

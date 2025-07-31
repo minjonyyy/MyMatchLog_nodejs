@@ -9,4 +9,4 @@ router.get('/', stadiumController.getAllStadiums);
 // 경기장 상세 조회 (인증 불필요)
 router.get('/:id', stadiumController.getStadiumById);
 
-export default router; 
+export default router;

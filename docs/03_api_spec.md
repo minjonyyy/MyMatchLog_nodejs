@@ -7,11 +7,13 @@
 ## 🏟️ 공통 (Common)
 
 ### 1. 팀 목록 조회
+
 - **URL**: `GET /api/teams`
 - **설명**: KBO 리그의 모든 팀 목록을 조회합니다. 사용자가 응원팀을 선택할 때 사용됩니다.
 - **인증**: 불필요
 - **요청 본문**: 없음
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -42,15 +44,18 @@
   "message": "팀 목록 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
 
 ### 2. 경기장 목록 조회
+
 - **URL**: `GET /api/stadiums`
 - **설명**: KBO 리그의 모든 경기장 목록을 조회합니다.
 - **인증**: 불필요
 - **요청 본문**: 없음
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -77,6 +82,7 @@
   "message": "경기장 목록 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
 
@@ -85,13 +91,15 @@
 ## 👤 사용자 (Users)
 
 ### 1. 사용자 회원가입
+
 - **URL**: `POST /api/users/signup`
 - **설명**: 새로운 사용자를 시스템에 등록합니다.
 - **인증**: 불필요
 - **요청 본문 (Request Body)**: `application/json`
   - `email` (string, required): 유효한 이메일 형식이어야 합니다.
-  - `password` (string, required): 최소 8자 이상이며, 대/소문자, 숫자, 특수문자(@$!%*?&)를 모두 포함해야 합니다.
+  - `password` (string, required): 최소 8자 이상이며, 대/소문자, 숫자, 특수문자(@$!%\*?&)를 모두 포함해야 합니다.
   - `nickname` (string, required): 중복되지 않는 닉네임이어야 합니다.
+
 ```json
 {
   "email": "mymatchlog@example.com",
@@ -99,7 +107,9 @@
   "nickname": "야구팬"
 }
 ```
+
 - **응답 (Response)**: `201 CREATED`
+
 ```json
 {
   "success": true,
@@ -109,6 +119,7 @@
   "message": "회원가입이 완료되었습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `201 CREATED`: 성공
   - `400 BAD REQUEST`: 입력값 유효성 검사 실패
@@ -116,17 +127,21 @@
   - `409 CONFLICT`: 닉네임 중복 (`USER_NICKNAME_DUPLICATE`)
 
 ### 2. 사용자 로그인
+
 - **URL**: `POST /api/users/login`
 - **설명**: 이메일과 비밀번호로 로그인하고 JWT를 발급받습니다.
 - **인증**: 불필요
 - **요청 본문 (Request Body)**: `application/json`
+
 ```json
 {
   "email": "mymatchlog@example.com",
   "password": "password123!"
 }
 ```
+
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -137,23 +152,28 @@
   "message": "로그인에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 비밀번호 불일치 (`USER_PASSWORD_MISMATCH`)
   - `404 NOT FOUND`: 존재하지 않는 사용자 (`USER_NOT_FOUND`)
 
 ### 3. 내 정보 수정 (닉네임, 응원팀)
+
 - **URL**: `PATCH /api/users/me`
 - **설명**: 현재 로그인된 사용자의 정보(닉네임, 응원팀)를 수정합니다. 두 필드 모두 선택적으로 전송할 수 있습니다.
 - **인증**: 필요 (Bearer Token)
 - **요청 본문 (Request Body)**: `application/json`
+
 ```json
 {
   "nickname": "열혈야구팬",
   "favorite_team_id": 1
 }
 ```
+
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -166,6 +186,7 @@
   "message": "사용자 정보가 성공적으로 업데이트되었습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `400 BAD REQUEST`: 유효하지 않은 `favorite_team_id`
@@ -173,11 +194,13 @@
   - `409 CONFLICT`: 닉네임이 이미 존재함
 
 ### 4. 내 정보 조회
+
 - **URL**: `GET /api/users/me`
 - **설명**: 현재 로그인된 사용자의 정보를 조회합니다.
 - **인증**: 필요 (Bearer Token)
 - **요청 본문**: 없음
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -194,21 +217,26 @@
   "message": "내 정보 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 인증 실패
 
 ### 5. Access Token 갱신
+
 - **URL**: `POST /api/users/token`
 - **설명**: 유효한 Refresh Token을 사용하여 만료된 Access Token을 갱신합니다.
 - **인증**: 불필요
 - **요청 본문 (Request Body)**: `application/json`
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
+
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -218,6 +246,7 @@
   "message": "Access Token이 성공적으로 갱신되었습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 유효하지 않거나 만료된 Refresh Token
@@ -227,6 +256,7 @@
 ## ⚾ 직관 기록 (Match Logs)
 
 ### 1. 직관 기록 생성
+
 - **URL**: `POST /api/match-logs`
 - **설명**: 새로운 직관 기록을 생성합니다. 티켓 이미지를 포함할 수 있습니다.
 - **인증**: 필요 (Bearer Token)
@@ -239,6 +269,7 @@
   - `memo` (String, Optional): `꿀잼 경기!`
   - `ticket_image` (File, Optional): 티켓 이미지 파일 (jpg, png, jpeg 지원)
 - **응답 (Response)**: `201 CREATED`
+
 ```json
 {
   "success": true,
@@ -248,12 +279,14 @@
   "message": "직관 기록이 성공적으로 등록되었습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `201 CREATED`: 성공
   - `400 BAD REQUEST`: 필수 입력값 누락
   - `401 UNAUTHORIZED`: 인증 실패
 
 ### 2. 내 직관 기록 목록 조회
+
 - **URL**: `GET /api/match-logs`
 - **설명**: 현재 로그인된 사용자의 직관 기록 목록을 페이지네이션과 함께 조회합니다.
 - **인증**: 필요 (Bearer Token)
@@ -261,6 +294,7 @@
   - `page` (Integer, Optional): 페이지 번호 (기본값: 1)
   - `limit` (Integer, Optional): 페이지당 항목 수 (기본값: 10, 최대: 50)
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -301,17 +335,20 @@
   "message": "직관 기록 목록 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 인증 실패
 
 ### 3. 직관 기록 상세 조회
+
 - **URL**: `GET /api/match-logs/:id`
 - **설명**: 지정된 ID의 직관 기록 상세 정보를 조회합니다. 본인의 기록만 조회 가능합니다.
 - **인증**: 필요 (Bearer Token)
 - **Path Parameters**:
   - `id` (Integer, required): 직관 기록 ID
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -343,6 +380,7 @@
   "message": "직관 기록 상세 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 인증 실패
@@ -350,6 +388,7 @@
   - `404 NOT FOUND`: 존재하지 않는 직관 기록
 
 ### 4. 직관 기록 수정
+
 - **URL**: `PATCH /api/match-logs/:id`
 - **설명**: 지정된 ID의 직관 기록을 수정합니다. 본인의 기록만 수정 가능합니다.
 - **인증**: 필요 (Bearer Token)
@@ -364,6 +403,7 @@
   - `memo` (String, Optional): `아쉬운 경기였지만 재미있었어요!`
   - `ticket_image` (File, Optional): 새로운 티켓 이미지 파일 (jpg, png, jpeg 지원)
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -395,6 +435,7 @@
   "message": "직관 기록이 성공적으로 수정되었습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `400 BAD REQUEST`: 유효하지 않은 입력값 (같은 팀 ID, 존재하지 않는 팀 등)
@@ -403,6 +444,7 @@
   - `404 NOT FOUND`: 존재하지 않는 직관 기록
 
 ### 5. 직관 기록 삭제
+
 - **URL**: `DELETE /api/match-logs/:id`
 - **설명**: 지정된 ID의 직관 기록을 삭제합니다. 본인의 기록만 삭제 가능합니다.
 - **인증**: 필요 (Bearer Token)
@@ -410,6 +452,7 @@
   - `id` (Integer, required): 직관 기록 ID
 - **요청 본문**: 없음
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -417,6 +460,7 @@
   "message": "직관 기록이 성공적으로 삭제되었습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 인증 실패
@@ -428,12 +472,14 @@
 ## 🔍 OCR (Optical Character Recognition)
 
 ### 1. 티켓 OCR 정보 추출
+
 - **URL**: `POST /api/ocr/parse-ticket`
 - **설명**: 업로드된 티켓 이미지에서 OCR을 통해 경기 정보를 자동 추출합니다.
 - **인증**: 필요 (Bearer Token)
 - **요청 본문 (Request Body)**: `multipart/form-data`
   - `ticket_image` (File, required): 티켓 이미지 파일 (jpg, png, jpeg 지원)
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -449,7 +495,9 @@
   "message": "티켓 정보 추출에 성공했습니다."
 }
 ```
+
 - **응답 (OCR 실패 시)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -460,6 +508,7 @@
   "message": "티켓 정보 추출을 완료했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공 (OCR 성공/실패 관계없이)
   - `400 BAD REQUEST`: 지원하지 않는 파일 형식
@@ -471,11 +520,13 @@
 ## 🎉 이벤트 (Events)
 
 ### 1. 진행 중인 이벤트 목록 조회
+
 - **URL**: `GET /api/events`
 - **설명**: 현재 진행 중인 이벤트 목록을 조회합니다.
 - **인증**: 불필요
 - **요청 본문**: 없음
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -510,16 +561,19 @@
   "message": "진행 중인 이벤트 목록 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
 
 ### 2. 이벤트 상세 조회
+
 - **URL**: `GET /api/events/:id`
 - **설명**: 지정된 ID의 이벤트 상세 정보를 조회합니다.
 - **인증**: 불필요
 - **Path Parameters**:
   - `id` (Integer, required): 이벤트 ID
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -540,11 +594,13 @@
   "message": "이벤트 상세 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `404 NOT FOUND`: 존재하지 않는 이벤트
 
 ### 3. 이벤트 선착순 참여
+
 - **URL**: `POST /api/events/:id/participate`
 - **설명**: 지정된 ID의 이벤트에 선착순으로 참여를 신청합니다. 동시성 제어가 필수적입니다.
 - **인증**: 필요 (Bearer Token)
@@ -552,6 +608,7 @@
   - `id` (Integer, required): 이벤트 ID
 - **요청 본문 (Request Body)**: 없음
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -561,6 +618,7 @@
   "message": "이벤트 참여 신청이 완료되었습니다. 결과를 기다려주세요."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 인증 실패
@@ -575,10 +633,12 @@
 ## 👑 관리자 (Admin)
 
 ### 1. 이벤트 생성
+
 - **URL**: `POST /api/admin/events`
 - **설명**: 새로운 이벤트를 생성합니다. 관리자 권한이 필요합니다.
 - **인증**: 필요 (Bearer Token)
 - **요청 본문 (Request Body)**: `application/json`
+
 ```json
 {
   "title": "야구 직관 이벤트",
@@ -589,7 +649,9 @@
   "capacity": 100
 }
 ```
+
 - **응답 (Response)**: `201 CREATED`
+
 ```json
 {
   "success": true,
@@ -610,6 +672,7 @@
   "message": "이벤트가 성공적으로 생성되었습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `201 CREATED`: 성공
   - `400 BAD REQUEST`: 유효하지 않은 입력값
@@ -617,12 +680,14 @@
   - `403 FORBIDDEN`: 관리자 권한 없음
 
 ### 2. 이벤트 참여자 목록 조회
+
 - **URL**: `GET /api/admin/events/:id/participants`
 - **설명**: 지정된 이벤트의 참여자 목록을 조회합니다. 관리자 권한이 필요합니다.
 - **인증**: 필요 (Bearer Token)
 - **Path Parameters**:
   - `id` (Integer, required): 이벤트 ID
 - **응답 (Response)**: `200 OK`
+
 ```json
 {
   "success": true,
@@ -655,8 +720,9 @@
   "message": "이벤트 참여자 목록 조회에 성공했습니다."
 }
 ```
+
 - **주요 상태 코드**:
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 인증 실패
   - `403 FORBIDDEN`: 관리자 권한 없음
-  - `404 NOT FOUND`: 존재하지 않는 이벤트 
+  - `404 NOT FOUND`: 존재하지 않는 이벤트

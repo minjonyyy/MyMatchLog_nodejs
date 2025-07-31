@@ -10,8 +10,8 @@ if (process.env.NODE_ENV === 'test') {
   // 테스트 환경에서는 Mock Pool 생성
   pool = {
     getConnection: async () => ({
-      release: () => {}
-    })
+      release: () => {},
+    }),
   };
 } else {
   pool = mysql.createPool({
@@ -39,4 +39,4 @@ export const testConnection = async () => {
   }
 };
 
-export default pool; 
+export default pool;

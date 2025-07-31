@@ -7,16 +7,18 @@ export const findAllTeams = async () => {
     LEFT JOIN stadiums s ON t.stadium_id = s.id
     ORDER BY t.id ASC
   `);
-  
+
   // 데이터 구조 변환
-  return rows.map(row => ({
+  return rows.map((row) => ({
     id: row.id,
     name: row.name,
     logo_url: row.logo_url,
-    stadium: row.stadium_id ? {
-      id: row.stadium_id,
-      name: row.stadium_name,
-      city: row.stadium_city
-    } : null
+    stadium: row.stadium_id
+      ? {
+          id: row.stadium_id,
+          name: row.stadium_name,
+          city: row.stadium_city,
+        }
+      : null,
   }));
-}; 
+};

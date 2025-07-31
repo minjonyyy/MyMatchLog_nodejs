@@ -8,4 +8,4 @@ export const getAllTeams = async (req, res) => {
   } catch (error) {
     return errorResponse(res, error);
   }
-}; 
+};

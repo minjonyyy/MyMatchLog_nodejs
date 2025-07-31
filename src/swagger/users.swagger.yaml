@@ -66,7 +66,7 @@ paths:
               properties:
                 refreshToken:
                   type: string
-                  description: "로그인 시 발급받은 Refresh Token"
+                  description: '로그인 시 발급받은 Refresh Token'
       responses:
         '200':
           description: Access Token 갱신 성공
@@ -95,14 +95,14 @@ components:
         email:
           type: string
           format: email
-          example: "test@example.com"
+          example: 'test@example.com'
         password:
           type: string
-          description: "최소 8자, 대/소문자, 숫자, 특수문자(@$!%*?&) 포함"
-          example: "Password123!"
+          description: '최소 8자, 대/소문자, 숫자, 특수문자(@$!%*?&) 포함'
+          example: 'Password123!'
         nickname:
           type: string
-          example: "테스트유저"
+          example: '테스트유저'
 
     UserLoginRequest:
       type: object
@@ -113,10 +113,10 @@ components:
         email:
           type: string
           format: email
-          example: "test@example.com"
+          example: 'test@example.com'
         password:
           type: string
-          example: "Password123!"
+          example: 'Password123!'
 
     LoginResponse:
       type: object
@@ -138,30 +138,30 @@ components:
           type: string
           format: date
           description: 경기 날짜
-          example: "2024-07-20"
+          example: '2024-07-20'
         home_team:
           type: string
           description: 홈팀
-          example: "LG 트윈스"
+          example: 'LG 트윈스'
         away_team:
           type: string
           description: 원정팀
-          example: "두산 베어스"
+          example: '두산 베어스'
         stadium:
           type: string
           description: 경기장
-          example: "잠실야구장"
+          example: '잠실야구장'
         result:
           type: string
           nullable: true
           enum: [WIN, LOSS, DRAW]
           description: 경기 결과
-          example: "WIN"
+          example: 'WIN'
         memo:
           type: string
           nullable: true
           description: 개인 메모
-          example: "정말 재미있는 경기였습니다!"
+          example: '정말 재미있는 경기였습니다!'
         ticket_image_url:
           type: string
           nullable: true
@@ -191,30 +191,30 @@ components:
           type: string
           format: date
           description: 경기 날짜
-          example: "2024-07-20"
+          example: '2024-07-20'
         home_team:
           type: string
           description: 홈팀
-          example: "LG 트윈스"
+          example: 'LG 트윈스'
         away_team:
           type: string
           description: 원정팀
-          example: "두산 베어스"
+          example: '두산 베어스'
         stadium:
           type: string
           description: 경기장
-          example: "잠실야구장"
+          example: '잠실야구장'
         result:
           type: string
           nullable: true
           enum: [WIN, LOSS, DRAW]
           description: 경기 결과
-          example: "WIN"
+          example: 'WIN'
         memo:
           type: string
           nullable: true
           description: 개인 메모
-          example: "정말 재미있는 경기였습니다!"
+          example: '정말 재미있는 경기였습니다!'
         ticket_image_url:
           type: string
           nullable: true
@@ -241,7 +241,7 @@ components:
           type: string
           format: date
           description: 경기 날짜
-          example: "2024-07-20"
+          example: '2024-07-20'
         home_team_id:
           type: integer
           description: 홈팀 ID (teams 테이블 참조)
@@ -253,18 +253,18 @@ components:
         stadium:
           type: string
           description: 경기장
-          example: "잠실야구장"
+          example: '잠실야구장'
         result:
           type: string
           nullable: true
           enum: [WIN, LOSS, DRAW]
           description: 경기 결과 (선택사항)
-          example: "WIN"
+          example: 'WIN'
         memo:
           type: string
           nullable: true
           description: 개인 메모 (선택사항)
-          example: "정말 재미있는 경기였습니다!"
+          example: '정말 재미있는 경기였습니다!'
         ticket_image:
           type: string
           format: binary
@@ -279,7 +279,7 @@ components:
           type: string
           format: date
           description: 경기 날짜
-          example: "2024-07-20"
+          example: '2024-07-20'
         home_team_id:
           type: integer
           description: 홈팀 ID (teams 테이블 참조)
@@ -291,18 +291,18 @@ components:
         stadium:
           type: string
           description: 경기장
-          example: "잠실야구장"
+          example: '잠실야구장'
         result:
           type: string
           nullable: true
           enum: [WIN, LOSS, DRAW]
           description: 경기 결과
-          example: "WIN"
+          example: 'WIN'
         memo:
           type: string
           nullable: true
           description: 개인 메모
-          example: "수정된 메모입니다."
+          example: '수정된 메모입니다.'
         ticket_image_url:
           type: string
           nullable: true
@@ -337,7 +337,7 @@ components:
           description: 페이지 당 항목 수
           example: 10
 
-    # Team Schema  
+    # Team Schema
     Team:
       type: object
       properties:
@@ -348,16 +348,16 @@ components:
         name:
           type: string
           description: 팀 이름
-          example: "LG 트윈스"
+          example: 'LG 트윈스'
         logo_url:
           type: string
           nullable: true
           description: 팀 로고 이미지 URL
-          example: "https://example.com/lg-logo.png"
+          example: 'https://example.com/lg-logo.png'
         home_stadium:
           type: string
           description: 홈구장 이름
-          example: "서울종합운동장 야구장"
+          example: '서울종합운동장 야구장'
 
     # Stadium Schema
     Stadium:
@@ -370,11 +370,11 @@ components:
         name:
           type: string
           description: 경기장 이름
-          example: "잠실야구장"
+          example: '잠실야구장'
         city:
           type: string
           description: 도시
-          example: "서울"
+          example: '서울'
         capacity:
           type: integer
           description: 수용 인원
@@ -383,9 +383,9 @@ components:
           type: string
           format: date-time
           description: 생성 일시
-          example: "2024-01-01T00:00:00.000Z"
+          example: '2024-01-01T00:00:00.000Z'
         updated_at:
           type: string
           format: date-time
           description: 수정 일시
-          example: "2024-01-01T00:00:00.000Z" 
+          example: '2024-01-01T00:00:00.000Z'

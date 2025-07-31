@@ -6,7 +6,11 @@ export const successResponse = (res, data, message = 'Request successful') => {
   });
 };
 
-export const createdResponse = (res, data, message = 'Resource created successfully') => {
+export const createdResponse = (
+  res,
+  data,
+  message = 'Resource created successfully',
+) => {
   return res.status(201).json({
     success: true,
     data,
@@ -24,4 +28,4 @@ export const errorResponse = (res, error) => {
     },
     timestamp: new Date().toISOString(),
   });
-}; 
+};

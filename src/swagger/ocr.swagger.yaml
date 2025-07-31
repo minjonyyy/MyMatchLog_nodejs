@@ -28,7 +28,7 @@ paths:
                   type: string
                   format: binary
                   description: 티켓 이미지 파일 (jpg, png, jpeg 지원)
-                  example: "ticket.jpg"
+                  example: 'ticket.jpg'
       responses:
         '200':
           description: OCR 처리 성공
@@ -50,7 +50,7 @@ paths:
                             type: string
                             format: date
                             description: 경기 날짜
-                            example: "2024-07-21"
+                            example: '2024-07-21'
                           stadium:
                             type: object
                             description: 경기장 정보 (매칭 성공 시)
@@ -60,10 +60,10 @@ paths:
                                 example: 1
                               name:
                                 type: string
-                                example: "잠실야구장"
+                                example: '잠실야구장'
                               city:
                                 type: string
-                                example: "서울"
+                                example: '서울'
                           home_team:
                             type: object
                             description: 홈팀 정보 (매칭 성공 시)
@@ -73,7 +73,7 @@ paths:
                                 example: 1
                               name:
                                 type: string
-                                example: "LG 트윈스"
+                                example: 'LG 트윈스'
                           away_team:
                             type: object
                             description: 원정팀 정보 (매칭 성공 시)
@@ -83,7 +83,7 @@ paths:
                                 example: 2
                               name:
                                 type: string
-                                example: "두산 베어스"
+                                example: '두산 베어스'
                           confidence:
                             type: number
                             format: float
@@ -92,18 +92,18 @@ paths:
                           stadium_text:
                             type: string
                             description: 원본 경기장 텍스트 (매칭 실패 시)
-                            example: "잠실구장"
+                            example: '잠실구장'
                           home_team_text:
                             type: string
                             description: 원본 홈팀 텍스트 (매칭 실패 시)
-                            example: "LG"
+                            example: 'LG'
                           away_team_text:
                             type: string
                             description: 원본 원정팀 텍스트 (매칭 실패 시)
-                            example: "두산"
+                            example: '두산'
                   message:
                     type: string
-                    example: "티켓 정보 추출을 완료했습니다."
+                    example: '티켓 정보 추출을 완료했습니다.'
               examples:
                 success:
                   summary: OCR 성공
@@ -111,44 +111,44 @@ paths:
                     success: true
                     data:
                       extractedInfo:
-                        match_date: "2024-07-21"
+                        match_date: '2024-07-21'
                         stadium:
                           id: 1
-                          name: "잠실야구장"
-                          city: "서울"
+                          name: '잠실야구장'
+                          city: '서울'
                         home_team:
                           id: 1
-                          name: "LG 트윈스"
+                          name: 'LG 트윈스'
                         away_team:
                           id: 2
-                          name: "두산 베어스"
+                          name: '두산 베어스'
                         confidence: 0.85
-                    message: "티켓 정보 추출을 완료했습니다."
+                    message: '티켓 정보 추출을 완료했습니다.'
                 partial_success:
                   summary: 부분 매칭 성공
                   value:
                     success: true
                     data:
                       extractedInfo:
-                        match_date: "2024-07-21"
+                        match_date: '2024-07-21'
                         stadium:
                           id: 1
-                          name: "잠실야구장"
-                          city: "서울"
+                          name: '잠실야구장'
+                          city: '서울'
                         home_team:
                           id: 1
-                          name: "LG 트윈스"
-                        away_team_text: "두산"
+                          name: 'LG 트윈스'
+                        away_team_text: '두산'
                         confidence: 0.75
-                    message: "티켓 정보 추출을 완료했습니다."
+                    message: '티켓 정보 추출을 완료했습니다.'
                 no_match:
                   summary: 매칭 실패
                   value:
                     success: true
                     data:
                       extractedInfo: null
-                      error: "티켓 정보를 인식할 수 없습니다."
-                    message: "티켓 정보 추출을 완료했습니다."
+                      error: '티켓 정보를 인식할 수 없습니다.'
+                    message: '티켓 정보 추출을 완료했습니다.'
         '400':
           description: 잘못된 요청
           content:
@@ -161,9 +161,9 @@ paths:
                   value:
                     success: false
                     error:
-                      code: "COMMON_INVALID_INPUT"
-                      message: "티켓 이미지 파일이 필요합니다."
-                    timestamp: "2024-07-21T10:30:00Z"
+                      code: 'COMMON_INVALID_INPUT'
+                      message: '티켓 이미지 파일이 필요합니다.'
+                    timestamp: '2024-07-21T10:30:00Z'
         '401':
           description: 인증 실패
           content:
@@ -196,16 +196,16 @@ components:
           properties:
             code:
               type: string
-              example: "SERVER_OCR_ERROR"
+              example: 'SERVER_OCR_ERROR'
             message:
               type: string
-              example: "OCR 서비스 처리 중 오류가 발생했습니다."
+              example: 'OCR 서비스 처리 중 오류가 발생했습니다.'
         timestamp:
           type: string
           format: date-time
-          example: "2024-07-21T10:30:00Z"
+          example: '2024-07-21T10:30:00Z'
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT 
+      bearerFormat: JWT

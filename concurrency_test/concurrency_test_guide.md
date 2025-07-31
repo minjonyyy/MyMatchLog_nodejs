@@ -20,6 +20,7 @@ concurrency_test/
 ## 🚀 테스트 실행 방법
 
 ### 1. 모든 테스트 순차 실행
+
 ```bash
 chmod +x concurrency_test/run_all_tests.sh
 ./concurrency_test/run_all_tests.sh
@@ -28,18 +29,21 @@ chmod +x concurrency_test/run_all_tests.sh
 ### 2. 개별 테스트 실행
 
 #### 간단한 동시성 테스트 (10명)
+
 ```bash
 chmod +x concurrency_test/simple_concurrency_test.sh
 ./concurrency_test/simple_concurrency_test.sh
 ```
 
 #### 재시도 로직 포함 테스트 (10명)
+
 ```bash
 chmod +x concurrency_test/retry_concurrency_test.sh
 ./concurrency_test/retry_concurrency_test.sh
 ```
 
 #### 대규모 동시성 테스트 (100명)
+
 ```bash
 chmod +x concurrency_test/concurrency_test.sh
 ./concurrency_test/concurrency_test.sh
@@ -48,12 +52,14 @@ chmod +x concurrency_test/concurrency_test.sh
 ## 📊 테스트 시나리오
 
 ### 1. Simple Concurrency Test
+
 - **목적**: 기본적인 동시성 제어 테스트
 - **참여자**: 10명
 - **정원**: 3명
 - **예상 결과**: 정확히 3명만 성공, 나머지는 정원 마감
 
 ### 2. Retry Concurrency Test
+
 - **목적**: 재시도 로직이 포함된 동시성 제어 테스트
 - **참여자**: 10명
 - **정원**: 3명
@@ -61,6 +67,7 @@ chmod +x concurrency_test/concurrency_test.sh
 - **예상 결과**: 정확히 3명 성공, 나머지는 재시도 후 정원 마감
 
 ### 3. Large Scale Concurrency Test
+
 - **목적**: 대규모 동시성 제어 테스트
 - **참여자**: 100명
 - **정원**: 3명
@@ -114,6 +121,7 @@ docker exec -it mymatchlog_redis redis-cli -a redispassword
 ## 📝 테스트 결과 예시
 
 ### 성공적인 테스트 결과
+
 ```
 🚀 재시도 동시성 테스트 시작 - 10명이 동시에 이벤트 참여 (재시도 포함)
 이벤트 ID: 2
@@ -133,4 +141,4 @@ docker exec -it mymatchlog_redis redis-cli -a redispassword
 총 요청: 10명
 ```
 
-이 결과는 Redis 분산 락과 트랜잭션이 완벽하게 작동하여 정확히 3명만 성공했음을 보여줍니다. 
+이 결과는 Redis 분산 락과 트랜잭션이 완벽하게 작동하여 정확히 3명만 성공했음을 보여줍니다.

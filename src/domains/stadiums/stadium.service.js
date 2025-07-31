@@ -10,7 +10,7 @@ export const getStadiumById = async (id) => {
     throw {
       statusCode: 404,
       code: 'STADIUM_NOT_FOUND',
-      message: '존재하지 않는 경기장입니다.'
+      message: '존재하지 않는 경기장입니다.',
     };
   }
   return stadium;
@@ -22,8 +22,8 @@ export const validateStadiumExists = async (stadiumId) => {
     throw {
       statusCode: 400,
       code: 'STADIUM_NOT_FOUND',
-      message: '존재하지 않는 경기장입니다.'
+      message: '존재하지 않는 경기장입니다.',
     };
   }
   return stadium;
-}; 
+};

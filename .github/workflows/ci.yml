@@ -2,16 +2,16 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   # 코드 품질 검사 및 테스트
   test:
     name: Test and Quality Check
     runs-on: ubuntu-latest
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -26,7 +26,7 @@ jobs:
           --health-retries 5
         ports:
           - 3306:3306
-      
+
       redis:
         image: redis:latest
         options: >-
@@ -68,7 +68,7 @@ jobs:
             sleep 1
           done
           echo "MySQL is ready!"
-          
+
           echo "Waiting for Redis..."
           for i in {1..30}; do
             mysqladmin ping -h"127.0.0.1" -P"3306" --silent && break
@@ -110,7 +110,7 @@ jobs:
     name: Docker Build and Test
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -126,10 +126,10 @@ jobs:
           # Docker 컨테이너가 정상적으로 시작되는지 테스트
           docker run -d --name test-container -p 3001:3000 mymatchlog-api
           sleep 10
-          
+
           # 헬스체크
           curl -f http://localhost:3001/api/health || exit 1
-          
+
           # 컨테이너 정리
           docker stop test-container
           docker rm test-container
@@ -139,7 +139,7 @@ jobs:
     name: Security Check
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -161,7 +161,7 @@ jobs:
     name: Build Verification
     runs-on: ubuntu-latest
     needs: [test, security]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -179,4 +179,4 @@ jobs:
         run: |
           # 앱이 정상적으로 시작되는지 확인
           timeout 10s npm start || true
-          echo "Build verification completed" 
+          echo "Build verification completed"

@@ -7,10 +7,10 @@
 
 ## 📁 생성될 문서 목록 (총 5종)
 
-1. `01_backend_requirements.md` - 백엔드 기능 요구사항 정의서  
-2. `02_db_schema.md` - 데이터베이스 테이블 및 관계 설계  
-3. `03_api_spec.md` - REST API 명세서  
-4. `04_architecture.md` - 시스템 아키텍처 개요  
+1. `01_backend_requirements.md` - 백엔드 기능 요구사항 정의서
+2. `02_db_schema.md` - 데이터베이스 테이블 및 관계 설계
+3. `03_api_spec.md` - REST API 명세서
+4. `04_architecture.md` - 시스템 아키텍처 개요
 5. `05_exception_policy.md` - 예외 처리 및 에러 코드 정책
 
 ---
@@ -19,10 +19,10 @@
 
 기능 단위를 기준으로 API 중심의 요구사항을 정의합니다.
 
-| ID | 기능 설명 | 우선순위 | 관련 API |
-|----|----------|----------|----------|
-| BE-001 | 사용자 회원가입 | 높음 | POST /api/users/signup |
-| BE-002 | 로그인 | 높음 | POST /api/users/login |
+| ID     | 기능 설명       | 우선순위 | 관련 API               |
+| ------ | --------------- | -------- | ---------------------- |
+| BE-001 | 사용자 회원가입 | 높음     | POST /api/users/signup |
+| BE-002 | 로그인          | 높음     | POST /api/users/login  |
 
 ---
 
@@ -33,13 +33,14 @@
 ### 예시:
 
 ### 테이블명: users
+
 - 설명: 사용자 정보 테이블
 
-| 컬럼명 | 타입 | 제약조건 |
-|--------|------|-----------|
-| id | BIGINT | PK, Auto Increment |
-| email | VARCHAR(255) | UNIQUE, NOT NULL |
-| password | VARCHAR(255) | NOT NULL |
+| 컬럼명   | 타입         | 제약조건           |
+| -------- | ------------ | ------------------ |
+| id       | BIGINT       | PK, Auto Increment |
+| email    | VARCHAR(255) | UNIQUE, NOT NULL   |
+| password | VARCHAR(255) | NOT NULL           |
 
 - 관계: posts.user_id → users.id (1:N)
 
@@ -53,22 +54,26 @@
 
 ### 사용자 로그인 API
 
-- URL: POST /api/users/login  
-- 인증: 불필요  
+- URL: POST /api/users/login
+- 인증: 불필요
 - 요청 예시:
+
 ```json
 {
   "email": "test@example.com",
   "password": "1234"
 }
 ```
+
 - 응답 예시:
+
 ```json
 {
   "accessToken": "eyJhbGciOi...",
   "userId": 1
 }
 ```
+
 - 상태 코드:
   - 200 OK: 로그인 성공
   - 401 UNAUTHORIZED: 비밀번호 불일치
@@ -94,10 +99,10 @@
 
 ### 예시:
 
-| 코드 | 설명 | 상태코드 |
-|------|------|-----------|
-| USER_DUPLICATE_EMAIL | 이미 등록된 이메일입니다. | 400 |
-| AUTH_TOKEN_EXPIRED | 토큰이 만료되었습니다. | 401 |
+| 코드                 | 설명                      | 상태코드 |
+| -------------------- | ------------------------- | -------- |
+| USER_DUPLICATE_EMAIL | 이미 등록된 이메일입니다. | 400      |
+| AUTH_TOKEN_EXPIRED   | 토큰이 만료되었습니다.    | 401      |
 
 ```json
 {

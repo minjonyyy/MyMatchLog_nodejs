@@ -2,7 +2,7 @@ name: Deploy to AWS
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 env:
@@ -13,7 +13,7 @@ jobs:
     name: Deploy to AWS
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,7 +64,7 @@ jobs:
 
       # AWS EC2 배포 (대안)
       - name: Deploy to EC2
-        if: false  # 필요시 true로 변경
+        if: false # 필요시 true로 변경
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -75,4 +75,4 @@ jobs:
             git pull origin main
             npm install --production
             npm run db:migrate
-            pm2 restart ecosystem.config.js --env production 
+            pm2 restart ecosystem.config.js --env production

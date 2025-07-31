@@ -1,4 +1,8 @@
-import { NotFoundError, ConflictError, BadRequestError } from '../../errors/http.error.js';
+import {
+  NotFoundError,
+  ConflictError,
+  BadRequestError,
+} from '../../errors/http.error.js';
 import * as eventRepository from './event.repository.js';
 import redisClient from '../../config/redis.js';
 
@@ -19,7 +23,10 @@ export const getActiveEvents = async () => {
 export const getEventById = async (eventId) => {
   const event = await eventRepository.findEventById(eventId);
   if (!event) {
-    throw new NotFoundError('해당 이벤트를 찾을 수 없습니다.', 'EVENT_NOT_FOUND');
+    throw new NotFoundError(
+      '해당 이벤트를 찾을 수 없습니다.',
+      'EVENT_NOT_FOUND',
+    );
   }
   return event;
 };
@@ -39,35 +46,58 @@ export const participateInEvent = async (eventId, userId) => {
     // 1. 이벤트 존재 여부 및 참여 가능 여부 확인
     const event = await eventRepository.findEventById(eventId);
     if (!event) {
-      throw new NotFoundError('해당 이벤트를 찾을 수 없습니다.', 'EVENT_NOT_FOUND');
+      throw new NotFoundError(
+        '해당 이벤트를 찾을 수 없습니다.',
+        'EVENT_NOT_FOUND',
+      );
     }
 
     const now = new Date();
     if (now < event.start_at || now > event.end_at) {
-      throw new BadRequestError('이벤트 참여 기간이 아닙니다.', 'EVENT_PERIOD_INVALID');
+      throw new BadRequestError(
+        '이벤트 참여 기간이 아닙니다.',
+        'EVENT_PERIOD_INVALID',
+      );
     }
 
     // 2. 이미 참여했는지 확인
-    const existingParticipation = await eventRepository.findParticipationByUserAndEvent(userId, eventId);
+    const existingParticipation =
+      await eventRepository.findParticipationByUserAndEvent(userId, eventId);
     if (existingParticipation) {
-      throw new ConflictError('이미 참여한 이벤트입니다.', 'EVENT_ALREADY_PARTICIPATED');
+      throw new ConflictError(
+        '이미 참여한 이벤트입니다.',
+        'EVENT_ALREADY_PARTICIPATED',
+      );
     }
 
     // 3. Redis 분산 락 획득 시도
-    const lockAcquired = await redisClient.set(lockKey, lockValue, 'EX', lockTTL, 'NX');
+    const lockAcquired = await redisClient.set(
+      lockKey,
+      lockValue,
+      'EX',
+      lockTTL,
+      'NX',
+    );
     if (!lockAcquired) {
-      throw new ConflictError('다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요.', 'EVENT_PROCESSING');
+      throw new ConflictError(
+        '다른 사용자가 처리 중입니다. 잠시 후 다시 시도해주세요.',
+        'EVENT_PROCESSING',
+      );
     }
 
     try {
       // 4. 정원 확인 및 참여자 수 증가
       if (event.participant_count >= event.capacity) {
-        throw new ConflictError('선착순 정원이 마감되었습니다.', 'EVENT_CAPACITY_EXCEEDED');
+        throw new ConflictError(
+          '선착순 정원이 마감되었습니다.',
+          'EVENT_CAPACITY_EXCEEDED',
+        );
       }
 
       // 5. 참여자 수 증가 및 참여 정보 저장 (트랜잭션)
-      const participation = await eventRepository.createParticipationWithIncrement(eventId, userId);
-      
+      const participation =
+        await eventRepository.createParticipationWithIncrement(eventId, userId);
+
       return participation;
     } finally {
       // 6. 락 해제
@@ -96,4 +126,4 @@ export const participateInEvent = async (eventId, userId) => {
     }
     throw error;
   }
-}; 
+};

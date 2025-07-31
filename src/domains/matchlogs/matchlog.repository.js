@@ -16,31 +16,31 @@ export const findMatchLogsByUserId = async (userId, limit = 10, offset = 0) => {
      WHERE ml.user_id = ? 
      ORDER BY ml.match_date DESC, ml.created_at DESC 
      LIMIT ? OFFSET ?`,
-    [userId, limit, offset]
+    [userId, limit, offset],
   );
-  
+
   // 데이터 구조 변환
-  return rows.map(row => ({
+  return rows.map((row) => ({
     id: row.id,
     match_date: row.match_date,
     home_team: {
       id: row.home_team_id,
-      name: row.home_team_name
+      name: row.home_team_name,
     },
     away_team: {
       id: row.away_team_id,
-      name: row.away_team_name
+      name: row.away_team_name,
     },
     stadium: {
       id: row.stadium_id,
       name: row.stadium_name,
-      city: row.stadium_city
+      city: row.stadium_city,
     },
     result: row.result,
     memo: row.memo,
     ticket_image_url: row.ticket_image_url,
     created_at: row.created_at,
-    updated_at: row.updated_at
+    updated_at: row.updated_at,
   }));
 };
 
@@ -48,7 +48,7 @@ export const findMatchLogsByUserId = async (userId, limit = 10, offset = 0) => {
 export const countMatchLogsByUserId = async (userId) => {
   const [rows] = await pool.query(
     'SELECT COUNT(*) as total FROM match_logs WHERE user_id = ?',
-    [userId]
+    [userId],
   );
   return rows[0].total;
 };
@@ -66,11 +66,11 @@ export const findMatchLogById = async (matchLogId) => {
      LEFT JOIN teams at ON ml.away_team_id = at.id
      LEFT JOIN stadiums s ON ml.stadium_id = s.id
      WHERE ml.id = ?`,
-    [matchLogId]
+    [matchLogId],
   );
-  
+
   if (rows.length === 0) return null;
-  
+
   const row = rows[0];
   return {
     id: row.id,
@@ -78,35 +78,53 @@ export const findMatchLogById = async (matchLogId) => {
     match_date: row.match_date,
     home_team: {
       id: row.home_team_id,
-      name: row.home_team_name
+      name: row.home_team_name,
     },
     away_team: {
       id: row.away_team_id,
-      name: row.away_team_name
+      name: row.away_team_name,
     },
     stadium: {
       id: row.stadium_id,
       name: row.stadium_name,
-      city: row.stadium_city
+      city: row.stadium_city,
     },
     result: row.result,
     memo: row.memo,
     ticket_image_url: row.ticket_image_url,
     created_at: row.created_at,
-    updated_at: row.updated_at
+    updated_at: row.updated_at,
   };
 };
 
 // 직관 기록 생성
 export const createMatchLog = async (matchLogData) => {
-  const { user_id, match_date, home_team_id, away_team_id, stadium_id, result, memo, ticket_image_url } = matchLogData;
-  
+  const {
+    user_id,
+    match_date,
+    home_team_id,
+    away_team_id,
+    stadium_id,
+    result,
+    memo,
+    ticket_image_url,
+  } = matchLogData;
+
   const [insertResult] = await pool.query(
     `INSERT INTO match_logs (user_id, match_date, home_team_id, away_team_id, stadium_id, result, memo, ticket_image_url) 
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [user_id, match_date, home_team_id, away_team_id, stadium_id, result, memo, ticket_image_url]
+    [
+      user_id,
+      match_date,
+      home_team_id,
+      away_team_id,
+      stadium_id,
+      result,
+      memo,
+      ticket_image_url,
+    ],
   );
-  
+
   return { id: insertResult.insertId };
 };
 
@@ -116,9 +134,17 @@ export const updateMatchLog = async (matchLogId, updateData) => {
   const values = [];
 
   // 허용된 필드만 업데이트 (stadium_id 포함)
-  const allowedFields = ['match_date', 'home_team_id', 'away_team_id', 'stadium_id', 'result', 'memo', 'ticket_image_url'];
-  
-  allowedFields.forEach(key => {
+  const allowedFields = [
+    'match_date',
+    'home_team_id',
+    'away_team_id',
+    'stadium_id',
+    'result',
+    'memo',
+    'ticket_image_url',
+  ];
+
+  allowedFields.forEach((key) => {
     if (updateData[key] !== undefined) {
       fields.push(`${key} = ?`);
       values.push(updateData[key]);
@@ -129,11 +155,11 @@ export const updateMatchLog = async (matchLogId, updateData) => {
 
   values.push(matchLogId);
   const query = `UPDATE match_logs SET ${fields.join(', ')} WHERE id = ?`;
-  
+
   await pool.query(query, values);
 };
 
 // 직관 기록 삭제
 export const deleteMatchLog = async (matchLogId) => {
   await pool.query('DELETE FROM match_logs WHERE id = ?', [matchLogId]);
-}; 
+};

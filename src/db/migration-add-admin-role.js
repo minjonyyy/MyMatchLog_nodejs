@@ -9,7 +9,7 @@ const migration = async () => {
     port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || 'dbpassword',
-    database: process.env.DB_NAME || 'mymatchlog_dev'
+    database: process.env.DB_NAME || 'mymatchlog_dev',
   });
 
   try {
@@ -32,7 +32,6 @@ const migration = async () => {
     `);
 
     console.log('✅ 첫 번째 사용자(ID: 1)를 관리자로 설정했습니다.');
-
   } catch (error) {
     console.error('❌ 마이그레이션 중 오류 발생:', error.message);
     throw error;
@@ -54,4 +53,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     });
 }
 
-export default migration; 
+export default migration;

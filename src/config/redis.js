@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'test') {
   redisClient = {
     on: () => {},
     ping: async () => 'PONG',
-    disconnect: () => {}
+    disconnect: () => {},
   };
 } else {
   redisClient = new Redis({
@@ -47,4 +47,4 @@ export const testRedisConnection = async () => {
   }
 };
 
-export default redisClient; 
+export default redisClient;

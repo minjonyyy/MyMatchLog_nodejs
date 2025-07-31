@@ -13,5 +13,5 @@ setTimeout(() => {}, 10000);
 // 테스트 후 정리
 afterAll(async () => {
   // 모든 비동기 작업이 완료될 때까지 잠시 대기
-  await new Promise(resolve => setTimeout(resolve, 100));
-}); 
+  await new Promise((resolve) => setTimeout(resolve, 100));
+});

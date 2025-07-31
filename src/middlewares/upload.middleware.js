@@ -22,27 +22,29 @@ const uploadToS3 = (fieldName) => (req, res, next) => {
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
     const fileName = `tickets/${uuidv4()}.jpeg`;
 
-
-
     // 파일 타입 검증
-    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+    ];
     if (!allowedMimeTypes.includes(file.mimetype)) {
-      const error = new Error(`지원하지 않는 파일 형식입니다. 지원 형식: ${allowedMimeTypes.join(', ')}`);
+      const error = new Error(
+        `지원하지 않는 파일 형식입니다. 지원 형식: ${allowedMimeTypes.join(', ')}`,
+      );
       error.status = 400;
 
       return next(error);
     }
 
     try {
-
       // Resize and convert image to JPEG using sharp
       const resizedImageBuffer = await sharp(file.buffer)
         .resize({ width: 800, fit: 'inside' }) // Resize to max width of 800px
         .toFormat('jpeg')
         .jpeg({ quality: 80 }) // Compress JPEG
         .toBuffer();
-      
-
 
       const params = {
         Bucket: bucketName,
@@ -65,4 +67,4 @@ const uploadToS3 = (fieldName) => (req, res, next) => {
   });
 };
 
-export default uploadToS3; 
+export default uploadToS3;

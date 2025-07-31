@@ -123,4 +123,4 @@ const runMigrations = async () => {
   }
 };
 
-runMigrations(); 
+runMigrations();

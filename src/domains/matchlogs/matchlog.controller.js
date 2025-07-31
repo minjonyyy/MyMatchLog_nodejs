@@ -1,4 +1,8 @@
-import { successResponse, errorResponse, createdResponse } from '../../utils/response.util.js';
+import {
+  successResponse,
+  errorResponse,
+  createdResponse,
+} from '../../utils/response.util.js';
 import * as matchLogService from './matchlog.service.js';
 
 export const getMyMatchLogs = async (req, res) => {
@@ -12,7 +16,7 @@ export const getMyMatchLogs = async (req, res) => {
       return errorResponse(res, {
         statusCode: 400,
         code: 'COMMON_INVALID_INPUT',
-        message: '페이지는 1 이상, limit은 1~100 사이여야 합니다.'
+        message: '페이지는 1 이상, limit은 1~100 사이여야 합니다.',
       });
     }
 
@@ -32,12 +36,19 @@ export const getMatchLogDetail = async (req, res) => {
       return errorResponse(res, {
         statusCode: 400,
         code: 'COMMON_INVALID_INPUT',
-        message: '올바른 직관 기록 ID를 입력해주세요.'
+        message: '올바른 직관 기록 ID를 입력해주세요.',
       });
     }
 
-    const matchLog = await matchLogService.getMatchLogDetail(matchLogId, userId);
-    return successResponse(res, { matchLog }, '직관 기록 상세 조회에 성공했습니다.');
+    const matchLog = await matchLogService.getMatchLogDetail(
+      matchLogId,
+      userId,
+    );
+    return successResponse(
+      res,
+      { matchLog },
+      '직관 기록 상세 조회에 성공했습니다.',
+    );
   } catch (error) {
     return errorResponse(res, error);
   }
@@ -46,7 +57,8 @@ export const getMatchLogDetail = async (req, res) => {
 export const createMatchLog = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const { match_date, home_team_id, away_team_id, stadium_id, result, memo } = req.body;
+    const { match_date, home_team_id, away_team_id, stadium_id, result, memo } =
+      req.body;
 
     // 업로드된 이미지 URL 가져오기 (S3 업로드 미들웨어에서 처리됨)
     const ticket_image_url = req.file?.location || null;
@@ -59,11 +71,18 @@ export const createMatchLog = async (req, res) => {
       stadium_id: parseInt(stadium_id),
       result,
       memo,
-      ticket_image_url
+      ticket_image_url,
     };
 
-    const newMatchLog = await matchLogService.createMatchLog(userId, matchLogData);
-    return createdResponse(res, { matchLogId: newMatchLog.id }, '직관 기록이 성공적으로 등록되었습니다.');
+    const newMatchLog = await matchLogService.createMatchLog(
+      userId,
+      matchLogData,
+    );
+    return createdResponse(
+      res,
+      { matchLogId: newMatchLog.id },
+      '직관 기록이 성공적으로 등록되었습니다.',
+    );
   } catch (error) {
     return errorResponse(res, error);
   }
@@ -79,7 +98,7 @@ export const updateMatchLog = async (req, res) => {
       return errorResponse(res, {
         statusCode: 400,
         code: 'COMMON_INVALID_INPUT',
-        message: '올바른 직관 기록 ID를 입력해주세요.'
+        message: '올바른 직관 기록 ID를 입력해주세요.',
       });
     }
 
@@ -101,8 +120,16 @@ export const updateMatchLog = async (req, res) => {
       updateData.ticket_image_url = req.file.location;
     }
 
-    const updatedMatchLog = await matchLogService.updateMatchLog(matchLogId, userId, updateData);
-    return successResponse(res, { matchLog: updatedMatchLog }, '직관 기록이 성공적으로 수정되었습니다.');
+    const updatedMatchLog = await matchLogService.updateMatchLog(
+      matchLogId,
+      userId,
+      updateData,
+    );
+    return successResponse(
+      res,
+      { matchLog: updatedMatchLog },
+      '직관 기록이 성공적으로 수정되었습니다.',
+    );
   } catch (error) {
     return errorResponse(res, error);
   }
@@ -117,7 +144,7 @@ export const deleteMatchLog = async (req, res) => {
       return errorResponse(res, {
         statusCode: 400,
         code: 'COMMON_INVALID_INPUT',
-        message: '올바른 직관 기록 ID를 입력해주세요.'
+        message: '올바른 직관 기록 ID를 입력해주세요.',
       });
     }
 
@@ -126,4 +153,4 @@ export const deleteMatchLog = async (req, res) => {
   } catch (error) {
     return errorResponse(res, error);
   }
-}; 
+};

@@ -9,7 +9,9 @@ const authMiddleware = (req, res, next) => {
 
   const [tokenType, tokenValue] = authorization.split(' ');
   if (tokenType !== 'Bearer' || !tokenValue) {
-    return next(new UnauthorizedError('지원하지 않는 인증 방식이거나, 토큰이 없습니다.'));
+    return next(
+      new UnauthorizedError('지원하지 않는 인증 방식이거나, 토큰이 없습니다.'),
+    );
   }
 
   try {
@@ -24,4 +26,4 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-export default authMiddleware; 
+export default authMiddleware;
