@@ -10,7 +10,7 @@
 
 1. **GitHub Actions 워크플로우**
    - `ci.yml`: 코드 품질 검사, 테스트, Docker 빌드
-   - `deploy.yml`: 프로덕션 배포 (선택사항)
+   - `deploy.yml`: 프로덕션 배포 (AWS EC2)
 2. **테스트 환경**
    - Jest + Supertest 기반 테스트
    - MySQL, Redis 서비스 컨테이너
@@ -19,6 +19,11 @@
    - 프로덕션 최적화
 4. **PM2 설정**
    - 프로덕션 프로세스 관리
+5. **AWS 인프라**
+   - ECR (Elastic Container Registry)
+   - RDS (MySQL) 데이터베이스
+   - ElastiCache (Redis)
+   - EC2 인스턴스
 
 ---
 
@@ -31,14 +36,27 @@
 1. GitHub 저장소에서 **Settings** → **Secrets and variables** → **Actions**로 이동
 2. 다음 시크릿을 추가 (필요시):
    ```
+   # 데이터베이스 설정
+   DB_HOST=your-rds-endpoint.region.rds.amazonaws.com
    DB_PASSWORD=your-db-password
-   REDIS_PASSWORD=your-redis-password
+   
+   # Redis 설정
+   REDIS_HOST=your-elasticache-endpoint.region.cache.amazonaws.com
+   
+   # JWT 설정
    ACCESS_TOKEN_SECRET_KEY=your-access-token-secret
    REFRESH_TOKEN_SECRET_KEY=your-refresh-token-secret
-   AWS_ACCESS_KEY=your-aws-key
-   AWS_SECRET_ACCESS_KEY=your-aws-secret
-   AWS_S3_REGION=ap-northeast-2
-   AWS_S3_BUCKET_NAME=your-s3-bucket
+   
+   # AWS 설정
+   AWS_ACCESS_KEY_ID=your-aws-access-key
+   AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+   AWS_REGION=ap-northeast-2
+   AWS_ECR_REPOSITORY=mymatchlog-api
+   
+   # EC2 설정
+   EC2_HOST=your-ec2-public-ip
+   EC2_USERNAME=ubuntu
+   EC2_KEY_NAME=-----BEGIN OPENSSH PRIVATE KEY-----\n...\n-----END OPENSSH PRIVATE KEY-----
    ```
 
 #### 1.2 워크플로우 트리거
@@ -190,11 +208,15 @@ pm2 delete mymatchlog-api
 8. **Docker 빌드**: 이미지 생성 및 테스트
 9. **보안 검사**: npm audit
 
-### 3. 배포 단계 (선택사항)
+### 3. 배포 단계
 
 1. **테스트 통과 확인**
-2. **빌드 검증**
-3. **배포 실행** (설정된 플랫폼에 따라)
+2. **AWS ECR 로그인**
+3. **Docker 이미지 빌드 및 푸시**
+4. **EC2 서버 접속 및 배포**
+   - Docker, Docker Compose, AWS CLI 설치
+   - ECR 로그인
+   - 컨테이너 실행 및 헬스체크
 
 ---
 
@@ -272,6 +294,35 @@ pm2 restart mymatchlog-api
 pm2 reload mymatchlog-api
 ```
 
+### 4. 배포 문제 시
+
+#### ECR 로그인 실패
+```bash
+# IAM 사용자 권한 확인
+# AmazonEC2ContainerRegistryPowerUser 정책 추가 필요
+```
+
+#### EC2 SSH 연결 실패
+```bash
+# SSH 키 형식 확인
+# -----BEGIN OPENSSH PRIVATE KEY----- 포함하여 전체 키 내용 입력
+```
+
+#### Docker 권한 문제
+```bash
+# EC2에서 Docker 그룹 추가
+sudo usermod -aG docker $USER
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+#### 데이터베이스 연결 실패
+```bash
+# RDS 보안 그룹 설정 확인
+# EC2 보안 그룹이 RDS 보안 그룹에 접근 가능한지 확인
+# 데이터베이스 사용자 권한 확인
+```
+
 ---
 
 ## 📈 성능 최적화
@@ -309,6 +360,24 @@ pm2 reload mymatchlog-api
 - **APM 도구**: New Relic, DataDog
 - **로그 집계**: ELK Stack, Fluentd
 - **메트릭 수집**: Prometheus, Grafana
+
+### 4. 현재 진행 상황
+
+#### ✅ 완료된 작업
+- **CI/CD 파이프라인 구축**: GitHub Actions, Docker, PM2
+- **AWS 인프라 설정**: ECR, RDS, ElastiCache, EC2
+- **자동 배포 시스템**: 코드 푸시 시 자동 배포
+- **애플리케이션 실행**: 서버 정상 실행 및 API 응답
+
+#### ⚠️ 해결 필요 작업
+- **데이터베이스 연결**: RDS 접근 권한 문제
+- **마이그레이션 실행**: 데이터베이스 스키마 생성
+- **시딩 데이터**: 초기 데이터 입력
+
+#### 🎯 다음 단계
+- **프론트엔드 개발**: React/Vue.js 기반 UI 개발
+- **테스트 코드 확장**: 단위/통합 테스트 작성
+- **모니터링 도구**: 로깅 및 메트릭 수집
 
 ---
 
