@@ -136,13 +136,21 @@ jobs:
                 environment:
                   - NODE_ENV=production
                   - DB_HOST=${{ secrets.DB_HOST }}
+                  - DB_USER=${{ secrets.DB_USER }}
                   - DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+                  - DB_NAME=${{ secrets.DB_NAME }}
+                  - DB_PORT=3306
                   - REDIS_HOST=${{ secrets.REDIS_HOST }}
+                  - REDIS_PORT=6379
                   - ACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }}
                   - REFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }}
+                  - ACCESS_TOKEN_EXPIRES_IN=15m
+                  - REFRESH_TOKEN_EXPIRES_IN=7d
                   - AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}
                   - AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  - AWS_REGION=${{ secrets.AWS_REGION }}
+                  - AWS_S3_REGION=${{ secrets.AWS_REGION }}
+                  - AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+                  - PORT=3000
                 healthcheck:
                   test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
                   interval: 30s
@@ -161,9 +169,25 @@ jobs:
             # Wait for application to start
             sleep 30
 
+            # Run database migrations
+            echo "Running database migrations..."
+            sudo docker-compose exec -T app npm run migrate || echo "Migration failed, but continuing..."
+
+            # Run database seeding
+            echo "Running database seeding..."
+            sudo docker-compose exec -T app npm run seed || echo "Seeding failed, but continuing..."
+
             # Check application health
             if curl -f http://localhost:3000/api/health; then
               echo "Application deployed successfully!"
+              
+              # Test database connection
+              echo "Testing database connection..."
+              if curl -f http://localhost:3000/api/teams; then
+                echo "Database connection successful!"
+              else
+                echo "Database connection failed. Check RDS security group settings."
+              fi
             else
               echo "Application deployment failed!"
               sudo docker-compose logs
