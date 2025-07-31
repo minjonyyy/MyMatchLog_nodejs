@@ -1,0 +1,27 @@
+# Coverage reports
+coverage/
+*.html
+
+# Build outputs
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env*
+
+# Docker
+Dockerfile*
+
+# Git
+.git/
+
+# OS generated files
+.DS_Store
+Thumbs.db 
