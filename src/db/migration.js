@@ -1,7 +1,12 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-dotenv.config();
+// 테스트 환경에서는 .env.test 파일을 사용
+if (process.env.NODE_ENV === 'test') {
+  dotenv.config({ path: '.env.test' });
+} else {
+  dotenv.config();
+}
 
 // 마이그레이션용 실제 데이터베이스 연결 생성
 const createMigrationPool = () => {
