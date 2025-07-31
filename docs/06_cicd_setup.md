@@ -33,9 +33,12 @@
    ```
    DB_PASSWORD=your-db-password
    REDIS_PASSWORD=your-redis-password
-   JWT_SECRET=your-jwt-secret
-   AWS_ACCESS_KEY_ID=your-aws-key
+   ACCESS_TOKEN_SECRET_KEY=your-access-token-secret
+   REFRESH_TOKEN_SECRET_KEY=your-refresh-token-secret
+   AWS_ACCESS_KEY=your-aws-key
    AWS_SECRET_ACCESS_KEY=your-aws-secret
+   AWS_S3_REGION=ap-northeast-2
+   AWS_S3_BUCKET_NAME=your-s3-bucket
    ```
 
 #### 1.2 워크플로우 트리거
@@ -52,7 +55,31 @@
 # env.test.example을 복사하여 .env.test 생성
 cp env.test.example .env.test
 
-# 필요한 환경변수 수정
+# 필요한 환경변수 수정 (현재 사용 중인 환경변수 이름)
+# JWT 관련
+ACCESS_TOKEN_SECRET_KEY=test-jwt-secret-key-for-testing-only
+REFRESH_TOKEN_SECRET_KEY=test-refresh-secret-key-for-testing-only
+ACCESS_TOKEN_EXPIRES_IN=15m
+REFRESH_TOKEN_EXPIRES_IN=7d
+
+# AWS S3 관련
+AWS_ACCESS_KEY=test-access-key
+AWS_SECRET_ACCESS_KEY=test-secret-key
+AWS_S3_REGION=ap-northeast-2
+AWS_S3_BUCKET_NAME=test-bucket
+
+# 데이터베이스 관련
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=mymatchlog_test
+DB_USER=root
+DB_PASSWORD=testpassword
+
+# Redis 관련
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+
 nano .env.test
 ```
 
