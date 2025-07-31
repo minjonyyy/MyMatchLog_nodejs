@@ -1,11 +1,5 @@
 export default {
   // ES 모듈 지원
-  extensionsToTreatAsEsm: ['.js'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
@@ -13,9 +7,6 @@ export default {
   // ES 모듈 변환 설정
   transform: {},
   transformIgnorePatterns: ['node_modules/(?!(dotenv|supertest)/)'],
-
-  // ES 모듈 처리
-  preset: undefined,
 
   // 테스트 환경 설정
   testEnvironment: 'node',
