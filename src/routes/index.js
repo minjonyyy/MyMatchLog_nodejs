@@ -9,6 +9,15 @@ import adminRouter from '../domains/admin/admin.router.js';
 
 const router = express.Router();
 
+// Health check endpoint
+router.get('/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Server is healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
 router.use('/users', userRouter);
 router.use('/teams', teamRouter);
 router.use('/stadiums', stadiumRouter);
