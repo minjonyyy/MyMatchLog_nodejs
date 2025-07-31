@@ -34,13 +34,13 @@ app.use(errorMiddleware);
 
 const startServer = async () => {
   try {
-    // 테스트 환경에서는 데이터베이스 연결 테스트 건너뛰기
-    if (process.env.NODE_ENV !== 'test') {
+    // 테스트 환경이나 Docker 환경에서는 데이터베이스 연결 테스트 건너뛰기
+    if (process.env.NODE_ENV !== 'test' && !process.env.DOCKER_ENV) {
       await testDBConnection();
       await testRedisConnection();
     }
 
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
     });
   } catch (error) {
