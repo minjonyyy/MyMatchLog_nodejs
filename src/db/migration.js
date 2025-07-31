@@ -30,13 +30,25 @@ const migrationQueries = [
   `DROP TABLE IF EXISTS events;`,
   `DROP TABLE IF EXISTS users;`,
   `DROP TABLE IF EXISTS teams;`,
+  `DROP TABLE IF EXISTS stadiums;`,
+
+  // Create stadiums table
+  `CREATE TABLE stadiums (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    city VARCHAR(50),
+    capacity INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  );`,
 
   // Create teams table
   `CREATE TABLE teams (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
     logo_url VARCHAR(2048),
-    home_stadium VARCHAR(100)
+    stadium_id INT,
+    FOREIGN KEY (stadium_id) REFERENCES stadiums(id)
   );`,
 
   // Create users table
