@@ -31,6 +31,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(specs, {
     swaggerOptions: {
+      url: '/api-docs/swagger.json',
       docExpansion: 'list',
       filter: true,
       showRequestHeaders: true,
