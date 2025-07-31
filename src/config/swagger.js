@@ -13,6 +13,10 @@ const options = {
         url: `http://localhost:${process.env.PORT || 3000}`,
         description: 'Development server',
       },
+      {
+        url: `http://3.37.38.116:${process.env.PORT || 3000}`,
+        description: 'Production server',
+      },
     ],
     components: {
       securitySchemes: {

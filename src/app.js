@@ -20,7 +20,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  swaggerOptions: {
+    url: '/api-docs/swagger.json',
+    docExpansion: 'list',
+    filter: true,
+    showRequestHeaders: true,
+  },
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'MyMatchLog API Documentation',
+}));
+
+// Swagger JSON endpoint
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(specs);
+});
 
 // API 라우터 적용
 app.use('/api', apiRouter);
