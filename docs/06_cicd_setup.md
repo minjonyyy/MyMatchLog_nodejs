@@ -208,7 +208,30 @@ pm2 delete mymatchlog-api
 8. **Docker 빌드**: 이미지 생성 및 테스트
 9. **보안 검사**: npm audit
 
-### 3. 배포 단계
+### 3. 코드 품질 관리
+
+#### **Prettier 포맷팅**
+- **자동 수정**: `npm run format`
+- **검사만**: `npm run format:check`
+- **CI/CD 통합**: GitHub Actions에서 자동 검사
+
+#### **ESLint 린팅**
+- **검사**: `npm run lint`
+- **자동 수정**: `npm run lint:fix`
+- **CI/CD 통합**: GitHub Actions에서 자동 검사
+
+#### **로컬에서 커밋 전 확인**
+```bash
+# 모든 검사 실행
+npm run ci:test
+
+# 또는 개별 실행
+npm run format:check
+npm run lint
+npm run test
+```
+
+### 4. 배포 단계
 
 1. **테스트 통과 확인**
 2. **AWS ECR 로그인**

@@ -41,6 +41,9 @@
 - **Package Manager**: npm
 - **Hot Reload**: `nodemon`을 사용하여 개발 중 코드 변경 시 서버 자동 재시작
 - **Code Convention**: `ESLint` (코드 품질) 및 `Prettier` (코드 포맷팅)를 통해 일관된 코드 스타일 유지
+  - **Prettier 설정**: `.prettierrc` 파일로 포맷팅 규칙 정의
+  - **포맷팅 명령어**: `npm run format` (자동 수정), `npm run format:check` (검사만)
+  - **CI/CD 통합**: GitHub Actions에서 자동 포맷팅 검사 실행
 - **환경 변수**: `.env` 파일을 사용하여 개발, 테스트, 프로덕션 환경의 설정을 분리합니다. (`.env.development`, `.env.test`, `.env.production`)
 - **배포**: `PM2`를 사용하여 Node.js 프로세스를 관리하고, `Nginx`를 리버스 프록시로 활용하는 것을 고려합니다.
 
@@ -126,3 +129,50 @@ src/
 - **모니터링**: `CloudWatch` 또는 `Sentry` 같은 외부 서비스를 연동하여 에러 로깅 및 성능 모니터링을 강화합니다.
 - **CI/CD**: `GitHub Actions`를 이용해 테스트 및 배포 자동화 파이프라인을 구축합니다. ✅ **완료**
 - **프로덕션 배포**: AWS 인프라(EC2, RDS, ElastiCache, ECR) 구축 및 자동 배포 시스템 완료 ✅ **완료**
+
+---
+
+### 7. 코드 포맷팅 가이드
+
+#### **Prettier 설정**
+- **설정 파일**: `.prettierrc`
+- **적용 범위**: 모든 JavaScript, JSON, YAML, Markdown 파일
+
+#### **포맷팅 명령어**
+```bash
+# 코드 포맷팅 자동 수정
+npm run format
+
+# 포맷팅 검사만 (수정하지 않음)
+npm run format:check
+
+# ESLint 검사
+npm run lint
+
+# ESLint 자동 수정
+npm run lint:fix
+```
+
+#### **자주 발생하는 포맷팅 문제**
+1. **들여쓰기 불일치**: 탭과 스페이스 혼용
+2. **줄 끝 문자**: Windows/Unix 줄바꿈 문자 차이
+3. **따옴표**: 작은따옴표/큰따옴표 통일
+4. **세미콜론**: 문장 끝 세미콜론 누락
+
+#### **해결 방법**
+```bash
+# 1. 포맷팅 자동 수정
+npm run format
+
+# 2. 포맷팅 검사
+npm run format:check
+
+# 3. 커밋 전 확인
+npm run ci:test  # 포맷팅 + 린팅 + 테스트 모두 실행
+```
+
+#### **Git Hooks 설정 (권장)**
+```bash
+# pre-commit 훅으로 자동 포맷팅 적용
+npx husky add .husky/pre-commit "npm run format"
+```
