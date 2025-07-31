@@ -61,14 +61,14 @@ jobs:
           echo "REDIS_HOST=127.0.0.1" >> .env.test
           echo "REDIS_PORT=6379" >> .env.test
           echo "REDIS_PASSWORD=" >> .env.test
-          echo "JWT_SECRET=test-jwt-secret-key-for-testing-only" >> .env.test
-          echo "JWT_REFRESH_SECRET=test-refresh-secret-key-for-testing-only" >> .env.test
-          echo "JWT_ACCESS_EXPIRES_IN=15m" >> .env.test
-          echo "JWT_REFRESH_EXPIRES_IN=7d" >> .env.test
-          echo "AWS_ACCESS_KEY_ID=test-access-key" >> .env.test
+          echo "ACCESS_TOKEN_SECRET_KEY=test-jwt-secret-key-for-testing-only" >> .env.test
+          echo "REFRESH_TOKEN_SECRET_KEY=test-refresh-secret-key-for-testing-only" >> .env.test
+          echo "ACCESS_TOKEN_EXPIRES_IN=15m" >> .env.test
+          echo "REFRESH_TOKEN_EXPIRES_IN=7d" >> .env.test
+          echo "AWS_ACCESS_KEY=test-access-key" >> .env.test
           echo "AWS_SECRET_ACCESS_KEY=test-secret-key" >> .env.test
-          echo "AWS_REGION=ap-northeast-2" >> .env.test
-          echo "AWS_S3_BUCKET=test-bucket" >> .env.test
+          echo "AWS_S3_REGION=ap-northeast-2" >> .env.test
+          echo "AWS_S3_BUCKET_NAME=test-bucket" >> .env.test
           echo "PORT=3001" >> .env.test
 
       - name: Install Redis CLI
