@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { QueryProvider } from './providers/QueryProvider'
+import Header from './components/layout/Header'
+import Footer from './components/layout/Footer'
 import './App.css'
 import Home from './pages/public/Home'
 
@@ -20,54 +23,43 @@ const NotFound = () => <div className="p-8">❌ 404 - 페이지를 찾을 수 �
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        {/* 임시 네비게이션 */}
-        <nav className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <h1 className="text-xl font-bold text-gray-900">MyMatchLog</h1>
-              </div>
-              <div className="flex items-center space-x-4">
-                <a href="/" className="text-gray-700 hover:text-gray-900">홈</a>
-                <a href="/events" className="text-gray-700 hover:text-gray-900">이벤트</a>
-                <a href="/match-logs" className="text-gray-700 hover:text-gray-900">직관기록</a>
-                <a href="/login" className="text-gray-700 hover:text-gray-900">로그인</a>
-              </div>
-            </div>
-          </div>
-        </nav>
-
-        {/* 메인 콘텐츠 */}
-        <main>
-          <Routes>
-            {/* 공개 페이지 */}
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/:id" element={<EventDetail />} />
-            
-            {/* 인증 필요 페이지 */}
-            <Route path="/match-logs" element={<MatchLogs />} />
-            <Route path="/match-logs/create" element={<MatchLogCreate />} />
-            <Route path="/match-logs/:id" element={<MatchLogDetail />} />
-            <Route path="/match-logs/:id/edit" element={<MatchLogEdit />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/settings" element={<Settings />} />
-            
-            {/* 관리자 페이지 */}
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/events" element={<AdminEvents />} />
-            <Route path="/admin/events/:id/participants" element={<AdminParticipants />} />
-            
-            {/* 404 페이지 */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <QueryProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          
+          {/* 메인 콘텐츠 */}
+          <main className="flex-1">
+            <Routes>
+              {/* 공개 페이지 */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/events/:id" element={<EventDetail />} />
+              
+              {/* 인증 필요 페이지 */}
+              <Route path="/match-logs" element={<MatchLogs />} />
+              <Route path="/match-logs/create" element={<MatchLogCreate />} />
+              <Route path="/match-logs/:id" element={<MatchLogDetail />} />
+              <Route path="/match-logs/:id/edit" element={<MatchLogEdit />} />
+              <Route path="/mypage" element={<MyPage />} />
+              <Route path="/settings" element={<Settings />} />
+              
+              {/* 관리자 페이지 */}
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/events" element={<AdminEvents />} />
+              <Route path="/admin/events/:id/participants" element={<AdminParticipants />} />
+              
+              {/* 404 페이지 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          
+          <Footer />
+        </div>
+      </Router>
+    </QueryProvider>
   )
 }
 
