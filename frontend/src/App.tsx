@@ -4,10 +4,9 @@ import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import './App.css'
 import Home from './pages/public/Home'
+import Login from './pages/public/Login'
+import Signup from './pages/public/Signup'
 
-// 페이지 컴포넌트들 (임시)
-const Login = () => <div className="p-8">🔐 로그인 페이지</div>
-const Signup = () => <div className="p-8">📝 회원가입 페이지</div>
 const Events = () => <div className="p-8">🎉 이벤트 목록 페이지</div>
 const EventDetail = () => <div className="p-8">🎉 이벤트 상세 페이지</div>
 const MatchLogs = () => <div className="p-8">📊 직관 기록 목록 페이지</div>
