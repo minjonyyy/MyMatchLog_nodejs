@@ -46,12 +46,16 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd backend
+          npm ci
 
       - name: Create test environment file
         run: |
+          cd backend
           cp env.test.example .env.test
           echo "DB_HOST=127.0.0.1" >> .env.test
           echo "DB_PORT=3306" >> .env.test
@@ -92,30 +96,40 @@ jobs:
           echo "Redis is ready!"
 
       - name: Run database migration
-        run: npm run db:migrate
+        run: |
+          cd backend
+          npm run db:migrate
         env:
           NODE_ENV: test
 
       - name: Run database seeding
-        run: npm run db:seed
+        run: |
+          cd backend
+          npm run db:seed
         env:
           NODE_ENV: test
 
       - name: Run linting
-        run: npm run lint
+        run: |
+          cd backend
+          npm run lint
 
       - name: Check code formatting
-        run: npm run format:check
+        run: |
+          cd backend
+          npm run format:check
 
       - name: Run tests
-        run: npm run test:ci
+        run: |
+          cd backend
+          npm run test:ci
         env:
           NODE_ENV: test
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
         with:
-          file: ./coverage/lcov.info
+          file: ./backend/coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -134,7 +148,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        run: docker build -t mymatchlog-api .
+        run: docker build -t mymatchlog-api ./backend
 
       - name: Test Docker image
         run: |
@@ -164,12 +178,17 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd backend
+          npm ci
 
       - name: Run security audit
-        run: npm audit --audit-level moderate
+        run: |
+          cd backend
+          npm audit --audit-level moderate
 
   # 빌드 검증
   build:
@@ -186,12 +205,16 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd backend
+          npm ci
 
       - name: Verify build
         run: |
+          cd backend
           # 앱이 정상적으로 시작되는지 확인
           timeout 10s npm start || true
           echo "Build verification completed"
