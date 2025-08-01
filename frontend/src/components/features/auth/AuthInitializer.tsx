@@ -3,7 +3,7 @@ import { useAuthStore } from '../../../stores/authStore'
 import { getMyInfo } from '../../../services/auth'
 
 const AuthInitializer: React.FC = () => {
-  const { setUser, setTokens } = useAuthStore()
+  const { setUser, setTokens, setInitialized } = useAuthStore()
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -29,10 +29,13 @@ const AuthInitializer: React.FC = () => {
           localStorage.removeItem('refreshToken')
         }
       }
+      
+      // 초기화 완료 표시
+      setInitialized(true)
     }
 
     initializeAuth()
-  }, [setUser, setTokens])
+  }, [setUser, setTokens, setInitialized])
 
   return null
 }

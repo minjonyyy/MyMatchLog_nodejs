@@ -219,7 +219,7 @@ const Home: React.FC = () => {
               to="/signup"
               className="px-8 py-4 bg-amber-700 text-white rounded-xl font-semibold text-lg hover:bg-amber-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
-              무료 회원가입
+              회원가입
             </Link>
             <Link 
               to="/login"

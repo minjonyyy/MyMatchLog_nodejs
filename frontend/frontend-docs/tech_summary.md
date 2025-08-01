@@ -56,7 +56,7 @@ App
 - **서버 상태**: React Query로 API 데이터 관리
 - **클라이언트 상태**: Zustand로 UI 상태 관리
 - **폼 상태**: React Hook Form으로 폼 데이터 관리
-- **인증 상태**: Context API + localStorage
+- **인증 상태**: Zustand + localStorage + 자동 토큰 갱신
 
 ### 라우팅 구조
 - **공개 라우트**: `/`, `/login`, `/signup`, `/events`
@@ -266,6 +266,14 @@ src/
 - **CSRF 방지**: 토큰 기반 인증
 - **Content Security Policy**: CSP 헤더 설정
 - **HTTPS 강제**: 프로덕션 환경에서 HTTPS 사용
+
+### 인증 시스템 아키텍처
+- **토큰 관리**: JWT Access Token + Refresh Token
+- **자동 갱신**: Axios 인터셉터를 통한 토큰 자동 갱신
+- **상태 동기화**: Zustand + localStorage 동기화
+- **초기화 로직**: AuthInitializer를 통한 앱 시작 시 인증 상태 확인
+- **라우트 보호**: ProtectedRoute를 통한 조건부 접근 제어
+- **로딩 상태**: 인증 확인 중 사용자 경험 개선을 위한 로딩 화면
 
 ---
 

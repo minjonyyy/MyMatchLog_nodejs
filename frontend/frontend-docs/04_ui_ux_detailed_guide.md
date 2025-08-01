@@ -328,6 +328,21 @@
 - **Grid Color**: `#E5E7EB`
 - **Tooltip**: Dark background, White text
 
+### Loading States
+- **인증 로딩 화면**:
+  - Background: `bg-gradient-to-br from-amber-50 to-stone-100`
+  - 메인 스피너: `w-16 h-16 border-4 border-amber-200 border-t-amber-700`
+  - 내부 스피너: `w-8 h-8 border-2 border-stone-200 border-t-stone-600`
+  - 텍스트: `text-stone-600 font-medium`
+  - 애니메이션: `animate-spin`
+- **페이지 로딩**:
+  - Skeleton UI: `bg-gray-200 animate-pulse`
+  - 스피너: `border-2 border-gray-300 border-t-blue-600`
+  - 텍스트: `text-gray-500`
+- **버튼 로딩**:
+  - 비활성화: `opacity-50 cursor-not-allowed`
+  - 스피너: `w-4 h-4 border-2 border-white border-t-transparent`
+
 ---
 
 ## 📐 레이아웃 가이드라인

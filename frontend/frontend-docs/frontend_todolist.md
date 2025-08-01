@@ -32,6 +32,9 @@
 - [x] 인증 상태 관리 (Zustand + localStorage)
 - [x] 보호된 라우트 구현
 - [x] JWT 토큰 갱신 로직 (api.ts에 구현됨)
+- [x] 인증 상태 초기화 로직 (AuthInitializer)
+- [x] 새로고침 시 인증 상태 유지 기능
+- [x] 인증 확인 중 로딩 화면 구현
 
 ### Phase 3: 핵심 기능 (우선순위: 높음)
 - [x] 직관 기록 목록 페이지 (`/match-logs`)
