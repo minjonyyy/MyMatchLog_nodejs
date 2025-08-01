@@ -243,6 +243,12 @@
     "z-schema": "^5.0.5"
   },
   "devDependencies": {},
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md,yaml,yml}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
