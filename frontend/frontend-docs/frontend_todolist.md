@@ -34,7 +34,7 @@
 - [x] JWT 토큰 갱신 로직 (api.ts에 구현됨)
 
 ### Phase 3: 핵심 기능 (우선순위: 높음)
-- [ ] 직관 기록 목록 페이지 (`/match-logs`)
+- [x] 직관 기록 목록 페이지 (`/match-logs`)
 - [ ] 직관 기록 작성 페이지 (`/match-logs/create`)
 - [ ] 직관 기록 상세 페이지 (`/match-logs/:id`)
 - [ ] 직관 기록 수정 페이지 (`/match-logs/:id/edit`)
@@ -113,13 +113,13 @@
 
 ### 🔐 인증 필요 페이지
 
-#### PAGE_MATCH_LOGS_LIST (`/match-logs`)
-- [ ] 직관 기록 카드 목록
-- [ ] 날짜/팀별 필터링
-- [ ] 검색 기능
-- [ ] 페이지네이션
-- [ ] 새 기록 작성 버튼
-- [ ] 기록 상세 페이지 링크
+#### PAGE_MATCH_LOGS_LIST (`/match-logs`) ✅ 완료
+- [x] 직관 기록 카드 목록
+- [x] 날짜/팀별 필터링
+- [x] 검색 기능
+- [x] 페이지네이션
+- [x] 새 기록 작성 버튼
+- [x] 기록 상세 페이지 링크
 
 #### PAGE_MATCH_LOG_CREATE (`/match-logs/create`)
 - [ ] 경기 정보 입력 폼

@@ -3,7 +3,7 @@ import { useAuthStore } from '../../../stores/authStore'
 import { getMyInfo } from '../../../services/auth'
 
 const AuthInitializer: React.FC = () => {
-  const { setUser, setAccessToken } = useAuthStore()
+  const { setUser, setTokens } = useAuthStore()
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -16,7 +16,8 @@ const AuthInitializer: React.FC = () => {
           
           if (response.success) {
             setUser(response.data.user)
-            setAccessToken(accessToken)
+            const refreshToken = localStorage.getItem('refreshToken')
+            setTokens(accessToken, refreshToken || '')
           } else {
             // 토큰이 유효하지 않으면 제거
             localStorage.removeItem('accessToken')
@@ -31,7 +32,7 @@ const AuthInitializer: React.FC = () => {
     }
 
     initializeAuth()
-  }, [setUser, setAccessToken])
+  }, [setUser, setTokens])
 
   return null
 }

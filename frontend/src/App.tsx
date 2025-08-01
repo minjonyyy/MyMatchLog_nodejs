@@ -6,6 +6,7 @@ import './App.css'
 import Home from './pages/public/Home'
 import Login from './pages/public/Login'
 import Signup from './pages/public/Signup'
+import MatchLogsPage from './pages/protected/MatchLogs'
 import ProtectedRoute from './components/features/auth/ProtectedRoute'
 import AuthInitializer from './components/features/auth/AuthInitializer'
 
@@ -41,7 +42,7 @@ function App() {
               <Route path="/events/:id" element={<EventDetail />} />
               
               {/* 인증 필요 페이지 */}
-              <Route path="/match-logs" element={<ProtectedRoute><MatchLogs /></ProtectedRoute>} />
+              <Route path="/match-logs" element={<ProtectedRoute><MatchLogsPage /></ProtectedRoute>} />
               <Route path="/match-logs/create" element={<ProtectedRoute><MatchLogCreate /></ProtectedRoute>} />
               <Route path="/match-logs/:id" element={<ProtectedRoute><MatchLogDetail /></ProtectedRoute>} />
               <Route path="/match-logs/:id/edit" element={<ProtectedRoute><MatchLogEdit /></ProtectedRoute>} />
