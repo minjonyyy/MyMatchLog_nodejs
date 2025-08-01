@@ -5,6 +5,7 @@ export interface User {
   nickname: string
   favoriteTeamId?: number
   favoriteTeamName?: string
+  role?: 'user' | 'admin'
   createdAt: string
   updatedAt: string
 }

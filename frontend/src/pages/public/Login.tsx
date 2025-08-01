@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
+import { login } from '../../services/auth'
+import { useAuthStore } from '../../stores/authStore'
 
 const Login: React.FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
+  const { setUser, setTokens } = useAuthStore()
+  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -56,18 +62,34 @@ const Login: React.FC = () => {
     setIsLoading(true)
     
     try {
-      // TODO: 로그인 API 호출
-      console.log('로그인 시도:', formData)
+      // 실제 로그인 API 호출
+      const response = await login(formData)
       
-      // 임시 로그인 성공 처리
-      setTimeout(() => {
+      if (response.success) {
+        const { user, accessToken, refreshToken } = response.data
+        
+        // Zustand 스토어에 사용자 정보와 토큰 저장
+        setUser(user)
+        setTokens(accessToken, refreshToken)
+        
+        // localStorage에도 토큰 저장 (api.ts에서 사용)
+        localStorage.setItem('accessToken', accessToken)
+        localStorage.setItem('refreshToken', refreshToken)
+        
         setIsLoading(false)
-        navigate('/')
-      }, 1000)
+        navigate(from)
+      } else {
+        setErrors({ general: response.message || '로그인에 실패했습니다.' })
+        setIsLoading(false)
+      }
       
-    } catch (error) {
+    } catch (error: any) {
       setIsLoading(false)
-      setErrors({ general: '로그인에 실패했습니다. 다시 시도해주세요.' })
+      if (error.response?.data?.message) {
+        setErrors({ general: error.response.data.message })
+      } else {
+        setErrors({ general: '로그인에 실패했습니다. 다시 시도해주세요.' })
+      }
     }
   }
 

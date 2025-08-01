@@ -6,6 +6,8 @@ import './App.css'
 import Home from './pages/public/Home'
 import Login from './pages/public/Login'
 import Signup from './pages/public/Signup'
+import ProtectedRoute from './components/features/auth/ProtectedRoute'
+import AuthInitializer from './components/features/auth/AuthInitializer'
 
 const Events = () => <div className="p-8">🎉 이벤트 목록 페이지</div>
 const EventDetail = () => <div className="p-8">🎉 이벤트 상세 페이지</div>
@@ -24,6 +26,7 @@ function App() {
   return (
     <QueryProvider>
       <Router>
+        <AuthInitializer />
         <div className="min-h-screen flex flex-col">
           <Header />
           
@@ -38,17 +41,17 @@ function App() {
               <Route path="/events/:id" element={<EventDetail />} />
               
               {/* 인증 필요 페이지 */}
-              <Route path="/match-logs" element={<MatchLogs />} />
-              <Route path="/match-logs/create" element={<MatchLogCreate />} />
-              <Route path="/match-logs/:id" element={<MatchLogDetail />} />
-              <Route path="/match-logs/:id/edit" element={<MatchLogEdit />} />
-              <Route path="/mypage" element={<MyPage />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/match-logs" element={<ProtectedRoute><MatchLogs /></ProtectedRoute>} />
+              <Route path="/match-logs/create" element={<ProtectedRoute><MatchLogCreate /></ProtectedRoute>} />
+              <Route path="/match-logs/:id" element={<ProtectedRoute><MatchLogDetail /></ProtectedRoute>} />
+              <Route path="/match-logs/:id/edit" element={<ProtectedRoute><MatchLogEdit /></ProtectedRoute>} />
+              <Route path="/mypage" element={<ProtectedRoute><MatchLogs /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               
               {/* 관리자 페이지 */}
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/events" element={<AdminEvents />} />
-              <Route path="/admin/events/:id/participants" element={<AdminParticipants />} />
+              <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/events" element={<ProtectedRoute requireAdmin><AdminEvents /></ProtectedRoute>} />
+              <Route path="/admin/events/:id/participants" element={<ProtectedRoute requireAdmin><AdminParticipants /></ProtectedRoute>} />
               
               {/* 404 페이지 */}
               <Route path="*" element={<NotFound />} />

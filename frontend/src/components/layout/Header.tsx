@@ -10,7 +10,10 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     logout()
-    // 로그아웃 후 홈으로 이동
+    // localStorage에서 토큰 제거
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    // 홈으로 이동
     window.location.href = '/'
   }
 

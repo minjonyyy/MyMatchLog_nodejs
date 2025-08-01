@@ -6,9 +6,13 @@ import { Label } from '../../components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
 import { Checkbox } from '../../components/ui/checkbox'
+import { signup } from '../../services/auth'
+import { useAuthStore } from '../../stores/authStore'
 
 const Signup: React.FC = () => {
   const navigate = useNavigate()
+  const { setUser, setTokens } = useAuthStore()
+  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -72,11 +76,13 @@ const Signup: React.FC = () => {
       newErrors.email = '올바른 이메일 형식을 입력해주세요.'
     }
 
-    // 비밀번호 검증
+    // 비밀번호 검증 (백엔드 규칙과 일치)
     if (!formData.password) {
       newErrors.password = '비밀번호를 입력해주세요.'
-    } else if (formData.password.length < 6) {
-      newErrors.password = '비밀번호는 6자 이상이어야 합니다.'
+    } else if (formData.password.length < 8) {
+      newErrors.password = '비밀번호는 8자 이상이어야 합니다.'
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(formData.password)) {
+      newErrors.password = '비밀번호는 대/소문자, 숫자, 특수문자(@$!%*?&)를 모두 포함해야 합니다.'
     }
 
     // 비밀번호 확인 검증
@@ -110,18 +116,51 @@ const Signup: React.FC = () => {
     setIsLoading(true)
     
     try {
-      // TODO: 회원가입 API 호출
-      console.log('회원가입 시도:', formData)
+      // 실제 회원가입 API 호출
+      const signupData = {
+        email: formData.email,
+        password: formData.password,
+        nickname: formData.nickname,
+        favoriteTeamId: formData.favoriteTeamId ? parseInt(formData.favoriteTeamId) : undefined,
+      }
       
-      // 임시 회원가입 성공 처리
-      setTimeout(() => {
+      const response = await signup(signupData)
+      
+      if (response.success) {
+        const { user, accessToken, refreshToken } = response.data
+        
+        // Zustand 스토어에 사용자 정보와 토큰 저장
+        setUser(user)
+        setTokens(accessToken, refreshToken)
+        
+        // localStorage에도 토큰 저장
+        localStorage.setItem('accessToken', accessToken)
+        localStorage.setItem('refreshToken', refreshToken)
+        
         setIsLoading(false)
-        navigate('/login')
-      }, 1000)
+        navigate('/')
+      } else {
+        setErrors({ general: response.message || '회원가입에 실패했습니다.' })
+        setIsLoading(false)
+      }
       
-    } catch (error) {
+    } catch (error: any) {
       setIsLoading(false)
-      setErrors({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' })
+      if (error.response?.data?.message) {
+        // 백엔드에서 전달된 구체적인 에러 메시지 사용
+        setErrors({ general: error.response.data.message })
+      } else if (error.response?.data?.errorCode) {
+        // 에러 코드에 따른 구체적인 메시지
+        const errorMessages: { [key: string]: string } = {
+          'USER_EMAIL_DUPLICATE': '이미 사용 중인 이메일입니다.',
+          'USER_NICKNAME_DUPLICATE': '이미 사용 중인 닉네임입니다.',
+          'COMMON_INVALID_INPUT': '입력 정보를 확인해주세요.',
+        }
+        const errorCode = error.response.data.errorCode
+        setErrors({ general: errorMessages[errorCode] || '회원가입에 실패했습니다.' })
+      } else {
+        setErrors({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' })
+      }
     }
   }
 
@@ -181,7 +220,7 @@ const Signup: React.FC = () => {
                   type="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="6자 이상 입력하세요"
+                  placeholder="8자 이상, 대/소문자, 숫자, 특수문자 포함"
                   className={`h-12 text-base bg-white border-gray-300 ${
                     errors.password ? 'border-red-500 focus:border-red-500' : ''
                   }`}
