@@ -1,9 +1,1 @@
-*.md linguist-documentation
-**/*.md linguist-documentation
-
-frontend/frontend-docs/** linguist-documentation
-frontend/frontend-prompt/** linguist-documentation
-backend/backend-docs/** linguist-documentation
-backend/backend-prompt/** linguist-documentation
-
-*.json linguist-generated
+*.html linguist-detectable=false
