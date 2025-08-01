@@ -1,15 +1,10 @@
 # Dependencies
-/node_modules
+node_modules/
 
 # Environment variables
 .env
 .env.*
 !.env.example
-
-# Database data (MySQL volumes)
-.db-data/
-*.ibd
-*.frm
 
 # Logs
 logs
@@ -36,4 +31,11 @@ Thumbs.db
 *.ntvs*
 *.njsproj
 *.sln
-*.sw? coverage/
+*.sw?
+
+# Temporary folders
+tmp/
+temp/
+
+# Coverage (common)
+coverage/
