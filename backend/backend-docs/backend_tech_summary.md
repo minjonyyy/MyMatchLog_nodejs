@@ -135,10 +135,12 @@ src/
 ### 7. 코드 포맷팅 가이드
 
 #### **Prettier 설정**
+
 - **설정 파일**: `.prettierrc`
 - **적용 범위**: 모든 JavaScript, JSON, YAML, Markdown 파일
 
 #### **포맷팅 명령어**
+
 ```bash
 # 코드 포맷팅 자동 수정
 npm run format
@@ -154,12 +156,14 @@ npm run lint:fix
 ```
 
 #### **자주 발생하는 포맷팅 문제**
+
 1. **들여쓰기 불일치**: 탭과 스페이스 혼용
 2. **줄 끝 문자**: Windows/Unix 줄바꿈 문자 차이
 3. **따옴표**: 작은따옴표/큰따옴표 통일
 4. **세미콜론**: 문장 끝 세미콜론 누락
 
 #### **해결 방법**
+
 ```bash
 # 1. 포맷팅 자동 수정
 npm run format
@@ -172,6 +176,7 @@ npm run ci:test  # 포맷팅 + 린팅 + 테스트 모두 실행
 ```
 
 #### **Git Hooks 설정 (권장)**
+
 ```bash
 # pre-commit 훅으로 자동 포맷팅 적용
 npx husky add .husky/pre-commit "npm run format"
