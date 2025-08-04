@@ -148,7 +148,7 @@ const MatchLogCreate: React.FC = () => {
     setHasSubmitted(true)
     
     // 필수 필드 검증
-    if (!data.stadium_id || !data.home_team_id || !data.away_team_id) {
+    if (!data.stadium_id || !data.home_team_id || data.home_team_id === 0 || !data.away_team_id || data.away_team_id === 0) {
       toast({
         title: "필수 정보 누락",
         description: "경기장, 홈팀, 원정팀을 모두 선택해주세요.",
@@ -165,6 +165,31 @@ const MatchLogCreate: React.FC = () => {
 
   const watchedHomeTeam = watch('home_team_id')
   const watchedAwayTeam = watch('away_team_id')
+  const watchedStadium = watch('stadium_id')
+
+  // 경기장별 홈팀 매핑
+  const getHomeTeamsByStadium = (stadiumId: number | undefined) => {
+    if (!stadiumId || !teamsData?.data.teams) return []
+    
+    // 경기장별 홈팀 매핑
+    const stadiumHomeTeams: { [key: number]: number[] } = {
+      1: [1, 2], // 잠실야구장: LG 트윈스(1), 두산 베어스(2)
+      2: [4], // 고척스카이돔: 키움 히어로즈(4)
+      3: [3], // 인천SSG랜더스필드: SSG 랜더스(3)
+      4: [6], // 광주기아챔피언스필드: KIA 타이거즈(6)
+      5: [7], // 사직야구장: 롯데 자이언츠(7)
+      6: [8], // 대구삼성라이온즈파크: 삼성 라이온즈(8)
+      7: [5], // 창원NC파크: NC 다이노스(5)
+      8: [10], // 수원KT위즈파크: kt wiz(10)
+      9: [9], // 대전한화생명이글스파크: 한화 이글스(9)
+    }
+    
+    const homeTeamIds = stadiumHomeTeams[stadiumId] || []
+    return teamsData.data.teams.filter(team => homeTeamIds.includes(team.id))
+  }
+
+  // 현재 선택된 경기장의 홈팀들
+  const availableHomeTeams = getHomeTeamsByStadium(watchedStadium)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-stone-100 py-8">
@@ -212,7 +237,16 @@ const MatchLogCreate: React.FC = () => {
                     <Label htmlFor="stadium_id" className="text-stone-700 font-medium">
                       경기장 *
                     </Label>
-                    <Select onValueChange={(value) => setValue('stadium_id', parseInt(value))}>
+                    <Select 
+                      value={watchedStadium ? watchedStadium.toString() : ""}
+                      onValueChange={(value) => {
+                        const stadiumId = parseInt(value)
+                        setValue('stadium_id', stadiumId)
+                        // 경기장이 변경되면 홈팀과 원정팀 초기화
+                        setValue('home_team_id', 0)
+                        setValue('away_team_id', 0)
+                      }}
+                    >
                       <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && !watch('stadium_id') ? 'border-red-300' : ''}`}>
                         <SelectValue placeholder="경기장을 선택해주세요" />
                       </SelectTrigger>
@@ -239,15 +273,23 @@ const MatchLogCreate: React.FC = () => {
                        <Label htmlFor="home_team_id" className="text-stone-700 font-medium">
                          홈팀 *
                        </Label>
-                       <Select onValueChange={(value) => setValue('home_team_id', parseInt(value))}>
-                         <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && !watch('home_team_id') ? 'border-red-300' : ''}`}>
-                           <SelectValue placeholder="홈팀을 선택해주세요" />
+                       <Select 
+                         value={watchedHomeTeam && watchedHomeTeam !== 0 ? watchedHomeTeam.toString() : ""}
+                         onValueChange={(value) => setValue('home_team_id', parseInt(value))}
+                         disabled={!watchedStadium}
+                       >
+                         <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && (!watch('home_team_id') || watch('home_team_id') === 0) ? 'border-red-300' : ''}`}>
+                           <SelectValue placeholder={!watchedStadium ? "먼저 경기장을 선택해주세요" : "홈팀을 선택해주세요"} />
                          </SelectTrigger>
                          <SelectContent className="bg-white border border-gray-200">
                            {teamsLoading ? (
                              <SelectItem value="loading" disabled>로딩 중...</SelectItem>
+                           ) : !watchedStadium ? (
+                             <SelectItem value="no-stadium" disabled>경기장을 먼저 선택해주세요</SelectItem>
+                           ) : availableHomeTeams.length === 0 ? (
+                             <SelectItem value="no-teams" disabled>선택 가능한 홈팀이 없습니다</SelectItem>
                            ) : (
-                             teamsData?.data.teams.map((team: Team) => (
+                             availableHomeTeams.map((team: Team) => (
                                <SelectItem 
                                  key={team.id} 
                                  value={team.id.toString()}
@@ -260,8 +302,11 @@ const MatchLogCreate: React.FC = () => {
                            )}
                          </SelectContent>
                        </Select>
-                       {hasSubmitted && !watch('home_team_id') && (
+                       {hasSubmitted && (!watch('home_team_id') || watch('home_team_id') === 0) && (
                          <p className="text-red-500 text-sm mt-1">홈팀을 선택해주세요</p>
+                       )}
+                       {watchedStadium && availableHomeTeams.length === 0 && (
+                         <p className="text-red-500 text-sm mt-1">이 경기장의 홈팀 정보가 없습니다</p>
                        )}
                      </div>
 
@@ -269,13 +314,19 @@ const MatchLogCreate: React.FC = () => {
                        <Label htmlFor="away_team_id" className="text-stone-700 font-medium">
                          원정팀 *
                        </Label>
-                       <Select onValueChange={(value) => setValue('away_team_id', parseInt(value))}>
-                         <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && !watch('away_team_id') ? 'border-red-300' : ''}`}>
-                           <SelectValue placeholder="원정팀을 선택해주세요" />
+                       <Select 
+                         value={watchedAwayTeam && watchedAwayTeam !== 0 ? watchedAwayTeam.toString() : ""}
+                         onValueChange={(value) => setValue('away_team_id', parseInt(value))}
+                         disabled={!watchedHomeTeam}
+                       >
+                         <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && (!watch('away_team_id') || watch('away_team_id') === 0) ? 'border-red-300' : ''}`}>
+                           <SelectValue placeholder={!watchedHomeTeam ? "먼저 홈팀을 선택해주세요" : "원정팀을 선택해주세요"} />
                          </SelectTrigger>
                          <SelectContent className="bg-white border border-gray-200">
                            {teamsLoading ? (
                              <SelectItem value="loading" disabled>로딩 중...</SelectItem>
+                           ) : !watchedHomeTeam ? (
+                             <SelectItem value="no-home-team" disabled>홈팀을 먼저 선택해주세요</SelectItem>
                            ) : (
                              teamsData?.data.teams.map((team: Team) => (
                                <SelectItem 
@@ -290,7 +341,7 @@ const MatchLogCreate: React.FC = () => {
                            )}
                          </SelectContent>
                        </Select>
-                       {hasSubmitted && !watch('away_team_id') && (
+                       {hasSubmitted && (!watch('away_team_id') || watch('away_team_id') === 0) && (
                          <p className="text-red-500 text-sm mt-1">원정팀을 선택해주세요</p>
                        )}
                      </div>

@@ -33,7 +33,6 @@ const stadiumsData = [
   { name: '창원NC파크', city: '창원', capacity: 22000 },
   { name: '수원KT위즈파크', city: '수원', capacity: 18000 },
   { name: '대전한화생명이글스파크', city: '대전', capacity: 13000 },
-  { name: '고양위즈파크', city: '고양', capacity: 20000 },
 ];
 
 const teamsData = [
@@ -53,8 +52,11 @@ const seedStadiums = async (connection) => {
   console.log('🚀 Starting to seed stadiums data...');
 
   // To prevent duplicate entries, clear the table first
+  // Clear teams first due to foreign key constraint
+  await connection.query('DELETE FROM teams');
   await connection.query('DELETE FROM stadiums');
   // Reset auto-increment counter
+  await connection.query('ALTER TABLE teams AUTO_INCREMENT = 1');
   await connection.query('ALTER TABLE stadiums AUTO_INCREMENT = 1');
 
   for (const stadium of stadiumsData) {

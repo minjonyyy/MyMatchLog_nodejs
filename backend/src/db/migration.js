@@ -69,15 +69,18 @@ const migrationQueries = [
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     match_date DATE NOT NULL,
-    home_team VARCHAR(50) NOT NULL,
-    away_team VARCHAR(50) NOT NULL,
-    stadium VARCHAR(100) NOT NULL,
+    home_team_id INT NOT NULL,
+    away_team_id INT NOT NULL,
+    stadium_id INT NOT NULL,
     result ENUM('WIN', 'LOSS', 'DRAW'),
     memo TEXT,
     ticket_image_url VARCHAR(2048),
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (home_team_id) REFERENCES teams(id),
+    FOREIGN KEY (away_team_id) REFERENCES teams(id),
+    FOREIGN KEY (stadium_id) REFERENCES stadiums(id)
   );`,
 
   // Create events table
