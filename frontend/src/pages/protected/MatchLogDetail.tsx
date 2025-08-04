@@ -173,11 +173,24 @@ const MatchLogDetail: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* 메인 정보 */}
-          <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6">
+          {/* 티켓 이미지와 경기 정보를 나란히 배치 */}
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* 티켓 이미지 */}
+            {matchLog.ticket_image_url && (
+              <Card className="shadow-lg bg-white">
+                <CardContent>
+                  <img
+                    src={matchLog.ticket_image_url}
+                    alt="티켓 이미지"
+                    className="w-full h-80 object-cover rounded-lg"
+                  />
+                </CardContent>
+              </Card>
+            )}
+
             {/* 경기 정보 */}
-            <Card className="shadow-lg bg-white">
+            <Card className="shadow-lg bg-white lg:col-span-2">
               <CardHeader>
                 <CardTitle className="text-2xl text-stone-800">경기 정보</CardTitle>
               </CardHeader>
@@ -213,46 +226,28 @@ const MatchLogDetail: React.FC = () => {
                 )}
               </CardContent>
             </Card>
-
-            {/* 티켓 이미지 */}
-            {matchLog.ticket_image_url && (
-              <Card className="shadow-lg bg-white">
-                <CardHeader>
-                  <CardTitle className="text-xl text-stone-800">티켓 이미지</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="border-2 border-dashed border-amber-200 rounded-lg p-4">
-                    <img
-                      src={matchLog.ticket_image_url}
-                      alt="티켓 이미지"
-                      className="w-full h-64 object-cover rounded-lg"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* 액션 버튼 */}
-            <Card className="shadow-lg bg-white">
-              <CardContent>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    onClick={() => navigate('/match-logs')}
-                    variant="outline"
-                    className="flex-1 border-amber-700 text-amber-700 hover:bg-amber-50"
-                  >
-                    목록으로 돌아가기
-                  </Button>
-                  <Button
-                    onClick={() => navigate('/match-logs/create')}
-                    className="flex-1 bg-amber-700 hover:bg-amber-800"
-                  >
-                    새 기록 작성
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
+
+          {/* 액션 버튼 */}
+          <Card className="shadow-lg bg-white">
+            <CardContent>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  onClick={() => navigate('/match-logs')}
+                  variant="outline"
+                  className="flex-1 border-amber-700 text-amber-700 hover:bg-amber-50"
+                >
+                  목록으로 돌아가기
+                </Button>
+                <Button
+                  onClick={() => navigate('/match-logs/create')}
+                  className="flex-1 bg-amber-700 hover:bg-amber-800"
+                >
+                  새 기록 작성
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
