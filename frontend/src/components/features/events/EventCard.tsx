@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -21,34 +22,23 @@ import { ko } from "date-fns/locale";
 
 interface EventCardProps {
   event: Event;
-  onParticipate?: (eventId: number) => void;
-  isParticipated?: boolean;
-  isLoading?: boolean;
-  showParticipateButton?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({
-  event,
-  onParticipate,
-  isParticipated = false,
-  isLoading = false,
-  showParticipateButton = true,
-}) => {
+export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const navigate = useNavigate();
   const status = getEventStatus(event);
   const statusColor = getEventStatusColor(status);
   const statusText = getEventStatusText(status);
 
-  const handleParticipate = () => {
-    if (onParticipate && !isLoading) {
-      onParticipate(event.id);
-    }
+  const handleCardClick = () => {
+    navigate(`/events/${event.id}`);
   };
 
-  const isFull = event.participant_count >= event.capacity;
-  const canParticipate = status === "ongoing" && !isParticipated && !isFull;
-
   return (
-    <Card className="h-full transition-all duration-200 hover:shadow-lg">
+    <Card
+      className="h-full transition-all duration-200 hover:shadow-lg cursor-pointer bg-white"
+      onClick={handleCardClick}
+    >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -82,7 +72,7 @@ export const EventCard: React.FC<EventCardProps> = ({
           <Users className="mr-2 h-4 w-4" />
           <span>
             {event.participant_count} / {event.capacity}명
-            {isFull && (
+            {event.participant_count >= event.capacity && (
               <span className="ml-1 text-red-600 font-medium">(마감)</span>
             )}
           </span>
@@ -94,30 +84,6 @@ export const EventCard: React.FC<EventCardProps> = ({
           <span className="font-medium text-gray-800">{event.gift}</span>
         </div>
       </CardContent>
-
-      {showParticipateButton && (
-        <CardFooter className="pt-3">
-          {isParticipated ? (
-            <Button variant="outline" className="w-full" disabled>
-              참여 완료
-            </Button>
-          ) : canParticipate ? (
-            <Button
-              onClick={handleParticipate}
-              disabled={isLoading}
-              className="w-full"
-            >
-              {isLoading ? "처리 중..." : "참여 신청"}
-            </Button>
-          ) : (
-            <Button variant="outline" className="w-full" disabled>
-              {status === "upcoming" && "시작 전"}
-              {status === "ended" && "종료됨"}
-              {isFull && "정원 마감"}
-            </Button>
-          )}
-        </CardFooter>
-      )}
     </Card>
   );
 };

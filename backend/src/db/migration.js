@@ -58,6 +58,7 @@ const migrationQueries = [
     password VARCHAR(255) NOT NULL,
     nickname VARCHAR(100) NOT NULL UNIQUE,
     favorite_team_id INT,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
     refresh_token VARCHAR(512),
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

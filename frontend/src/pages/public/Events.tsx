@@ -4,7 +4,7 @@ import { EventFilter } from "@/components/features/events/EventFilter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
-import { useEvents, useEventParticipation } from "@/hooks/useEvents";
+import { useEvents } from "@/hooks/useEvents";
 import type { EventFilter as EventFilterType } from "@/types/events";
 import { useNavigate } from "react-router-dom";
 
@@ -13,11 +13,6 @@ export const Events: React.FC = () => {
   const [filter, setFilter] = useState<EventFilterType>({});
 
   const { data: events, isLoading, error } = useEvents();
-  const participationMutation = useEventParticipation();
-
-  const handleParticipate = (eventId: number) => {
-    participationMutation.mutate(eventId);
-  };
 
   const handleFilterChange = (newFilter: EventFilterType) => {
     setFilter(newFilter);
@@ -65,12 +60,7 @@ export const Events: React.FC = () => {
         ) : events && events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                onParticipate={handleParticipate}
-                isLoading={participationMutation.isPending}
-              />
+              <EventCard key={event.id} event={event} />
             ))}
           </div>
         ) : (
