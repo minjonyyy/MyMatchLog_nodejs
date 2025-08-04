@@ -8,13 +8,14 @@ import Login from './pages/public/Login'
 import Signup from './pages/public/Signup'
 import MatchLogsPage from './pages/protected/MatchLogs'
 import MatchLogCreate from './pages/protected/MatchLogCreate'
+import MatchLogDetail from './pages/protected/MatchLogDetail'
 import ProtectedRoute from './components/features/auth/ProtectedRoute'
 import AuthInitializer from './components/features/auth/AuthInitializer'
 
 const Events = () => <div className="p-8">🎉 이벤트 목록 페이지</div>
 const EventDetail = () => <div className="p-8">🎉 이벤트 상세 페이지</div>
 const MatchLogs = () => <div className="p-8">📊 직관 기록 목록 페이지</div>
-const MatchLogDetail = () => <div className="p-8">📋 직관 기록 상세 페이지</div>
+
 const MatchLogEdit = () => <div className="p-8">✏️ 직관 기록 수정 페이지</div>
 const MyPage = () => <div className="p-8">👤 마이페이지</div>
 const Settings = () => <div className="p-8">⚙️ 설정 페이지</div>

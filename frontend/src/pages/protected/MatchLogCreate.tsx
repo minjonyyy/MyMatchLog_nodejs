@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { createMatchLog, getTeams, getStadiums } from '../../services/matchLogs'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { getTeams, getStadiums } from '../../services/matchLogs'
+import { useCreateMatchLog } from '../../hooks/useMatchLogs'
 import { parseTicketImage } from '../../services/ocr'
 import type { CreateMatchLogRequest, Team, Stadium } from '../../types/matchLogs'
 import type { OcrExtractedInfo } from '../../types/ocr'
@@ -17,11 +18,26 @@ import { useToast } from '../../hooks/use-toast'
 const MatchLogCreate: React.FC = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
+  const queryClient = useQueryClient()
   const [ticketImage, setTicketImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isOcrProcessing, setIsOcrProcessing] = useState(false)
   const [showOcrHelp, setShowOcrHelp] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState(false)
+
+  // 날짜 검증 함수
+  const validateDate = (dateString: string) => {
+    const selectedDate = new Date(dateString)
+    selectedDate.setHours(0, 0, 0, 0) // 선택된 날짜도 시간을 00:00:00으로 설정
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // 시간을 00:00:00으로 설정
+    
+    
+    if (selectedDate > today) {
+      return '미래 날짜는 선택할 수 없습니다. 오늘까지의 날짜만 선택해주세요.'
+    }
+    return true
+  }
 
   const {
     register,
@@ -48,23 +64,7 @@ const MatchLogCreate: React.FC = () => {
   })
 
   // 직관 기록 생성
-  const createMatchLogMutation = useMutation({
-    mutationFn: createMatchLog,
-    onSuccess: (data) => {
-      toast({
-        title: "성공!",
-        description: "직관 기록이 성공적으로 등록되었습니다.",
-      })
-      navigate('/match-logs')
-    },
-    onError: (error: any) => {
-      toast({
-        title: "오류 발생",
-        description: error.response?.data?.message || "직관 기록 등록에 실패했습니다.",
-        variant: "destructive",
-      })
-    }
-  })
+  const createMatchLogMutation = useCreateMatchLog()
 
   // 이미지 업로드 처리
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +101,16 @@ const MatchLogCreate: React.FC = () => {
         
         // 추출된 정보로 폼 필드 채우기
         if (extractedInfo.match_date) {
-          setValue('match_date', extractedInfo.match_date)
+          const dateValidation = validateDate(extractedInfo.match_date)
+          if (dateValidation === true) {
+            setValue('match_date', extractedInfo.match_date)
+          } else {
+            toast({
+              title: "OCR 날짜 오류",
+              description: "추출된 날짜가 미래 날짜입니다. 수동으로 수정해주세요.",
+              variant: "destructive",
+            })
+          }
         }
         
         // 팀 이름으로 ID 찾기
@@ -147,6 +156,17 @@ const MatchLogCreate: React.FC = () => {
   const onSubmit = (data: CreateMatchLogRequest) => {
     setHasSubmitted(true)
     
+    // 날짜 검증
+    const dateValidation = validateDate(data.match_date)
+    if (dateValidation !== true) {
+      toast({
+        title: "날짜 오류",
+        description: dateValidation,
+        variant: "destructive",
+      })
+      return
+    }
+    
     // 필수 필드 검증
     if (!data.stadium_id || !data.home_team_id || data.home_team_id === 0 || !data.away_team_id || data.away_team_id === 0) {
       toast({
@@ -160,7 +180,23 @@ const MatchLogCreate: React.FC = () => {
     if (ticketImage) {
       data.ticket_image = ticketImage
     }
-    createMatchLogMutation.mutate(data)
+    
+    createMatchLogMutation.mutate(data, {
+      onSuccess: () => {
+        toast({
+          title: "성공!",
+          description: "직관 기록이 성공적으로 등록되었습니다.",
+        })
+        navigate('/match-logs')
+      },
+      onError: (error: any) => {
+        toast({
+          title: "오류 발생",
+          description: error.response?.data?.message || "직관 기록 등록에 실패했습니다.",
+          variant: "destructive",
+        })
+      }
+    })
   }
 
   const watchedHomeTeam = watch('home_team_id')
@@ -224,8 +260,12 @@ const MatchLogCreate: React.FC = () => {
                     <Input
                       id="match_date"
                       type="date"
-                      {...register('match_date', { required: '경기 날짜를 선택해주세요' })}
-                      className="mt-2"
+                      max={new Date().toISOString().split('T')[0]} // 오늘까지만 선택 가능
+                      {...register('match_date', { 
+                        required: '경기 날짜를 선택해주세요',
+                        validate: validateDate
+                      })}
+                      className={`mt-2 ${errors.match_date ? 'border-red-300' : ''}`}
                     />
                     {errors.match_date && (
                       <p className="text-red-500 text-sm mt-1">{errors.match_date.message}</p>

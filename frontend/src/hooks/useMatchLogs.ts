@@ -19,7 +19,9 @@ export const useMatchLogs = (params?: MatchLogsQueryParams) => {
   return useQuery({
     queryKey: ['matchLogs', params],
     queryFn: () => getMatchLogs(params),
-    staleTime: 5 * 60 * 1000, // 5분
+    staleTime: 1 * 60 * 1000, // 1분 (더 자주 갱신)
+    refetchOnWindowFocus: true, // 창이 포커스될 때 갱신
+    refetchOnMount: true, // 컴포넌트 마운트 시 갱신
   })
 }
 
