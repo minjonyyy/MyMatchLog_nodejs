@@ -33,7 +33,8 @@ export const updateMyInfo = async (data: UpdateUserRequest): Promise<ApiResponse
 }
 
 // 로그아웃
-export const logout = async (): Promise<ApiResponse<any>> => {
-  const response = await api.post<ApiResponse<any>>('/users/logout')
+export const logout = async (refreshToken?: string): Promise<ApiResponse<any>> => {
+  const data = refreshToken ? { refreshToken } : {}
+  const response = await api.post<ApiResponse<any>>('/users/logout', data)
   return response.data
 } 

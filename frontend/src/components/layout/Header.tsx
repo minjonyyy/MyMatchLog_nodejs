@@ -11,14 +11,17 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      // 백엔드 로그아웃 API 호출
-      await logout()
+      // Refresh Token으로 로그아웃 시도 (Access Token 만료 시에도 가능)
+      const refreshToken = localStorage.getItem('refreshToken') || undefined
+      await logout(refreshToken)
     } catch (error) {
       console.error('로그아웃 API 호출 실패:', error)
+      // API 실패해도 프론트엔드는 로그아웃 처리
     } finally {
-      // 프론트엔드 로그아웃 처리
+      // 항상 프론트엔드 상태 초기화
       logoutStore()
-      // 홈으로 이동
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
       window.location.href = '/'
     }
   }

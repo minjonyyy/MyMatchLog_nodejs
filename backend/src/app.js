@@ -10,6 +10,7 @@ import swaggerUi from 'swagger-ui-express';
 import specs from './config/swagger.js';
 import apiRouter from './routes/index.js';
 import errorMiddleware from './middlewares/error.middleware.js';
+import { startSessionCleanupScheduler } from './utils/session-cleanup.util.js';
 
 dotenv.config();
 const app = express();
@@ -70,6 +71,8 @@ const startServer = async () => {
     }
     app.listen(port, '0.0.0.0', () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
+      // 세션 정리 스케줄러 시작
+      startSessionCleanupScheduler();
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
