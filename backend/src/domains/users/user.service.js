@@ -53,7 +53,7 @@ export const signUp = async (email, password, nickname) => {
     hashedPassword,
     nickname,
   );
-  
+
   // 회원가입 후 자동 로그인을 위한 토큰 생성
   const tokenPayload = {
     userId: newUser.id,
@@ -79,10 +79,10 @@ export const signUp = async (email, password, nickname) => {
   // refresh_token을 DB에 저장
   await userRepository.updateRefreshToken(newUser.id, refreshToken);
 
-  return { 
-    user: newUser, 
-    accessToken, 
-    refreshToken 
+  return {
+    user: newUser,
+    accessToken,
+    refreshToken,
   };
 };
 
@@ -203,7 +203,7 @@ export const logout = async (userId) => {
 
   // refresh_token 제거
   await userRepository.updateRefreshToken(userId, null);
-  
+
   return { message: '로그아웃이 완료되었습니다.' };
 };
 

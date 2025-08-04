@@ -50,7 +50,7 @@ export const logout = async (req, res) => {
           process.env.REFRESH_TOKEN_SECRET_KEY,
         );
         userId = decoded.userId;
-      } catch (_error) {
+      } catch {
         return errorResponse(
           res,
           new Error('유효하지 않은 Refresh Token입니다.'),
