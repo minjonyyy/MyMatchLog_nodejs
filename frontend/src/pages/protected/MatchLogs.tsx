@@ -176,10 +176,10 @@ const MatchLogs: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {filteredMatchLogs.map((matchLog) => (
-              <Card key={matchLog.id} className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 rounded-2xl overflow-hidden">
+              <Card key={matchLog.id} className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 rounded-2xl overflow-hidden h-[28rem]">
                 {/* 티켓 이미지 */}
-                {matchLog.ticket_image_url && (
-                  <div className="h-48 bg-gradient-to-br from-amber-100 to-stone-100 relative overflow-hidden">
+                {matchLog.ticket_image_url ? (
+                  <div className="h-56 bg-gradient-to-br from-amber-100 to-stone-100 relative overflow-hidden">
                     <img
                       src={matchLog.ticket_image_url}
                       alt="티켓 이미지"
@@ -191,9 +191,13 @@ const MatchLogs: React.FC = () => {
                       </span>
                     </div>
                   </div>
+                ) : (
+                  <div className="h-56 bg-gradient-to-br from-amber-50 to-stone-50 flex items-center justify-center">
+                    <span className="text-4xl text-amber-300">⚾</span>
+                  </div>
                 )}
                 
-                <CardContent className="p-6">
+                <CardContent className="p-6 flex flex-col h-full">
                   {/* 경기 정보 */}
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
@@ -226,13 +230,18 @@ const MatchLogs: React.FC = () => {
                   
                   {/* 메모 */}
                   {matchLog.memo && (
-                    <div className="mb-4 p-3 bg-amber-50 rounded-lg">
-                      <p className="text-sm text-stone-700">{matchLog.memo}</p>
+                    <div className="mb-4 p-3 bg-amber-50 rounded-lg min-h-[3rem] max-h-[4rem] overflow-hidden">
+                      <p className="text-sm text-stone-700 line-clamp-2">
+                        {matchLog.memo.length > 80 
+                          ? `${matchLog.memo.substring(0, 80)}...` 
+                          : matchLog.memo
+                        }
+                      </p>
                     </div>
                   )}
                   
                   {/* 액션 버튼 */}
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 mt-auto">
                     <Link to={`/match-logs/${matchLog.id}`} className="flex-1">
                       <Button variant="outline" className="w-full border-amber-300 text-amber-700 hover:bg-amber-50">
                         상세보기
