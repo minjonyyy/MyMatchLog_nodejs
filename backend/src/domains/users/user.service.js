@@ -53,7 +53,37 @@ export const signUp = async (email, password, nickname) => {
     hashedPassword,
     nickname,
   );
-  return newUser;
+  
+  // 회원가입 후 자동 로그인을 위한 토큰 생성
+  const tokenPayload = {
+    userId: newUser.id,
+    isAdmin: newUser.is_admin || false,
+  };
+
+  const accessToken = jwt.sign(
+    tokenPayload,
+    process.env.ACCESS_TOKEN_SECRET_KEY,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '1h',
+    },
+  );
+
+  const refreshToken = jwt.sign(
+    tokenPayload,
+    process.env.REFRESH_TOKEN_SECRET_KEY,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '14d',
+    },
+  );
+
+  // refresh_token을 DB에 저장
+  await userRepository.updateRefreshToken(newUser.id, refreshToken);
+
+  return { 
+    user: newUser, 
+    accessToken, 
+    refreshToken 
+  };
 };
 
 export const login = async (email, password) => {

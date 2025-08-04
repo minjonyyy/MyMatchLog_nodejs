@@ -54,9 +54,11 @@
   - [x] Controller, Service, Repository 계층 구현
   - [x] 이메일, 닉네임 중복 검사 로직
   - [x] 비밀번호 해싱 (bcrypt) 적용
+  - [x] 회원가입 후 자동 로그인 기능 ✅ (JWT 토큰 자동 발급)
 - [x] **BE-003: 사용자 로그인 (`POST /api/users/login`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 로그인 성공 시 JWT(Access Token, Refresh Token) 발급
+  - [x] 이미 로그인된 사용자 재로그인 방지 ✅ (refresh_token 체크)
 - [x] **BE-004: Access Token 갱신 (`POST /api/users/token`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] Refresh Token을 검증하여 새로운 Access Token 발급
@@ -66,6 +68,10 @@
 - [x] **BE-006: 내 정보 수정 (`PATCH /api/users/me`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 닉네임, 응원팀 선택적 업데이트 로직
+- [x] **BE-007: 사용자 로그아웃 (`POST /api/users/logout`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 인증 미들웨어를 통한 사용자 식별
+  - [x] refresh_token 제거로 세션 무효화 ✅
 
 ---
 

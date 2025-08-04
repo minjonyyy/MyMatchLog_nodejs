@@ -127,10 +127,16 @@ const Signup: React.FC = () => {
       const response = await signup(signupData)
       
       if (response.success) {
-        const { user, accessToken, refreshToken } = response.data
+        const { accessToken, refreshToken } = response.data
+        
+        // 토큰에서 사용자 정보 추출 (JWT 디코딩)
+        const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]))
         
         // Zustand 스토어에 사용자 정보와 토큰 저장
-        setUser(user)
+        setUser({
+          id: tokenPayload.userId,
+          isAdmin: tokenPayload.isAdmin || false
+        })
         setTokens(accessToken, refreshToken)
         
         // localStorage에도 토큰 저장
@@ -146,18 +152,11 @@ const Signup: React.FC = () => {
       
     } catch (error: any) {
       setIsLoading(false)
-      if (error.response?.data?.message) {
+      if (error.response?.data?.error?.message) {
         // 백엔드에서 전달된 구체적인 에러 메시지 사용
+        setErrors({ general: error.response.data.error.message })
+      } else if (error.response?.data?.message) {
         setErrors({ general: error.response.data.message })
-      } else if (error.response?.data?.errorCode) {
-        // 에러 코드에 따른 구체적인 메시지
-        const errorMessages: { [key: string]: string } = {
-          'USER_EMAIL_DUPLICATE': '이미 사용 중인 이메일입니다.',
-          'USER_NICKNAME_DUPLICATE': '이미 사용 중인 닉네임입니다.',
-          'COMMON_INVALID_INPUT': '입력 정보를 확인해주세요.',
-        }
-        const errorCode = error.response.data.errorCode
-        setErrors({ general: errorMessages[errorCode] || '회원가입에 실패했습니다.' })
       } else {
         setErrors({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' })
       }

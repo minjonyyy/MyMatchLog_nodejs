@@ -8,10 +8,14 @@ import * as userService from './user.service.js';
 export const signUp = async (req, res) => {
   try {
     const { email, password, nickname } = req.body;
-    const newUser = await userService.signUp(email, password, nickname);
+    const result = await userService.signUp(email, password, nickname);
     return createdResponse(
       res,
-      { userId: newUser.id },
+      { 
+        userId: result.user.id,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken
+      },
       '회원가입이 완료되었습니다.',
     );
   } catch (error) {

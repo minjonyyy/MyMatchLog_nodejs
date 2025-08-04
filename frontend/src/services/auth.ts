@@ -1,5 +1,5 @@
 import api from './api'
-import type { LoginRequest, LoginResponse, SignupRequest, TokenRefreshRequest, TokenRefreshResponse, UpdateUserRequest } from '../types/auth'
+import type { LoginRequest, LoginResponse, SignupRequest, SignupResponse, TokenRefreshRequest, TokenRefreshResponse, UpdateUserRequest } from '../types/auth'
 import type { ApiResponse } from '../types/api'
 
 // 로그인
@@ -9,8 +9,8 @@ export const login = async (data: LoginRequest): Promise<ApiResponse<LoginRespon
 }
 
 // 회원가입
-export const signup = async (data: SignupRequest): Promise<ApiResponse<LoginResponse>> => {
-  const response = await api.post<ApiResponse<LoginResponse>>('/users/signup', data)
+export const signup = async (data: SignupRequest): Promise<ApiResponse<SignupResponse>> => {
+  const response = await api.post<ApiResponse<SignupResponse>>('/users/signup', data)
   return response.data
 }
 
@@ -29,5 +29,11 @@ export const getMyInfo = async (): Promise<ApiResponse<any>> => {
 // 내 정보 수정
 export const updateMyInfo = async (data: UpdateUserRequest): Promise<ApiResponse<any>> => {
   const response = await api.patch<ApiResponse<any>>('/users/me', data)
+  return response.data
+}
+
+// 로그아웃
+export const logout = async (): Promise<ApiResponse<any>> => {
+  const response = await api.post<ApiResponse<any>>('/users/logout')
   return response.data
 } 

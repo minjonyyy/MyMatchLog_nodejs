@@ -1,20 +1,26 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
+import { logout } from '../../services/auth'
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 
 const Header: React.FC = () => {
   const location = useLocation()
-  const { user, isAuthenticated, logout } = useAuthStore()
+  const { user, isAuthenticated, logout: logoutStore } = useAuthStore()
 
-  const handleLogout = () => {
-    logout()
-    // localStorage에서 토큰 제거
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    // 홈으로 이동
-    window.location.href = '/'
+  const handleLogout = async () => {
+    try {
+      // 백엔드 로그아웃 API 호출
+      await logout()
+    } catch (error) {
+      console.error('로그아웃 API 호출 실패:', error)
+    } finally {
+      // 프론트엔드 로그아웃 처리
+      logoutStore()
+      // 홈으로 이동
+      window.location.href = '/'
+    }
   }
 
   const isActive = (path: string) => {

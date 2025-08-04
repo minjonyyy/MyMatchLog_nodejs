@@ -1,13 +1,14 @@
 // 사용자 정보 타입
 export interface User {
   id: number
-  email: string
-  nickname: string
+  email?: string
+  nickname?: string
   favoriteTeamId?: number
   favoriteTeamName?: string
   role?: 'user' | 'admin'
-  createdAt: string
-  updatedAt: string
+  isAdmin?: boolean
+  createdAt?: string
+  updatedAt?: string
 }
 
 // 로그인 요청 타입
@@ -18,7 +19,6 @@ export interface LoginRequest {
 
 // 로그인 응답 타입
 export interface LoginResponse {
-  user: User
   accessToken: string
   refreshToken: string
 }
@@ -29,6 +29,13 @@ export interface SignupRequest {
   password: string
   nickname: string
   favoriteTeamId?: number
+}
+
+// 회원가입 응답 타입
+export interface SignupResponse {
+  userId: number
+  accessToken: string
+  refreshToken: string
 }
 
 // 토큰 갱신 요청 타입

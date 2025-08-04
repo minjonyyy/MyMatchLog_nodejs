@@ -66,10 +66,16 @@ const Login: React.FC = () => {
       const response = await login(formData)
       
       if (response.success) {
-        const { user, accessToken, refreshToken } = response.data
+        const { accessToken, refreshToken } = response.data
+        
+        // 토큰에서 사용자 정보 추출 (JWT 디코딩)
+        const tokenPayload = JSON.parse(atob(accessToken.split('.')[1]))
         
         // Zustand 스토어에 사용자 정보와 토큰 저장
-        setUser(user)
+        setUser({
+          id: tokenPayload.userId,
+          isAdmin: tokenPayload.isAdmin || false
+        })
         setTokens(accessToken, refreshToken)
         
         // localStorage에도 토큰 저장 (api.ts에서 사용)
@@ -85,7 +91,10 @@ const Login: React.FC = () => {
       
     } catch (error: any) {
       setIsLoading(false)
-      if (error.response?.data?.message) {
+      if (error.response?.data?.error?.message) {
+        // 백엔드에서 전달된 구체적인 에러 메시지 사용
+        setErrors({ general: error.response.data.error.message })
+      } else if (error.response?.data?.message) {
         setErrors({ general: error.response.data.message })
       } else {
         setErrors({ general: '로그인에 실패했습니다. 다시 시도해주세요.' })
