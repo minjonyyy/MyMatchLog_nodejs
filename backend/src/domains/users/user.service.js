@@ -73,6 +73,14 @@ export const login = async (email, password) => {
     );
   }
 
+  // 이미 로그인된 사용자인지 확인 (refresh_token이 있는 경우)
+  if (user.refresh_token) {
+    throw new ConflictError(
+      '이미 로그인된 상태입니다. 로그아웃 후 다시 시도해주세요.',
+      'USER_ALREADY_LOGGED_IN',
+    );
+  }
+
   // JWT 토큰에 관리자 권한 정보 포함
   const tokenPayload = {
     userId: user.id,
@@ -152,6 +160,21 @@ export const getUserMe = async (userId) => {
   delete userInfo.password;
   delete userInfo.refresh_token;
   return userInfo;
+};
+
+export const logout = async (userId) => {
+  const user = await userRepository.findUserById(userId);
+  if (!user) {
+    throw new NotFoundError(
+      '해당 사용자를 찾을 수 없습니다.',
+      'USER_NOT_FOUND',
+    );
+  }
+
+  // refresh_token 제거
+  await userRepository.updateRefreshToken(userId, null);
+  
+  return { message: '로그아웃이 완료되었습니다.' };
 };
 
 export const updateUserMe = async (userId, updateData) => {

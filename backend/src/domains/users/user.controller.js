@@ -29,6 +29,16 @@ export const login = async (req, res) => {
   }
 };
 
+export const logout = async (req, res) => {
+  try {
+    const userId = req.user.userId; // auth 미들웨어에서 설정된 사용자 ID
+    const result = await userService.logout(userId);
+    return successResponse(res, result, '로그아웃이 완료되었습니다.');
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};
+
 export const refreshAccessToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
