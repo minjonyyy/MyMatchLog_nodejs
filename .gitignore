@@ -39,3 +39,9 @@ temp/
 
 # Coverage (common)
 coverage/
+
+# Database files
+.db-data/
+*.db
+*.sqlite
+*.sqlite3
