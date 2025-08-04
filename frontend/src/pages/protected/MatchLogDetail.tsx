@@ -134,10 +134,10 @@ const MatchLogDetail: React.FC = () => {
                   삭제
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="bg-white border border-gray-200">
                 <DialogHeader>
-                  <DialogTitle>직관 기록 삭제</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="text-gray-900">직관 기록 삭제</DialogTitle>
+                  <DialogDescription className="text-gray-600">
                     이 직관 기록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
                   </DialogDescription>
                 </DialogHeader>
