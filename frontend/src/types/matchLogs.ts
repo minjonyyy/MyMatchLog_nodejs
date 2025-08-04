@@ -25,7 +25,7 @@ export interface MatchLog {
   home_team: Team
   away_team: Team
   stadium: Stadium
-  result: 'WIN' | 'LOSS' | 'DRAW'
+  result: 'WIN' | 'LOSS' | 'DRAW' | 'CANCELLED'
   memo?: string
   ticket_image_url?: string
   created_at: string
@@ -63,7 +63,7 @@ export interface CreateMatchLogRequest {
   stadium_id: number
   home_team_id: number
   away_team_id: number
-  result?: 'WIN' | 'LOSS' | 'DRAW'
+  result?: 'WIN' | 'LOSS' | 'DRAW' | 'CANCELLED'
   memo?: string
   ticket_image?: File
 }
@@ -73,7 +73,7 @@ export interface UpdateMatchLogRequest {
   stadium_id?: number
   home_team_id?: number
   away_team_id?: number
-  result?: 'WIN' | 'LOSS' | 'DRAW'
+  result?: 'WIN' | 'LOSS' | 'DRAW' | 'CANCELLED'
   memo?: string
   ticket_image?: File
 }
