@@ -109,13 +109,18 @@ const MatchLogDetail: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-stone-100 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 헤더 */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-stone-800 mb-2">
-              직관 기록 상세
+            <h1 className="text-3xl font-bold text-stone-800 mb-3">
+              {matchLog.home_team.name} vs {matchLog.away_team.name}
             </h1>
-            <p className="text-xl text-stone-600">
-              {matchLog.match_date} • {matchLog.stadium.name}
+            <p className="text-lg text-stone-600">
+              {new Date(matchLog.match_date).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+              })} • {matchLog.stadium.name}
             </p>
           </div>
           
@@ -177,15 +182,9 @@ const MatchLogDetail: React.FC = () => {
                 <CardTitle className="text-2xl text-stone-800">경기 정보</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-stone-600 mb-1">경기 날짜</p>
-                    <p className="text-lg text-stone-800">{matchLog.match_date}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-stone-600 mb-1">경기장</p>
-                    <p className="text-lg text-stone-800">{matchLog.stadium.name} ({matchLog.stadium.city})</p>
-                  </div>
+                <div>
+                  <p className="text-sm font-medium text-stone-600 mb-1">경기장</p>
+                  <p className="text-lg text-stone-800">{matchLog.stadium.name} ({matchLog.stadium.city})</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -232,48 +231,25 @@ const MatchLogDetail: React.FC = () => {
                 </CardContent>
               </Card>
             )}
-          </div>
-
-          {/* 사이드바 */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* 기록 정보 */}
-            <Card className="shadow-lg bg-white">
-              <CardHeader>
-                <CardTitle className="text-xl text-stone-800">기록 정보</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="text-sm font-medium text-stone-600 mb-1">작성일</p>
-                  <p className="text-stone-800">{new Date(matchLog.created_at).toLocaleDateString('ko-KR')}</p>
-                </div>
-                {matchLog.updated_at !== matchLog.created_at && (
-                  <div>
-                    <p className="text-sm font-medium text-stone-600 mb-1">수정일</p>
-                    <p className="text-stone-800">{new Date(matchLog.updated_at).toLocaleDateString('ko-KR')}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
 
             {/* 액션 버튼 */}
             <Card className="shadow-lg bg-white">
-              <CardHeader>
-                <CardTitle className="text-xl text-stone-800">액션</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button
-                  onClick={() => navigate('/match-logs')}
-                  variant="outline"
-                  className="w-full border-amber-700 text-amber-700 hover:bg-amber-50"
-                >
-                  목록으로 돌아가기
-                </Button>
-                <Button
-                  onClick={() => navigate('/match-logs/create')}
-                  className="w-full bg-amber-700 hover:bg-amber-800"
-                >
-                  새 기록 작성
-                </Button>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    onClick={() => navigate('/match-logs')}
+                    variant="outline"
+                    className="flex-1 border-amber-700 text-amber-700 hover:bg-amber-50"
+                  >
+                    목록으로 돌아가기
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/match-logs/create')}
+                    className="flex-1 bg-amber-700 hover:bg-amber-800"
+                  >
+                    새 기록 작성
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
