@@ -1,0 +1,123 @@
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar, Users, Gift } from "lucide-react";
+import type { Event } from "@/types/events";
+import {
+  getEventStatus,
+  getEventStatusColor,
+  getEventStatusText,
+} from "@/services/events";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+
+interface EventCardProps {
+  event: Event;
+  onParticipate?: (eventId: number) => void;
+  isParticipated?: boolean;
+  isLoading?: boolean;
+  showParticipateButton?: boolean;
+}
+
+export const EventCard: React.FC<EventCardProps> = ({
+  event,
+  onParticipate,
+  isParticipated = false,
+  isLoading = false,
+  showParticipateButton = true,
+}) => {
+  const status = getEventStatus(event);
+  const statusColor = getEventStatusColor(status);
+  const statusText = getEventStatusText(status);
+
+  const handleParticipate = () => {
+    if (onParticipate && !isLoading) {
+      onParticipate(event.id);
+    }
+  };
+
+  const isFull = event.participant_count >= event.capacity;
+  const canParticipate = status === "ongoing" && !isParticipated && !isFull;
+
+  return (
+    <Card className="h-full transition-all duration-200 hover:shadow-lg">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-2">
+              {event.title}
+            </CardTitle>
+            <CardDescription className="mt-2 text-sm text-gray-600 line-clamp-2">
+              {event.description}
+            </CardDescription>
+          </div>
+          <Badge className={`ml-2 flex-shrink-0 ${statusColor}`}>
+            {statusText}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-3">
+        {/* 이벤트 기간 */}
+        <div className="flex items-center text-sm text-gray-600">
+          <Calendar className="mr-2 h-4 w-4" />
+          <span>
+            {format(new Date(event.start_at), "yyyy.MM.dd HH:mm", {
+              locale: ko,
+            })}{" "}
+            ~ {format(new Date(event.end_at), "MM.dd HH:mm", { locale: ko })}
+          </span>
+        </div>
+
+        {/* 참여자 수 */}
+        <div className="flex items-center text-sm text-gray-600">
+          <Users className="mr-2 h-4 w-4" />
+          <span>
+            {event.participant_count} / {event.capacity}명
+            {isFull && (
+              <span className="ml-1 text-red-600 font-medium">(마감)</span>
+            )}
+          </span>
+        </div>
+
+        {/* 경품 정보 */}
+        <div className="flex items-center text-sm text-gray-600">
+          <Gift className="mr-2 h-4 w-4" />
+          <span className="font-medium text-gray-800">{event.gift}</span>
+        </div>
+      </CardContent>
+
+      {showParticipateButton && (
+        <CardFooter className="pt-3">
+          {isParticipated ? (
+            <Button variant="outline" className="w-full" disabled>
+              참여 완료
+            </Button>
+          ) : canParticipate ? (
+            <Button
+              onClick={handleParticipate}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? "처리 중..." : "참여 신청"}
+            </Button>
+          ) : (
+            <Button variant="outline" className="w-full" disabled>
+              {status === "upcoming" && "시작 전"}
+              {status === "ended" && "종료됨"}
+              {isFull && "정원 마감"}
+            </Button>
+          )}
+        </CardFooter>
+      )}
+    </Card>
+  );
+};
