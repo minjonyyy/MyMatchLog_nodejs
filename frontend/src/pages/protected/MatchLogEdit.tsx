@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getTeams, getStadiums } from '../../services/matchLogs'
-import { useCreateMatchLog } from '../../hooks/useMatchLogs'
+import { getMatchLog, getTeams, getStadiums, updateMatchLog } from '../../services/matchLogs'
 import { parseTicketImage } from '../../services/ocr'
-import type { CreateMatchLogRequest, Team, Stadium } from '../../types/matchLogs'
+import type { UpdateMatchLogRequest, Team, Stadium, MatchLog } from '../../types/matchLogs'
 import type { OcrExtractedInfo } from '../../types/ocr'
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
@@ -15,7 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { useToast } from '../../hooks/use-toast'
 
-const MatchLogCreate: React.FC = () => {
+const MatchLogEdit: React.FC = () => {
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { toast } = useToast()
   const queryClient = useQueryClient()
@@ -24,13 +24,16 @@ const MatchLogCreate: React.FC = () => {
   const [isOcrProcessing, setIsOcrProcessing] = useState(false)
   const [showOcrHelp, setShowOcrHelp] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  
+
 
   // 날짜 검증 함수
-  const validateDate = (dateString: string) => {
+  const validateDate = (dateString: string | undefined) => {
+    if (!dateString) return true
     const selectedDate = new Date(dateString)
-    selectedDate.setHours(0, 0, 0, 0) // 선택된 날짜도 시간을 00:00:00으로 설정
+    selectedDate.setHours(0, 0, 0, 0)
     const today = new Date()
-    today.setHours(0, 0, 0, 0) // 시간을 00:00:00으로 설정
+    today.setHours(0, 0, 0, 0)
     
     if (selectedDate > today) {
       return '미래 날짜는 선택할 수 없습니다. 오늘까지의 날짜만 선택해주세요.'
@@ -43,11 +46,20 @@ const MatchLogCreate: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors, isSubmitting }
-  } = useForm<CreateMatchLogRequest>({
+  } = useForm<UpdateMatchLogRequest>({
+    mode: 'onChange',
     defaultValues: {
-      match_date: new Date().toISOString().split('T')[0], // 오늘 날짜를 기본값으로
+      match_date: new Date().toISOString().split('T')[0],
     }
+  })
+
+  // 기존 직관 기록 조회
+  const { data: matchLogData, isLoading: matchLogLoading, error: matchLogError } = useQuery({
+    queryKey: ['matchLog', id],
+    queryFn: () => getMatchLog(parseInt(id!)),
+    enabled: !!id,
   })
 
   // 팀 목록 조회
@@ -62,8 +74,59 @@ const MatchLogCreate: React.FC = () => {
     queryFn: getStadiums,
   })
 
-  // 직관 기록 생성
-  const createMatchLogMutation = useCreateMatchLog()
+  // 직관 기록 수정
+  const updateMatchLogMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateMatchLogRequest }) => 
+      updateMatchLog(id, data),
+    onSuccess: () => {
+      toast({
+        title: "수정 완료",
+        description: "직관 기록이 성공적으로 수정되었습니다.",
+      })
+      queryClient.invalidateQueries({ queryKey: ['matchLogs'] })
+      queryClient.invalidateQueries({ queryKey: ['matchLog', id] })
+      navigate(`/match-logs/${id}`)
+    },
+    onError: (error: any) => {
+      toast({
+        title: "수정 실패",
+        description: error.response?.data?.message || "직관 기록 수정에 실패했습니다.",
+        variant: "destructive",
+      })
+    }
+  })
+
+  // 기존 데이터를 폼에 설정
+  useEffect(() => {
+    if (matchLogData?.data.matchLog && teamsData?.data.teams && stadiumsData?.data.stadiums) {
+      const matchLog = matchLogData.data.matchLog
+      
+      // 날짜 형식을 YYYY-MM-DD로 변환 (한국 시간대 고려)
+      const date = new Date(matchLog.match_date)
+      const koreanDate = new Date(date.getTime() + (9 * 60 * 60 * 1000)) // UTC+9
+      const dateOnly = koreanDate.toISOString().split('T')[0]
+      
+      // 폼 데이터 준비
+      const formData = {
+        match_date: dateOnly,
+        stadium_id: matchLog.stadium.id,
+        home_team_id: matchLog.home_team.id,
+        away_team_id: matchLog.away_team.id,
+        result: matchLog.result,
+        memo: matchLog.memo || ''
+      }
+      
+      // reset 함수를 사용하여 폼 전체를 업데이트 (다음 렌더링 사이클에서 실행)
+      setTimeout(() => {
+        reset(formData)
+      }, 0)
+      
+      // 기존 티켓 이미지 미리보기 설정
+      if (matchLog.ticket_image_url) {
+        setImagePreview(matchLog.ticket_image_url)
+      }
+    }
+  }, [matchLogData, teamsData, stadiumsData, reset])
 
   // 이미지 업로드 처리
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,7 +215,7 @@ const MatchLogCreate: React.FC = () => {
   }
 
   // 폼 제출 처리
-  const onSubmit = (data: CreateMatchLogRequest) => {
+  const onSubmit = (data: UpdateMatchLogRequest) => {
     setHasSubmitted(true)
     
     // 날짜 검증
@@ -176,31 +239,48 @@ const MatchLogCreate: React.FC = () => {
       return
     }
 
-    if (ticketImage) {
-      data.ticket_image = ticketImage
+    // 수정할 데이터 준비 (사용자가 실제로 입력한 값만 사용)
+    const updateData: UpdateMatchLogRequest = {}
+    
+    // 변경된 필드만 포함
+    if (data.match_date !== matchLogData?.data.matchLog.match_date) {
+      updateData.match_date = data.match_date
+    }
+    if (data.stadium_id !== matchLogData?.data.matchLog.stadium.id) {
+      updateData.stadium_id = data.stadium_id
+    }
+    if (data.home_team_id !== matchLogData?.data.matchLog.home_team.id) {
+      updateData.home_team_id = data.home_team_id
+    }
+    if (data.away_team_id !== matchLogData?.data.matchLog.away_team.id) {
+      updateData.away_team_id = data.away_team_id
+    }
+    if (data.result !== matchLogData?.data.matchLog.result) {
+      updateData.result = data.result
+    }
+    if (data.memo !== matchLogData?.data.matchLog.memo) {
+      updateData.memo = data.memo
     }
     
-    createMatchLogMutation.mutate(data, {
-      onSuccess: () => {
-        toast({
-          title: "성공!",
-          description: "직관 기록이 성공적으로 등록되었습니다.",
-        })
-        navigate('/match-logs')
-      },
-      onError: (error: any) => {
-        toast({
-          title: "오류 발생",
-          description: error.response?.data?.message || "직관 기록 등록에 실패했습니다.",
-          variant: "destructive",
-        })
-      }
-    })
-  }
+    // 새 이미지가 있으면 추가
+    if (ticketImage) {
+      updateData.ticket_image = ticketImage
+    }
 
-  const watchedHomeTeam = watch('home_team_id')
-  const watchedAwayTeam = watch('away_team_id')
-  const watchedStadium = watch('stadium_id')
+    // 변경사항이 없으면 경고
+    if (Object.keys(updateData).length === 0 && !ticketImage) {
+      toast({
+        title: "변경사항 없음",
+        description: "수정할 내용이 없습니다.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (id) {
+      updateMatchLogMutation.mutate({ id: parseInt(id), data: updateData })
+    }
+  }
 
   // 경기장별 홈팀 매핑
   const getHomeTeamsByStadium = (stadiumId: number | undefined) => {
@@ -224,7 +304,36 @@ const MatchLogCreate: React.FC = () => {
   }
 
   // 현재 선택된 경기장의 홈팀들
-  const availableHomeTeams = getHomeTeamsByStadium(watchedStadium)
+  const availableHomeTeams = getHomeTeamsByStadium(watch('stadium_id'))
+
+  if (matchLogLoading || teamsLoading || stadiumsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-stone-100 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-amber-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-stone-600">데이터를 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (matchLogError || !matchLogData?.data.matchLog) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-stone-100 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-stone-800 mb-4">직관 기록을 찾을 수 없습니다</h1>
+            <p className="text-stone-600 mb-6">요청하신 직관 기록이 존재하지 않거나 삭제되었을 수 있습니다.</p>
+            <Button onClick={() => navigate('/match-logs')} className="bg-amber-700 hover:bg-amber-800">
+              목록으로 돌아가기
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-stone-100 py-8">
@@ -232,10 +341,10 @@ const MatchLogCreate: React.FC = () => {
         {/* 헤더 */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-stone-800 mb-4">
-            새로운 직관 기록 작성
+            직관 기록 수정
           </h1>
           <p className="text-xl text-stone-600">
-            야구장에서의 특별한 순간을 기록해보세요
+            기존 직관 기록을 수정해보세요
           </p>
         </div>
 
@@ -291,7 +400,7 @@ const MatchLogCreate: React.FC = () => {
                       <img
                         src={imagePreview}
                         alt="티켓 미리보기"
-                        className="w-full h-auto rounded-lg"
+                        className="w-full h-48 object-cover rounded-lg"
                       />
                     </div>
                   </div>
@@ -329,11 +438,11 @@ const MatchLogCreate: React.FC = () => {
               <CardHeader>
                 <CardTitle className="text-2xl text-stone-800">경기 정보</CardTitle>
                 <CardDescription>
-                  경기 정보를 입력해주세요
+                  경기 정보를 수정해주세요
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   {/* 경기 날짜 */}
                   <div>
                     <Label htmlFor="match_date" className="text-stone-700 font-medium">
@@ -359,31 +468,33 @@ const MatchLogCreate: React.FC = () => {
                     <Label htmlFor="stadium_id" className="text-stone-700 font-medium">
                       경기장 *
                     </Label>
-                    <Select 
-                      value={watchedStadium ? watchedStadium.toString() : ""}
-                      onValueChange={(value) => {
-                        const stadiumId = parseInt(value)
-                        setValue('stadium_id', stadiumId)
-                        // 경기장이 변경되면 홈팀과 원정팀 초기화
-                        setValue('home_team_id', 0)
-                        setValue('away_team_id', 0)
-                      }}
-                    >
-                      <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && !watch('stadium_id') ? 'border-red-300' : ''}`}>
-                        <SelectValue placeholder="경기장을 선택해주세요" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-200">
-                        {stadiumsLoading ? (
-                          <SelectItem value="loading" disabled>로딩 중...</SelectItem>
-                        ) : (
-                          stadiumsData?.data.stadiums.map((stadium: Stadium) => (
+                    {stadiumsLoading ? (
+                      <div className="mt-2 p-3 bg-gray-100 rounded-md">
+                        <p className="text-gray-500">경기장 정보를 불러오는 중...</p>
+                      </div>
+                    ) : (
+                                              <Select 
+                          value={matchLogData?.data.matchLog?.stadium?.id?.toString() || watch('stadium_id')?.toString() || ""}
+                          onValueChange={(value) => {
+                            const stadiumId = parseInt(value)
+                            setValue('stadium_id', stadiumId)
+                            // 경기장이 변경되면 홈팀과 원정팀 초기화
+                            setValue('home_team_id', 0)
+                            setValue('away_team_id', 0)
+                          }}
+                        >
+                        <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && !watch('stadium_id') ? 'border-red-300' : ''}`}>
+                          <SelectValue placeholder="경기장을 선택해주세요" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border border-gray-200">
+                          {stadiumsData?.data.stadiums.map((stadium: Stadium) => (
                             <SelectItem key={stadium.id} value={stadium.id.toString()} className="hover:bg-amber-50">
                               {stadium.name} ({stadium.city})
                             </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                     {hasSubmitted && !watch('stadium_id') && (
                       <p className="text-red-500 text-sm mt-1">경기장을 선택해주세요</p>
                     )}
@@ -391,82 +502,90 @@ const MatchLogCreate: React.FC = () => {
 
                   {/* 팀 선택 */}
                   <div className="grid grid-cols-2 gap-4">
-                                         <div>
-                       <Label htmlFor="home_team_id" className="text-stone-700 font-medium">
-                         홈팀 *
-                       </Label>
-                       <Select 
-                         value={watchedHomeTeam && watchedHomeTeam !== 0 ? watchedHomeTeam.toString() : ""}
-                         onValueChange={(value) => setValue('home_team_id', parseInt(value))}
-                         disabled={!watchedStadium}
-                       >
-                         <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && (!watch('home_team_id') || watch('home_team_id') === 0) ? 'border-red-300' : ''}`}>
-                           <SelectValue placeholder={!watchedStadium ? "먼저 경기장을 선택해주세요" : "홈팀을 선택해주세요"} />
-                         </SelectTrigger>
-                         <SelectContent className="bg-white border border-gray-200">
-                           {teamsLoading ? (
-                             <SelectItem value="loading" disabled>로딩 중...</SelectItem>
-                           ) : !watchedStadium ? (
-                             <SelectItem value="no-stadium" disabled>경기장을 먼저 선택해주세요</SelectItem>
-                           ) : availableHomeTeams.length === 0 ? (
-                             <SelectItem value="no-teams" disabled>선택 가능한 홈팀이 없습니다</SelectItem>
-                           ) : (
-                             availableHomeTeams.map((team: Team) => (
-                               <SelectItem 
-                                 key={team.id} 
-                                 value={team.id.toString()}
-                                 disabled={watchedAwayTeam === team.id}
-                                 className="hover:bg-amber-50"
-                               >
-                                 {team.name}
-                               </SelectItem>
-                             ))
-                           )}
-                         </SelectContent>
-                       </Select>
-                       {hasSubmitted && (!watch('home_team_id') || watch('home_team_id') === 0) && (
-                         <p className="text-red-500 text-sm mt-1">홈팀을 선택해주세요</p>
-                       )}
-                       {watchedStadium && availableHomeTeams.length === 0 && (
-                         <p className="text-red-500 text-sm mt-1">이 경기장의 홈팀 정보가 없습니다</p>
-                       )}
-                     </div>
+                    <div>
+                      <Label htmlFor="home_team_id" className="text-stone-700 font-medium">
+                        홈팀 *
+                      </Label>
+                      {teamsLoading ? (
+                        <div className="mt-2 p-3 bg-gray-100 rounded-md">
+                          <p className="text-gray-500">팀 정보를 불러오는 중...</p>
+                        </div>
+                      ) : (
+                                                 <Select 
+                           value={matchLogData?.data.matchLog?.home_team?.id?.toString() || (watch('home_team_id') && watch('home_team_id') !== 0 ? watch('home_team_id')?.toString() || "" : "")}
+                           onValueChange={(value) => setValue('home_team_id', parseInt(value))}
+                           disabled={!watch('stadium_id')}
+                         >
+                          <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && (!watch('home_team_id') || watch('home_team_id') === 0) ? 'border-red-300' : ''}`}>
+                            <SelectValue placeholder={!watch('stadium_id') ? "먼저 경기장을 선택해주세요" : "홈팀을 선택해주세요"} />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white border border-gray-200">
+                            {!watch('stadium_id') ? (
+                              <SelectItem value="no-stadium" disabled>경기장을 먼저 선택해주세요</SelectItem>
+                            ) : availableHomeTeams.length === 0 ? (
+                              <SelectItem value="no-teams" disabled>선택 가능한 홈팀이 없습니다</SelectItem>
+                            ) : (
+                              availableHomeTeams.map((team: Team) => (
+                                <SelectItem 
+                                  key={team.id} 
+                                  value={team.id.toString()}
+                                  disabled={watch('away_team_id') === team.id}
+                                  className="hover:bg-amber-50"
+                                >
+                                  {team.name}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                      )}
+                      {hasSubmitted && (!watch('home_team_id') || watch('home_team_id') === 0) && (
+                        <p className="text-red-500 text-sm mt-1">홈팀을 선택해주세요</p>
+                      )}
+                      {watch('stadium_id') && availableHomeTeams.length === 0 && (
+                        <p className="text-red-500 text-sm mt-1">이 경기장의 홈팀 정보가 없습니다</p>
+                      )}
+                    </div>
 
-                                         <div>
-                       <Label htmlFor="away_team_id" className="text-stone-700 font-medium">
-                         원정팀 *
-                       </Label>
-                       <Select 
-                         value={watchedAwayTeam && watchedAwayTeam !== 0 ? watchedAwayTeam.toString() : ""}
-                         onValueChange={(value) => setValue('away_team_id', parseInt(value))}
-                         disabled={!watchedHomeTeam}
-                       >
-                         <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && (!watch('away_team_id') || watch('away_team_id') === 0) ? 'border-red-300' : ''}`}>
-                           <SelectValue placeholder={!watchedHomeTeam ? "먼저 홈팀을 선택해주세요" : "원정팀을 선택해주세요"} />
-                         </SelectTrigger>
-                         <SelectContent className="bg-white border border-gray-200">
-                           {teamsLoading ? (
-                             <SelectItem value="loading" disabled>로딩 중...</SelectItem>
-                           ) : !watchedHomeTeam ? (
-                             <SelectItem value="no-home-team" disabled>홈팀을 먼저 선택해주세요</SelectItem>
-                           ) : (
-                             teamsData?.data.teams.map((team: Team) => (
-                               <SelectItem 
-                                 key={team.id} 
-                                 value={team.id.toString()}
-                                 disabled={watchedHomeTeam === team.id}
-                                 className="hover:bg-amber-50"
-                               >
-                                 {team.name}
-                               </SelectItem>
-                             ))
-                           )}
-                         </SelectContent>
-                       </Select>
-                       {hasSubmitted && (!watch('away_team_id') || watch('away_team_id') === 0) && (
-                         <p className="text-red-500 text-sm mt-1">원정팀을 선택해주세요</p>
-                       )}
-                     </div>
+                    <div>
+                      <Label htmlFor="away_team_id" className="text-stone-700 font-medium">
+                        원정팀 *
+                      </Label>
+                      {teamsLoading ? (
+                        <div className="mt-2 p-3 bg-gray-100 rounded-md">
+                          <p className="text-gray-500">팀 정보를 불러오는 중...</p>
+                        </div>
+                      ) : (
+                                                 <Select 
+                           value={matchLogData?.data.matchLog?.away_team?.id?.toString() || (watch('away_team_id') && watch('away_team_id') !== 0 ? watch('away_team_id')?.toString() || "" : "")}
+                           onValueChange={(value) => setValue('away_team_id', parseInt(value))}
+                           disabled={!watch('home_team_id')}
+                         >
+                          <SelectTrigger className={`mt-2 bg-white ${hasSubmitted && (!watch('away_team_id') || watch('away_team_id') === 0) ? 'border-red-300' : ''}`}>
+                            <SelectValue placeholder={!watch('home_team_id') ? "먼저 홈팀을 선택해주세요" : "원정팀을 선택해주세요"} />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white border border-gray-200">
+                            {!watch('home_team_id') ? (
+                              <SelectItem value="no-home-team" disabled>홈팀을 먼저 선택해주세요</SelectItem>
+                            ) : (
+                              teamsData?.data.teams.map((team: Team) => (
+                                <SelectItem 
+                                  key={team.id} 
+                                  value={team.id.toString()}
+                                  disabled={watch('home_team_id') === team.id}
+                                  className="hover:bg-amber-50"
+                                >
+                                  {team.name}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                      )}
+                      {hasSubmitted && (!watch('away_team_id') || watch('away_team_id') === 0) && (
+                        <p className="text-red-500 text-sm mt-1">원정팀을 선택해주세요</p>
+                      )}
+                    </div>
                   </div>
 
                   {/* 경기 결과 */}
@@ -474,17 +593,26 @@ const MatchLogCreate: React.FC = () => {
                     <Label htmlFor="result" className="text-stone-700 font-medium">
                       경기 결과
                     </Label>
-                                         <Select onValueChange={(value) => setValue('result', value as 'WIN' | 'LOSS' | 'DRAW' | 'CANCELLED')}>
-                       <SelectTrigger className="mt-2 bg-white">
-                         <SelectValue placeholder="경기 결과를 선택해주세요 (선택사항)" />
-                       </SelectTrigger>
-                       <SelectContent className="bg-white border border-gray-200">
-                         <SelectItem value="WIN" className="hover:bg-amber-50">승리</SelectItem>
-                         <SelectItem value="LOSS" className="hover:bg-amber-50">패배</SelectItem>
-                         <SelectItem value="DRAW" className="hover:bg-amber-50">무승부</SelectItem>
-                         <SelectItem value="CANCELLED" className="hover:bg-amber-50">경기 취소</SelectItem>
-                       </SelectContent>
-                     </Select>
+                    {matchLogData?.data.matchLog ? (
+                      <Select 
+                        value={watch('result') || ""}
+                        onValueChange={(value) => setValue('result', value as 'WIN' | 'LOSS' | 'DRAW' | 'CANCELLED')}
+                      >
+                        <SelectTrigger className="mt-2 bg-white">
+                          <SelectValue placeholder="경기 결과를 선택해주세요 (선택사항)" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border border-gray-200">
+                          <SelectItem value="WIN" className="hover:bg-amber-50">승리</SelectItem>
+                          <SelectItem value="LOSS" className="hover:bg-amber-50">패배</SelectItem>
+                          <SelectItem value="DRAW" className="hover:bg-amber-50">무승부</SelectItem>
+                          <SelectItem value="CANCELLED" className="hover:bg-amber-50">경기 취소</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="mt-2 p-3 bg-gray-100 rounded-md">
+                        <p className="text-gray-500">데이터를 불러오는 중...</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* 메모 */}
@@ -505,23 +633,23 @@ const MatchLogCreate: React.FC = () => {
                   <div className="flex gap-4 pt-4">
                     <Button
                       type="submit"
-                      disabled={isSubmitting || createMatchLogMutation.isPending}
+                      disabled={isSubmitting || updateMatchLogMutation.isPending}
                       className="flex-1 bg-amber-700 hover:bg-amber-800 text-white"
                     >
-                      {isSubmitting || createMatchLogMutation.isPending ? (
+                      {isSubmitting || updateMatchLogMutation.isPending ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                          등록 중...
+                          수정 중...
                         </>
                       ) : (
-                        '직관 기록 등록'
+                        '직관 기록 수정'
                       )}
                     </Button>
                     
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => navigate('/match-logs')}
+                      onClick={() => navigate(`/match-logs/${id}`)}
                       className="border-amber-700 text-amber-700 hover:bg-amber-50"
                     >
                       취소
@@ -531,12 +659,10 @@ const MatchLogCreate: React.FC = () => {
               </CardContent>
             </Card>
           </div>
-
-
         </div>
       </div>
     </div>
   )
 }
 
-export default MatchLogCreate 
+export default MatchLogEdit 
