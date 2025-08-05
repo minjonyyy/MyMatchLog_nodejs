@@ -170,3 +170,46 @@ export const getEventStatusText = (
       return "알 수 없음";
   }
 };
+
+/**
+ * 내 이벤트 참여 내역을 조회합니다.
+ * @param page - 페이지 번호 (기본값: 1)
+ * @param limit - 페이지당 항목 수 (기본값: 10)
+ */
+export const getMyEventParticipations = async (
+  page: number = 1,
+  limit: number = 10,
+): Promise<{
+  participations: Array<{
+    id: number;
+    event: Event;
+    is_winner: boolean;
+    participated_at: string;
+    result_announced_at: string | null;
+  }>;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalCount: number;
+    limit: number;
+  };
+}> => {
+  const response = await api.get<
+    ApiResponse<{
+      participations: Array<{
+        id: number;
+        event: Event;
+        is_winner: boolean;
+        participated_at: string;
+        result_announced_at: string | null;
+      }>;
+      pagination: {
+        currentPage: number;
+        totalPages: number;
+        totalCount: number;
+        limit: number;
+      };
+    }>
+  >(`/events/my-participations?page=${page}&limit=${limit}`);
+  return response.data.data;
+};

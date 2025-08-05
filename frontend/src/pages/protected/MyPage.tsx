@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getMyInfo } from "@/services/auth";
 import { getMatchLogs } from "@/services/matchLogs";
 import { getTeams } from "@/services/matchLogs";
+import { getMyEventParticipations } from "@/services/events";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import {
@@ -59,6 +60,16 @@ const MyPage = () => {
     queryFn: getTeams,
   });
 
+  // 이벤트 참여 내역 조회 (최근 5개)
+  const {
+    data: eventParticipationsData,
+    isLoading: eventParticipationsLoading,
+  } = useQuery({
+    queryKey: ["eventParticipations", "recent"],
+    queryFn: () => getMyEventParticipations(1, 5),
+    enabled: !!user,
+  });
+
   // 사용자의 응원팀 정보 설정
   useEffect(() => {
     if (userInfo?.data?.user && teamsData?.data?.teams) {
@@ -75,6 +86,8 @@ const MyPage = () => {
   // 통계 계산
   const totalMatchLogs = matchLogsData?.data?.pagination?.totalCount || 0;
   const recentMatchLogs = matchLogsData?.data?.matchLogs || [];
+  const recentEventParticipations =
+    eventParticipationsData?.participations || [];
 
   // 이번 달 직관 횟수 계산
   const thisMonthCount = recentMatchLogs.filter((log: MatchLog) => {
@@ -379,6 +392,102 @@ const MyPage = () => {
                   </p>
                   <Button onClick={() => navigate("/match-logs/create")}>
                     <Plus className="w-4 h-4 mr-2" />첫 직관 기록 작성하기
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 이벤트 참여 내역 */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="flex items-center space-x-2">
+                <Trophy className="w-5 h-5" />
+                <span>이벤트 참여 내역</span>
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/events")}
+              >
+                이벤트 보기
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {eventParticipationsLoading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-20 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : recentEventParticipations.length > 0 ? (
+                <div className="space-y-4">
+                  {recentEventParticipations.map((participation) => (
+                    <div
+                      key={participation.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                      onClick={() =>
+                        navigate(`/events/${participation.event.id}`)
+                      }
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div
+                          className={`p-2 rounded-lg ${
+                            participation.is_winner
+                              ? "bg-green-100"
+                              : "bg-gray-100"
+                          }`}
+                        >
+                          <Trophy
+                            className={`w-4 h-4 ${
+                              participation.is_winner
+                                ? "text-green-600"
+                                : "text-gray-600"
+                            }`}
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {participation.event.title}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {participation.event.gift} •{" "}
+                            {new Date(
+                              participation.participated_at,
+                            ).toLocaleDateString("ko-KR")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge
+                          variant={
+                            participation.is_winner ? "default" : "secondary"
+                          }
+                          className={
+                            participation.is_winner
+                              ? "bg-green-100 text-green-800"
+                              : ""
+                          }
+                        >
+                          {participation.is_winner ? "🎉 당첨" : "😢 미당첨"}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-4">
+                    <Trophy className="w-12 h-12 mx-auto" />
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    아직 참여한 이벤트가 없습니다
+                  </p>
+                  <Button onClick={() => navigate("/events")}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    이벤트 참여하기
                   </Button>
                 </div>
               )}

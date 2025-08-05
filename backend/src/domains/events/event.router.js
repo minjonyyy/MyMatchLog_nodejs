@@ -6,6 +6,12 @@ const router = express.Router();
 
 router.get('/', eventController.getEvents);
 
+router.get(
+  '/my-participations',
+  authMiddleware,
+  eventController.getMyParticipations,
+);
+
 router.get('/:id', eventController.getEventById);
 
 router.post(

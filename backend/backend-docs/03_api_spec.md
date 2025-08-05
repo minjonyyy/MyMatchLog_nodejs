@@ -657,6 +657,69 @@
   - `409 CONFLICT`: 선착순 정원이 마감되었습니다. (`EVENT_CAPACITY_EXCEEDED`)
   - `429 TOO MANY REQUESTS`: 과도한 요청 (Rate Limit)
 
+### 4. 내 이벤트 참여 내역 조회
+
+- **URL**: `GET /api/events/my-participations`
+- **설명**: 현재 로그인된 사용자의 이벤트 참여 내역을 조회합니다. 당첨/미당첨 결과를 포함합니다.
+- **인증**: 필요 (Bearer Token)
+- **Query Parameters**:
+  - `page` (Integer, Optional): 페이지 번호 (기본값: 1)
+  - `limit` (Integer, Optional): 페이지당 항목 수 (기본값: 10, 최대: 50)
+- **응답 (Response)**: `200 OK`
+
+```json
+{
+  "success": true,
+  "data": {
+    "participations": [
+      {
+        "id": 123,
+        "event": {
+          "id": 1,
+          "title": "야구 직관 이벤트",
+          "description": "직관 기록을 남기고 선착순으로 참여하는 이벤트입니다.",
+          "gift": "야구 굿즈",
+          "capacity": 100,
+          "participant_count": 45,
+          "start_at": "2024-07-21T10:00:00.000Z",
+          "end_at": "2024-07-21T18:00:00.000Z"
+        },
+        "is_winner": true,
+        "participated_at": "2024-07-21T10:15:00.000Z",
+        "result_announced_at": "2024-07-21T19:00:00.000Z"
+      },
+      {
+        "id": 124,
+        "event": {
+          "id": 2,
+          "title": "선착순 할인 이벤트",
+          "description": "선착순 50명에게 50% 할인 쿠폰을 제공합니다.",
+          "gift": "50% 할인 쿠폰",
+          "capacity": 50,
+          "participant_count": 50,
+          "start_at": "2024-07-22T14:00:00.000Z",
+          "end_at": "2024-07-22T16:00:00.000Z"
+        },
+        "is_winner": false,
+        "participated_at": "2024-07-22T14:30:00.000Z",
+        "result_announced_at": "2024-07-22T17:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 1,
+      "totalCount": 2,
+      "limit": 10
+    }
+  },
+  "message": "내 이벤트 참여 내역 조회에 성공했습니다."
+}
+```
+
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+
 ---
 
 ## 👑 관리자 (Admin)

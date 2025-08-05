@@ -127,3 +127,30 @@ export const participateInEvent = async (eventId, userId) => {
     throw error;
   }
 };
+
+/**
+ * 사용자의 이벤트 참여 내역을 조회합니다.
+ * @param {number} userId - 사용자 ID
+ * @param {number} page - 페이지 번호
+ * @param {number} limit - 페이지당 항목 수
+ * @returns {Object} 참여 내역 및 페이지네이션 정보
+ */
+export const getMyParticipations = async (userId, page = 1, limit = 10) => {
+  const offset = (page - 1) * limit;
+
+  const result = await eventRepository.findParticipationsByUserId(
+    userId,
+    offset,
+    limit,
+  );
+
+  return {
+    participations: result.participations,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(result.totalCount / limit),
+      totalCount: result.totalCount,
+      limit: limit,
+    },
+  };
+};

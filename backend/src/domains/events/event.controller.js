@@ -39,3 +39,23 @@ export const participateInEvent = async (req, res) => {
     return errorResponse(res, error);
   }
 };
+
+export const getMyParticipations = async (req, res) => {
+  try {
+    const userId = req.user.userId; // auth 미들웨어에서 설정된 사용자 ID
+    const { page = 1, limit = 10 } = req.query;
+
+    const result = await eventService.getMyParticipations(
+      userId,
+      parseInt(page),
+      parseInt(limit),
+    );
+    return successResponse(
+      res,
+      result,
+      '내 이벤트 참여 내역 조회에 성공했습니다.',
+    );
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};

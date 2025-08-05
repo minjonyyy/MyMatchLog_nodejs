@@ -132,6 +132,12 @@
   - [x] `participant_count` 증가 및 참여 정보 저장을 위한 트랜잭션 처리 ✅
   - [x] 동시성 테스트 완료 (10명, 100명 동시 요청) ✅
   - [x] Swagger 문서화 완료
+- [x] **BE-015-1: 내 이벤트 참여 내역 조회 (`GET /api/events/my-participations`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 사용자별 참여 내역 조회 (최신순 정렬)
+  - [x] 당첨/미당첨 결과 표시 (WINNER/LOSER 상태 기반)
+  - [x] 페이지네이션 지원
+  - [x] 이벤트 정보 JOIN 조회
 
 ---
 
