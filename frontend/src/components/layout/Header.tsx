@@ -89,12 +89,30 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
+                {/* 관리자 메뉴 */}
+                {userInfo?.data?.user?.is_admin && (
+                  <Link
+                    to="/admin"
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive("/admin")
+                        ? "text-amber-800 bg-amber-50"
+                        : "text-gray-700 hover:text-amber-800 hover:bg-amber-50"
+                    }`}
+                  >
+                    👑 관리자
+                  </Link>
+                )}
                 <Link to="/mypage">
                   <Avatar className="w-8 h-8">
                     <AvatarFallback className="bg-amber-100 text-amber-800">
-                      {userInfo?.data?.user?.nickname?.charAt(0) ||
-                        user?.nickname?.charAt(0) ||
-                        "U"}
+                      {(() => {
+                        const nickname =
+                          userInfo?.data?.user?.nickname || user?.nickname;
+                        if (nickname && nickname.length > 0) {
+                          return nickname.charAt(0).toUpperCase();
+                        }
+                        return "U";
+                      })()}
                     </AvatarFallback>
                   </Avatar>
                 </Link>

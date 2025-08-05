@@ -17,11 +17,10 @@ import MyPage from "./pages/protected/MyPage";
 import Settings from "./pages/protected/Settings";
 import ProtectedRoute from "./components/features/auth/ProtectedRoute";
 import AuthInitializer from "./components/features/auth/AuthInitializer";
-const AdminDashboard = () => <div className="p-8">👑 관리자 대시보드</div>;
-const AdminEvents = () => <div className="p-8">👑 이벤트 관리 페이지</div>;
-const AdminParticipants = () => (
-  <div className="p-8">👑 참여자 관리 페이지</div>
-);
+import AdminDashboard from "./pages/admin/Dashboard";
+import EventManagement from "./pages/admin/EventManagement";
+import ParticipantManagement from "./pages/admin/ParticipantManagement";
+
 const NotFound = () => (
   <div className="p-8">❌ 404 - 페이지를 찾을 수 없습니다</div>
 );
@@ -107,7 +106,7 @@ function App() {
                 path="/admin/events"
                 element={
                   <ProtectedRoute requireAdmin>
-                    <AdminEvents />
+                    <EventManagement />
                   </ProtectedRoute>
                 }
               />
@@ -115,7 +114,7 @@ function App() {
                 path="/admin/events/:id/participants"
                 element={
                   <ProtectedRoute requireAdmin>
-                    <AdminParticipants />
+                    <ParticipantManagement />
                   </ProtectedRoute>
                 }
               />
