@@ -6,6 +6,7 @@ import {
   filterEvents,
   checkEventParticipationStatus,
   getEventStatus,
+  getParticipationStatus,
 } from "../services/events";
 import type { Event, EventFilter } from "../types/events";
 import { useToast } from "./use-toast";
@@ -61,6 +62,16 @@ export const useEventParticipation = () => {
       // 특정 이벤트 상세 캐시 무효화
       queryClient.invalidateQueries({ queryKey: eventKeys.detail(eventId) });
 
+      // 참여 상태 캐시 무효화 (즉시 UI 업데이트를 위해)
+      queryClient.invalidateQueries({
+        queryKey: ["participationStatus", eventId],
+      });
+
+      // 마이페이지 참여 내역 캐시 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["eventParticipations", "recent"],
+      });
+
       toast({
         title: "참여 신청 완료",
         description: "이벤트 참여 신청이 완료되었습니다. 결과를 기다려주세요.",
@@ -68,11 +79,20 @@ export const useEventParticipation = () => {
       });
     },
     onError: (error: any) => {
-      const errorMessage =
-        error.response?.data?.message || "이벤트 참여 신청에 실패했습니다.";
+      let errorMessage = "이벤트 참여 신청에 실패했습니다.";
+      let title = "참여 신청 실패";
+
+      // 중복 참여 에러 처리
+      if (error.response?.data?.error?.code === "EVENT_ALREADY_PARTICIPATED") {
+        title = "이미 참여한 이벤트";
+        errorMessage =
+          "이미 참여한 이벤트입니다. 결과는 마이페이지에서 확인해주세요.";
+      } else {
+        errorMessage = error.response?.data?.message || errorMessage;
+      }
 
       toast({
-        title: "참여 신청 실패",
+        title,
         description: errorMessage,
         variant: "destructive",
       });
@@ -95,6 +115,19 @@ export const useEventParticipationStatus = (
   }
 
   return checkEventParticipationStatus(event, isParticipated);
+};
+
+/**
+ * 특정 이벤트에 대한 사용자의 참여 상태를 조회하는 훅
+ */
+export const useParticipationStatus = (eventId: number) => {
+  return useQuery({
+    queryKey: ["participationStatus", eventId],
+    queryFn: () => getParticipationStatus(eventId),
+    enabled: !!eventId,
+    staleTime: 0, // 즉시 stale로 처리하여 캐시 무효화 시 즉시 재요청
+    gcTime: 5 * 60 * 1000, // 5분
+  });
 };
 
 /**

@@ -10,7 +10,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Users, Gift, Clock } from "lucide-react";
-import { useEvent, useEventParticipation } from "@/hooks/useEvents";
+import {
+  useEvent,
+  useEventParticipation,
+  useParticipationStatus,
+} from "@/hooks/useEvents";
 import {
   getEventStatus,
   getEventStatusColor,
@@ -26,6 +30,7 @@ export const EventDetail: React.FC = () => {
 
   const { data: event, isLoading, error } = useEvent(eventId);
   const participationMutation = useEventParticipation();
+  const { data: participationData } = useParticipationStatus(eventId);
 
   const handleParticipate = () => {
     if (event) {
@@ -80,7 +85,12 @@ export const EventDetail: React.FC = () => {
   const statusColor = getEventStatusColor(status);
   const statusText = getEventStatusText(status);
   const isFull = event.participant_count >= event.capacity;
-  const canParticipate = status === "ongoing" && !isFull;
+  const canParticipate = status === "ongoing"; // 정원 마감 여부와 관계없이 참여 가능
+
+  // 참여 상태 확인
+  const participation = participationData?.participation;
+  const isParticipated = !!participation;
+  const participationStatus = participation?.status;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-stone-100">
@@ -138,18 +148,13 @@ export const EventDetail: React.FC = () => {
                 </div>
               </div>
 
-              {/* 참여자 수 */}
+              {/* 이벤트 대상자 수 */}
               <div className="flex items-center text-gray-700">
                 <Users className="mr-3 h-5 w-5 text-gray-500" />
                 <div>
-                  <p className="font-medium">참여자 현황</p>
+                  <p className="font-medium">이벤트 대상자</p>
                   <p className="text-sm text-gray-600">
-                    {event.participant_count} / {event.capacity}명
-                    {isFull && (
-                      <span className="ml-2 text-red-600 font-medium">
-                        (마감)
-                      </span>
-                    )}
+                    선착순 {event.capacity}명
                   </p>
                 </div>
               </div>
@@ -185,21 +190,11 @@ export const EventDetail: React.FC = () => {
                   </div>
                 </div>
               )}
-
-              {isFull && status === "ongoing" && (
-                <div className="flex items-center text-red-700 bg-red-50 p-4 rounded-lg">
-                  <Users className="mr-3 h-5 w-5" />
-                  <div>
-                    <p className="font-medium">정원 마감</p>
-                    <p className="text-sm">선착순 정원이 마감되었습니다.</p>
-                  </div>
-                </div>
-              )}
             </CardContent>
           </Card>
 
           {/* 참여 신청 버튼 */}
-          {canParticipate && (
+          {canParticipate && !isParticipated && (
             <div className="text-center">
               <Button
                 onClick={handleParticipate}
@@ -212,8 +207,49 @@ export const EventDetail: React.FC = () => {
                   : "참여 신청하기"}
               </Button>
               <p className="text-sm text-gray-600 mt-2">
-                선착순으로 참여 신청을 받고 있습니다.
+                선착순 참여 이벤트입니다. 결과는 이벤트 종료 후 마이페이지에서
+                확인해주세요.
               </p>
+            </div>
+          )}
+
+          {/* 참여 완료 상태 */}
+          {isParticipated && (
+            <div className="text-center">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="bg-blue-100 p-3 rounded-full">
+                    <Clock className="w-6 h-6 text-blue-600" />
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                  참여 완료
+                </h3>
+                <p className="text-blue-700 mb-4">
+                  이벤트 참여가 완료되었습니다.
+                </p>
+                {participationStatus === "APPLIED" && (
+                  <p className="text-sm text-blue-600">
+                    결과는 이벤트 종료 후 마이페이지에서 확인해주세요.
+                  </p>
+                )}
+                {participationStatus === "WON" && (
+                  <div className="bg-green-100 border border-green-200 rounded-lg p-4">
+                    <p className="text-green-800 font-medium">🎉 당첨!</p>
+                    <p className="text-sm text-green-700">
+                      참여 순서: {participation?.participation_order}번째
+                    </p>
+                  </div>
+                )}
+                {participationStatus === "LOST" && (
+                  <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
+                    <p className="text-gray-800 font-medium">😢 미당첨</p>
+                    <p className="text-sm text-gray-700">
+                      참여 순서: {participation?.participation_order}번째
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

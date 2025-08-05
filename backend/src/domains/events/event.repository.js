@@ -5,15 +5,12 @@ import pool from '../../config/database.js';
  * @returns {Array} 이벤트 목록
  */
 export const findActiveEvents = async () => {
-  const now = new Date();
   const [rows] = await pool.query(
     `
     SELECT id, title, description, start_at, end_at, gift, capacity, participant_count, created_at, updated_at
     FROM events
-    WHERE end_at >= ?
     ORDER BY start_at ASC
   `,
-    [now],
   );
 
   return rows;
@@ -69,7 +66,7 @@ export const createParticipationWithIncrement = async (eventId, userId) => {
     await connection.beginTransaction();
 
     // 1. 현재 이벤트 정보 조회
-    const [eventRows] = await connection.query(
+    const [eventResult] = await connection.query(
       `
       SELECT capacity, participant_count
       FROM events 
@@ -78,37 +75,33 @@ export const createParticipationWithIncrement = async (eventId, userId) => {
       [eventId],
     );
 
-    if (eventRows.length === 0) {
+    if (eventResult.length === 0) {
       throw new Error('이벤트를 찾을 수 없습니다.');
     }
 
-    const event = eventRows[0];
-
-    // 2. 정원 확인 및 상태 결정
+    const event = eventResult[0];
     const isWithinCapacity = event.participant_count < event.capacity;
-    const status = isWithinCapacity ? 'WON' : 'APPLIED';
 
-    // 3. 이벤트 참여자 수 증가
+    // 2. 이벤트 참여자 수 증가 (정원 마감 여부와 관계없이)
     const [updateResult] = await connection.query(
       `
       UPDATE events 
       SET participant_count = participant_count + 1, updated_at = NOW()
-      WHERE id = ? AND participant_count < capacity
+      WHERE id = ?
     `,
       [eventId],
     );
 
-    if (updateResult.affectedRows === 0) {
-      throw new Error('이벤트 정원이 마감되었습니다.');
-    }
+    // 3. 참여 순서 결정 (정원 초과 시에도 순서 기록)
+    const participationOrder = event.participant_count + 1;
 
-    // 4. 참여 정보 생성 (정원 내면 WINNER, 초과면 APPLIED)
+    // 4. 참여 정보 생성 (모든 참여를 APPLIED로 저장, 순서 기록)
     const [insertResult] = await connection.query(
       `
-      INSERT INTO event_participations (user_id, event_id, status, created_at)
-      VALUES (?, ?, ?, NOW())
+      INSERT INTO event_participations (user_id, event_id, status, participation_order, created_at)
+      VALUES (?, ?, 'APPLIED', ?, NOW())
     `,
-      [userId, eventId, status],
+      [userId, eventId, participationOrder],
     );
 
     await connection.commit();
@@ -116,7 +109,7 @@ export const createParticipationWithIncrement = async (eventId, userId) => {
     // 5. 생성된 참여 정보 반환
     const [participation] = await connection.query(
       `
-      SELECT id, user_id, event_id, status, created_at
+      SELECT id, user_id, event_id, status, participation_order, created_at
       FROM event_participations
       WHERE id = ?
     `,
@@ -165,6 +158,7 @@ export const findParticipationsByUserId = async (
       ep.user_id,
       ep.event_id,
       ep.status,
+      ep.participation_order,
       ep.created_at as participated_at,
       e.id as event_id,
       e.title,
@@ -200,6 +194,8 @@ export const findParticipationsByUserId = async (
       created_at: row.event_created_at,
       updated_at: row.event_updated_at,
     },
+    status: row.status, // APPLIED, WON, LOST
+    participation_order: row.participation_order,
     is_winner: row.status === 'WON', // WON 상태면 당첨
     participated_at: row.participated_at,
     result_announced_at:
@@ -212,4 +208,104 @@ export const findParticipationsByUserId = async (
     participations,
     totalCount,
   };
+};
+
+/**
+ * 이벤트 결과를 발표합니다. 참여 순서에 따라 WON/LOST 상태를 결정합니다.
+ * @param {number} eventId - 이벤트 ID
+ * @returns {Object} 발표 결과
+ */
+export const announceEventResults = async (eventId) => {
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    // 1. 이벤트 정보 조회
+    const [eventRows] = await connection.query(
+      `
+      SELECT capacity
+      FROM events 
+      WHERE id = ?
+    `,
+      [eventId],
+    );
+
+    if (eventRows.length === 0) {
+      throw new Error('이벤트를 찾을 수 없습니다.');
+    }
+
+    const capacity = eventRows[0].capacity;
+
+    // 2. 참여 순서에 따라 결과 업데이트
+    const [updateResult] = await connection.query(
+      `
+      UPDATE event_participations 
+      SET status = CASE 
+        WHEN participation_order <= ? THEN 'WON'
+        ELSE 'LOST'
+      END
+      WHERE event_id = ? AND status = 'APPLIED'
+    `,
+      [capacity, eventId],
+    );
+
+    await connection.commit();
+
+    // 3. 업데이트된 결과 조회
+    const [results] = await connection.query(
+      `
+      SELECT 
+        ep.id,
+        ep.user_id,
+        ep.event_id,
+        ep.status,
+        ep.participation_order,
+        ep.created_at
+      FROM event_participations ep
+      WHERE ep.event_id = ? AND ep.status IN ('WON', 'LOST')
+      ORDER BY ep.participation_order
+    `,
+      [eventId],
+    );
+
+    return {
+      eventId,
+      capacity,
+      totalParticipants: results.length,
+      winners: results.filter((r) => r.status === 'WON').length,
+      losers: results.filter((r) => r.status === 'LOST').length,
+      results,
+    };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+/**
+ * 특정 사용자의 이벤트 참여 상태를 조회합니다.
+ * @param {number} userId - 사용자 ID
+ * @param {number} eventId - 이벤트 ID
+ * @returns {Object|null} 참여 정보 또는 null
+ */
+export const findParticipationStatus = async (userId, eventId) => {
+  const [rows] = await pool.query(
+    `
+    SELECT 
+      ep.id,
+      ep.user_id,
+      ep.event_id,
+      ep.status,
+      ep.participation_order,
+      ep.created_at
+    FROM event_participations ep
+    WHERE ep.user_id = ? AND ep.event_id = ?
+  `,
+    [userId, eventId],
+  );
+
+  return rows.length > 0 ? rows[0] : null;
 };

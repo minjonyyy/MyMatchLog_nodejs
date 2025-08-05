@@ -183,6 +183,8 @@ export const getMyEventParticipations = async (
   participations: Array<{
     id: number;
     event: Event;
+    status: "APPLIED" | "WON" | "LOST";
+    participation_order: number;
     is_winner: boolean;
     participated_at: string;
     result_announced_at: string | null;
@@ -211,5 +213,36 @@ export const getMyEventParticipations = async (
       };
     }>
   >(`/events/my-participations?page=${page}&limit=${limit}`);
+  return response.data.data;
+};
+
+/**
+ * 특정 이벤트에 대한 사용자의 참여 상태를 조회합니다.
+ * @param eventId - 이벤트 ID
+ */
+export const getParticipationStatus = async (
+  eventId: number,
+): Promise<{
+  participation: {
+    id: number;
+    user_id: number;
+    event_id: number;
+    status: "APPLIED" | "WON" | "LOST";
+    participation_order: number;
+    created_at: string;
+  } | null;
+}> => {
+  const response = await api.get<
+    ApiResponse<{
+      participation: {
+        id: number;
+        user_id: number;
+        event_id: number;
+        status: "APPLIED" | "WON" | "LOST";
+        participation_order: number;
+        created_at: string;
+      } | null;
+    }>
+  >(`/events/${eventId}/participation-status`);
   return response.data.data;
 };

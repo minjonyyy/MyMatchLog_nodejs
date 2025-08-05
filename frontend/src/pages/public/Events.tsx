@@ -7,12 +7,16 @@ import { Calendar } from "lucide-react";
 import { useEvents } from "@/hooks/useEvents";
 import type { EventFilter as EventFilterType } from "@/types/events";
 import { useNavigate } from "react-router-dom";
+import { filterEvents } from "@/services/events";
 
 export const Events: React.FC = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<EventFilterType>({});
 
   const { data: events, isLoading, error } = useEvents();
+
+  // 필터링된 이벤트 목록
+  const filteredEvents = events ? filterEvents(events, filter) : [];
 
   const handleFilterChange = (newFilter: EventFilterType) => {
     setFilter(newFilter);
@@ -57,9 +61,9 @@ export const Events: React.FC = () => {
               />
             ))}
           </div>
-        ) : events && events.length > 0 ? (
+        ) : filteredEvents && filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
+            {filteredEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>
@@ -67,10 +71,14 @@ export const Events: React.FC = () => {
           <div className="text-center py-12">
             <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              진행 중인 이벤트가 없습니다
+              {filter.status || filter.search
+                ? "검색 결과가 없습니다"
+                : "진행 중인 이벤트가 없습니다"}
             </h3>
             <p className="text-gray-600">
-              새로운 이벤트가 등록되면 알려드릴게요!
+              {filter.status || filter.search
+                ? "다른 조건으로 검색해보세요."
+                : "새로운 이벤트가 등록되면 알려드릴게요!"}
             </p>
           </div>
         )}

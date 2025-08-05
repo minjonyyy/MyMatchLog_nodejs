@@ -67,15 +67,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           </span>
         </div>
 
-        {/* 참여자 수 */}
+        {/* 이벤트 대상자 */}
         <div className="flex items-center text-sm text-gray-600">
           <Users className="mr-2 h-4 w-4" />
-          <span>
-            {event.participant_count} / {event.capacity}명
-            {event.participant_count >= event.capacity && (
-              <span className="ml-1 text-red-600 font-medium">(마감)</span>
-            )}
-          </span>
+          <span>선착순 {event.capacity}명</span>
         </div>
 
         {/* 경품 정보 */}

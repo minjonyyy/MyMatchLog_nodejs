@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
-import { logout, getMyInfo } from "../../services/auth";
+import { getMyInfo } from "../../services/auth";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useQuery } from "@tanstack/react-query";
@@ -19,17 +19,12 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      // Refresh Token으로 로그아웃 시도 (Access Token 만료 시에도 가능)
-      const refreshToken = localStorage.getItem("refreshToken") || undefined;
-      await logout(refreshToken);
+      // authStore의 logout 함수가 백엔드 API도 호출하므로 여기서는 단순히 호출만
+      await logoutStore();
+      window.location.href = "/";
     } catch (error) {
-      console.error("로그아웃 API 호출 실패:", error);
-      // API 실패해도 프론트엔드는 로그아웃 처리
-    } finally {
-      // 항상 프론트엔드 상태 초기화
-      logoutStore();
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      console.error("로그아웃 실패:", error);
+      // 에러가 발생해도 홈으로 이동
       window.location.href = "/";
     }
   };

@@ -818,3 +818,141 @@
   - `401 UNAUTHORIZED`: 인증 실패
   - `403 FORBIDDEN`: 관리자 권한 없음
   - `404 NOT FOUND`: 존재하지 않는 이벤트
+
+---
+
+## 🎯 이벤트 참여 내역 API
+
+### 1. 내 이벤트 참여 내역 조회
+
+- **URL**: `GET /api/events/my-participations`
+- **설명**: 현재 로그인한 사용자의 이벤트 참여 내역을 조회합니다.
+- **인증**: 필요 (Bearer Token)
+- **Query Parameters**:
+  - `page` (Integer, optional): 페이지 번호 (기본값: 1)
+  - `limit` (Integer, optional): 페이지당 항목 수 (기본값: 10)
+- **응답 (Response)**: `200 OK`
+
+```json
+{
+  "success": true,
+  "data": {
+    "participations": [
+      {
+        "id": 1,
+        "event": {
+          "id": 1,
+          "title": "🎯 당첨 테스트 이벤트",
+          "description": "선착순 3명까지 당첨되는 테스트 이벤트입니다.",
+          "start_at": "2025-08-05T15:02:03.000Z",
+          "end_at": "2025-08-05T15:12:03.000Z",
+          "gift": "당첨 테스트 상품 (야구 모자)",
+          "capacity": 3,
+          "participant_count": 4,
+          "created_at": "2025-08-05T15:02:03.000Z",
+          "updated_at": "2025-08-05T15:02:03.000Z"
+        },
+        "status": "WON",
+        "participation_order": 1,
+        "is_winner": true,
+        "participated_at": "2025-08-05T15:02:23.000Z",
+        "result_announced_at": "2025-08-05T15:12:03.000Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 1,
+      "totalCount": 1,
+      "limit": 10
+    }
+  },
+  "message": "이벤트 참여 내역 조회에 성공했습니다."
+}
+```
+
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+
+### 2. 이벤트 참여 상태 조회
+
+- **URL**: `GET /api/events/:id/participation-status`
+- **설명**: 특정 이벤트에 대한 현재 사용자의 참여 상태를 조회합니다.
+- **인증**: 필요 (Bearer Token)
+- **Path Parameters**:
+  - `id` (Integer, required): 이벤트 ID
+- **응답 (Response)**: `200 OK`
+
+```json
+{
+  "success": true,
+  "data": {
+    "participation": {
+      "id": 1,
+      "user_id": 3,
+      "event_id": 1,
+      "status": "APPLIED",
+      "participation_order": 1,
+      "created_at": "2025-08-05T15:02:23.000Z"
+    }
+  },
+  "message": "참여 상태 조회에 성공했습니다."
+}
+```
+
+- **참여 상태 (status)**:
+  - `APPLIED`: 참여 신청 완료 (결과 대기 중)
+  - `WON`: 당첨
+  - `LOST`: 미당첨
+
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+  - `404 NOT FOUND`: 존재하지 않는 이벤트
+
+### 3. 이벤트 결과 발표 (관리자)
+
+- **URL**: `POST /api/events/:id/announce-results`
+- **설명**: 이벤트 종료 후 참여자들의 당첨/미당첨 결과를 발표합니다. 관리자 권한이 필요합니다.
+- **인증**: 필요 (Bearer Token, 관리자 권한)
+- **Path Parameters**:
+  - `id` (Integer, required): 이벤트 ID
+- **응답 (Response)**: `200 OK`
+
+```json
+{
+  "success": true,
+  "data": {
+    "eventId": 1,
+    "capacity": 3,
+    "totalParticipants": 4,
+    "winners": 3,
+    "losers": 1,
+    "results": [
+      {
+        "id": 1,
+        "user_id": 3,
+        "event_id": 1,
+        "status": "WON",
+        "participation_order": 1,
+        "created_at": "2025-08-05T15:02:23.000Z"
+      },
+      {
+        "id": 2,
+        "user_id": 4,
+        "event_id": 1,
+        "status": "LOST",
+        "participation_order": 4,
+        "created_at": "2025-08-05T15:02:38.000Z"
+      }
+    ]
+  },
+  "message": "이벤트 결과 발표가 완료되었습니다."
+}
+```
+
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `401 UNAUTHORIZED`: 인증 실패
+  - `403 FORBIDDEN`: 관리자 권한 없음
+  - `404 NOT FOUND`: 존재하지 않는 이벤트

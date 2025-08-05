@@ -20,4 +20,18 @@ router.post(
   eventController.participateInEvent,
 );
 
+// 이벤트 결과 발표 (관리자 전용)
+router.post(
+  '/:id/announce-results',
+  authMiddleware,
+  eventController.announceEventResults,
+);
+
+// 특정 이벤트 참여 상태 조회
+router.get(
+  '/:id/participation-status',
+  authMiddleware,
+  eventController.getParticipationStatus,
+);
+
 export default router;

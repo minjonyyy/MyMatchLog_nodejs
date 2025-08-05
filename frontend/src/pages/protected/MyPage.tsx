@@ -101,7 +101,11 @@ const MyPage = () => {
 
   // 마이팀 직관 승률 계산
   const myTeamWinRate = useMemo(() => {
-    if (!userTeam || totalMatchLogs === 0) return null;
+    // 응원팀이 설정되지 않았으면 null 반환
+    if (!userTeam) return null;
+
+    // 직관 기록이 없으면 null 반환
+    if (totalMatchLogs === 0) return null;
 
     const myTeamMatches = recentMatchLogs.filter((log: MatchLog) => {
       return (
@@ -109,6 +113,7 @@ const MyPage = () => {
       );
     });
 
+    // 응원팀 경기 기록이 없으면 null 반환
     if (myTeamMatches.length === 0) return null;
 
     const wins = myTeamMatches.filter((log: MatchLog) => {
@@ -282,7 +287,9 @@ const MyPage = () => {
                         {userTeam.name} 승률
                       </p>
                       <p className="text-2xl font-bold text-gray-900">
-                        {myTeamWinRate !== null ? `${myTeamWinRate}%` : "N/A"}
+                        {myTeamWinRate !== null
+                          ? `${myTeamWinRate}%`
+                          : "직관 기록 없음"}
                       </p>
                     </div>
                   </div>
@@ -437,14 +444,18 @@ const MyPage = () => {
                           className={`p-2 rounded-lg ${
                             participation.is_winner
                               ? "bg-green-100"
-                              : "bg-gray-100"
+                              : participation.status === "APPLIED"
+                                ? "bg-blue-100"
+                                : "bg-gray-100"
                           }`}
                         >
                           <Trophy
                             className={`w-4 h-4 ${
                               participation.is_winner
                                 ? "text-green-600"
-                                : "text-gray-600"
+                                : participation.status === "APPLIED"
+                                  ? "text-blue-600"
+                                  : "text-gray-600"
                             }`}
                           />
                         </div>
@@ -463,15 +474,25 @@ const MyPage = () => {
                       <div className="text-right">
                         <Badge
                           variant={
-                            participation.is_winner ? "default" : "secondary"
+                            participation.is_winner
+                              ? "default"
+                              : participation.status === "APPLIED"
+                                ? "outline"
+                                : "secondary"
                           }
                           className={
                             participation.is_winner
                               ? "bg-green-100 text-green-800"
-                              : ""
+                              : participation.status === "APPLIED"
+                                ? "bg-blue-100 text-blue-800"
+                                : ""
                           }
                         >
-                          {participation.is_winner ? "🎉 당첨" : "😢 미당첨"}
+                          {participation.is_winner
+                            ? "🎉 당첨"
+                            : participation.status === "APPLIED"
+                              ? "⏳ 참여완료"
+                              : "😢 미당첨"}
                         </Badge>
                       </div>
                     </div>

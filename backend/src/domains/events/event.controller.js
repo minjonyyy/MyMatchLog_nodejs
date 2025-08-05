@@ -59,3 +59,39 @@ export const getMyParticipations = async (req, res) => {
     return errorResponse(res, error);
   }
 };
+
+/**
+ * 이벤트 결과를 발표합니다. (관리자 전용)
+ */
+export const announceEventResults = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await eventService.announceEventResults(parseInt(id));
+    return successResponse(res, result, '이벤트 결과 발표가 완료되었습니다.');
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};
+
+/**
+ * 특정 이벤트에 대한 사용자의 참여 상태를 조회합니다.
+ */
+export const getParticipationStatus = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { id } = req.params; // eventId 대신 id 사용
+
+    const participation = await eventService.getParticipationStatus(
+      userId,
+      parseInt(id),
+    );
+    return successResponse(
+      res,
+      { participation },
+      '참여 상태 조회에 성공했습니다.',
+    );
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};

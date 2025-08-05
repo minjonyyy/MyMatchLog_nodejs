@@ -135,9 +135,20 @@
 - [x] **BE-015-1: 내 이벤트 참여 내역 조회 (`GET /api/events/my-participations`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 사용자별 참여 내역 조회 (최신순 정렬)
-  - [x] 당첨/미당첨 결과 표시 (WINNER/LOSER 상태 기반)
+  - [x] 당첨/미당첨 결과 표시 (WON/LOST 상태 기반)
   - [x] 페이지네이션 지원
   - [x] 이벤트 정보 JOIN 조회
+- [x] **BE-015-2: 이벤트 참여 상태 조회 (`GET /api/events/:id/participation-status`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 특정 이벤트에 대한 사용자 참여 상태 조회
+  - [x] 참여 순서(participation_order) 정보 포함
+  - [x] APPLIED/WON/LOST 상태 반환
+- [x] **BE-015-3: 이벤트 결과 발표 (관리자) (`POST /api/events/:id/announce-results`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 관리자 권한 검증 로직
+  - [x] 참여 순서와 정원을 기준으로 당첨/미당첨 결정
+  - [x] 참여자 상태 업데이트 (APPLIED → WON/LOST)
+  - [x] 결과 통계 반환 (총 참여자, 당첨자, 미당첨자 수)
 
 ---
 
@@ -154,6 +165,24 @@
   - [x] 이벤트별 참여자 목록 조회 (사용자 정보 포함)
   - [x] **관리자 권한 검증 로직 구현** ✅
   - [x] Swagger 문서화 완료
+
+---
+
+## ⏰ 5.5. 스케줄러 시스템 (Scheduler System)
+
+- [x] **이벤트 결과 자동 발표 스케줄러**
+  - [x] `node-cron` 라이브러리 설치 및 설정
+  - [x] 매분 실행 스케줄러 구현 (`event-result-scheduler.js`)
+  - [x] 종료된 이벤트 자동 조회 로직
+  - [x] 참여 순서와 정원 기준 당첨/미당첨 결정 로직
+  - [x] 참여자 상태 자동 업데이트 (APPLIED → WON/LOST)
+  - [x] 처리 결과 로그 출력
+  - [x] 서버 시작 시 자동 실행 설정
+
+- [x] **세션 정리 스케줄러 (비활성화)**
+  - [x] JWT 만료 토큰 정리 로직 구현
+  - [x] JWT 만료 검증 문제로 인한 비활성화
+  - [x] 대안: 로그인 시 중복 로그인 체크 방식 적용
 
 ---
 

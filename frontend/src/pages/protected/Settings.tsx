@@ -111,6 +111,8 @@ const Settings = () => {
 
     if (favoriteTeamId !== "none") {
       updateData.favorite_team_id = parseInt(favoriteTeamId);
+    } else {
+      updateData.favorite_team_id = null;
     }
 
     updateProfileMutation.mutate(updateData);

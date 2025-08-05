@@ -86,15 +86,8 @@ export const participateInEvent = async (eventId, userId) => {
     }
 
     try {
-      // 4. 정원 확인 및 참여자 수 증가
-      if (event.participant_count >= event.capacity) {
-        throw new ConflictError(
-          '선착순 정원이 마감되었습니다.',
-          'EVENT_CAPACITY_EXCEEDED',
-        );
-      }
-
-      // 5. 참여자 수 증가 및 참여 정보 저장 (트랜잭션)
+      // 4. 참여자 수 증가 및 참여 정보 저장 (트랜잭션)
+      // 정원 마감 여부와 관계없이 모든 참여를 허용
       const participation =
         await eventRepository.createParticipationWithIncrement(eventId, userId);
 
@@ -153,4 +146,37 @@ export const getMyParticipations = async (userId, page = 1, limit = 10) => {
       limit: limit,
     },
   };
+};
+
+/**
+ * 이벤트 결과를 발표합니다.
+ * @param {number} eventId - 이벤트 ID
+ * @returns {Object} 발표 결과
+ */
+export const announceEventResults = async (eventId) => {
+  // 이벤트 존재 여부 확인
+  const event = await eventRepository.findEventById(eventId);
+  if (!event) {
+    throw new NotFoundError(
+      '해당 이벤트를 찾을 수 없습니다.',
+      'EVENT_NOT_FOUND',
+    );
+  }
+
+  const result = await eventRepository.announceEventResults(eventId);
+  return result;
+};
+
+/**
+ * 특정 사용자의 이벤트 참여 상태를 조회합니다.
+ * @param {number} userId - 사용자 ID
+ * @param {number} eventId - 이벤트 ID
+ * @returns {Object|null} 참여 정보 또는 null
+ */
+export const getParticipationStatus = async (userId, eventId) => {
+  const participation = await eventRepository.findParticipationStatus(
+    userId,
+    eventId,
+  );
+  return participation;
 };
