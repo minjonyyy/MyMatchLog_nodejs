@@ -193,7 +193,36 @@
   - `401 UNAUTHORIZED`: 인증 실패
   - `409 CONFLICT`: 닉네임이 이미 존재함
 
-### 4. 내 정보 조회
+### 4. 비밀번호 변경
+
+- **URL**: `PATCH /api/users/password`
+- **설명**: 현재 로그인된 사용자의 비밀번호를 변경합니다. 현재 비밀번호 확인 후 새 비밀번호로 변경됩니다.
+- **인증**: 필요 (Bearer Token)
+- **요청 본문 (Request Body)**: `application/json`
+
+```json
+{
+  "currentPassword": "현재비밀번호123!",
+  "newPassword": "새비밀번호456!"
+}
+```
+
+- **응답 (Response)**: `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "비밀번호가 성공적으로 변경되었습니다."
+}
+```
+
+- **주요 상태 코드**:
+  - `200 OK`: 성공
+  - `400 BAD REQUEST`: 현재 비밀번호 불일치 또는 새 비밀번호 형식 오류
+  - `401 UNAUTHORIZED`: 인증 실패
+  - `422 UNPROCESSABLE ENTITY`: 비밀번호 정책 위반
+
+### 5. 내 정보 조회
 
 - **URL**: `GET /api/users/me`
 - **설명**: 현재 로그인된 사용자의 정보를 조회합니다.
@@ -222,7 +251,7 @@
   - `200 OK`: 성공
   - `401 UNAUTHORIZED`: 인증 실패
 
-### 5. Access Token 갱신
+### 6. Access Token 갱신
 
 - **URL**: `POST /api/users/token`
 - **설명**: 유효한 Refresh Token을 사용하여 만료된 Access Token을 갱신합니다.

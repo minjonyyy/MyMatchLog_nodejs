@@ -68,6 +68,11 @@
 - [x] **BE-006: 내 정보 수정 (`PATCH /api/users/me`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 닉네임, 응원팀 선택적 업데이트 로직
+- [x] **BE-006-1: 비밀번호 변경 (`PATCH /api/users/password`)**
+  - [x] Controller, Service, Repository 계층 구현
+  - [x] 현재 비밀번호 확인 후 새 비밀번호로 변경
+  - [x] 비밀번호 정규식 검증 (영문 대소문자, 숫자, 특수문자 포함 8자 이상)
+  - [x] 현재 비밀번호와 새 비밀번호 일치 여부 검증
 - [x] **BE-007: 사용자 로그아웃 (`POST /api/users/logout`)**
   - [x] Controller, Service, Repository 계층 구현
   - [x] 인증 미들웨어를 통한 사용자 식별
