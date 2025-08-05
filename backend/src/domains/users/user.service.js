@@ -240,3 +240,42 @@ export const updateUserMe = async (userId, updateData) => {
 
   return userInfo;
 };
+
+export const changePassword = async (userId, currentPassword, newPassword) => {
+  // 현재 사용자 정보 조회
+  const user = await userRepository.findUserById(userId);
+  if (!user) {
+    throw new NotFoundError(
+      '해당 사용자를 찾을 수 없습니다.',
+      'USER_NOT_FOUND',
+    );
+  }
+
+  // 현재 비밀번호 검증
+  const isCurrentPasswordValid = await bcrypt.compare(
+    currentPassword,
+    user.password,
+  );
+  if (!isCurrentPasswordValid) {
+    throw new BadRequestError(
+      '현재 비밀번호가 일치하지 않습니다.',
+      'USER_PASSWORD_MISMATCH',
+    );
+  }
+
+  // 새 비밀번호 유효성 검사
+  if (!newPassword || !PASSWORD_REGEX.test(newPassword)) {
+    throw new BadRequestError(
+      '비밀번호는 영문 대소문자, 숫자, 특수문자를 포함한 8자 이상이어야 합니다.',
+      'COMMON_INVALID_INPUT',
+    );
+  }
+
+  // 새 비밀번호 해싱
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+  // 비밀번호 업데이트
+  await userRepository.updatePassword(userId, hashedNewPassword);
+
+  return { message: '비밀번호가 성공적으로 변경되었습니다.' };
+};

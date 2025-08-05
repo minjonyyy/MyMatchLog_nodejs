@@ -56,3 +56,10 @@ export const updateUser = async (userId, updateData) => {
 
   await pool.query(query, values);
 };
+
+export const updatePassword = async (userId, hashedPassword) => {
+  await pool.query('UPDATE users SET password = ? WHERE id = ?', [
+    hashedPassword,
+    userId,
+  ]);
+};

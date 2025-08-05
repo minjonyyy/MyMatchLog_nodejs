@@ -1,34 +1,42 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { useAuthStore } from '../../stores/authStore'
-import { logout } from '../../services/auth'
-import { Button } from '../ui/button'
-import { Avatar, AvatarFallback } from '../ui/avatar'
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
+import { logout, getMyInfo } from "../../services/auth";
+import { Button } from "../ui/button";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { useQuery } from "@tanstack/react-query";
 
 const Header: React.FC = () => {
-  const location = useLocation()
-  const { user, isAuthenticated, logout: logoutStore } = useAuthStore()
+  const location = useLocation();
+  const { user, isAuthenticated, logout: logoutStore } = useAuthStore();
+
+  // 사용자 정보 조회
+  const { data: userInfo } = useQuery({
+    queryKey: ["userInfo"],
+    queryFn: getMyInfo,
+    enabled: !!isAuthenticated,
+  });
 
   const handleLogout = async () => {
     try {
       // Refresh Token으로 로그아웃 시도 (Access Token 만료 시에도 가능)
-      const refreshToken = localStorage.getItem('refreshToken') || undefined
-      await logout(refreshToken)
+      const refreshToken = localStorage.getItem("refreshToken") || undefined;
+      await logout(refreshToken);
     } catch (error) {
-      console.error('로그아웃 API 호출 실패:', error)
+      console.error("로그아웃 API 호출 실패:", error);
       // API 실패해도 프론트엔드는 로그아웃 처리
     } finally {
       // 항상 프론트엔드 상태 초기화
-      logoutStore()
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      window.location.href = '/'
+      logoutStore();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/";
     }
-  }
+  };
 
   const isActive = (path: string) => {
-    return location.pathname === path
-  }
+    return location.pathname === path;
+  };
 
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
@@ -40,7 +48,9 @@ const Header: React.FC = () => {
               <div className="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">M</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">MyMatchLog</span>
+              <span className="text-xl font-bold text-gray-900">
+                MyMatchLog
+              </span>
             </Link>
           </div>
 
@@ -49,9 +59,9 @@ const Header: React.FC = () => {
             <Link
               to="/"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/')
-                  ? 'text-amber-800 bg-amber-50'
-                  : 'text-gray-700 hover:text-amber-800 hover:bg-amber-50'
+                isActive("/")
+                  ? "text-amber-800 bg-amber-50"
+                  : "text-gray-700 hover:text-amber-800 hover:bg-amber-50"
               }`}
             >
               홈
@@ -59,9 +69,9 @@ const Header: React.FC = () => {
             <Link
               to="/events"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/events')
-                  ? 'text-amber-800 bg-amber-50'
-                  : 'text-gray-700 hover:text-amber-800 hover:bg-amber-50'
+                isActive("/events")
+                  ? "text-amber-800 bg-amber-50"
+                  : "text-gray-700 hover:text-amber-800 hover:bg-amber-50"
               }`}
             >
               이벤트
@@ -70,9 +80,9 @@ const Header: React.FC = () => {
               <Link
                 to="/match-logs"
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/match-logs')
-                    ? 'text-amber-800 bg-amber-50'
-                    : 'text-gray-700 hover:text-amber-800 hover:bg-amber-50'
+                  isActive("/match-logs")
+                    ? "text-amber-800 bg-amber-50"
+                    : "text-gray-700 hover:text-amber-800 hover:bg-amber-50"
                 }`}
               >
                 직관기록
@@ -87,7 +97,9 @@ const Header: React.FC = () => {
                 <Link to="/mypage">
                   <Avatar className="w-8 h-8">
                     <AvatarFallback className="bg-amber-100 text-amber-800">
-                      {user?.nickname?.charAt(0) || 'U'}
+                      {userInfo?.data?.user?.nickname?.charAt(0) ||
+                        user?.nickname?.charAt(0) ||
+                        "U"}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
@@ -118,7 +130,7 @@ const Header: React.FC = () => {
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header 
+export default Header;

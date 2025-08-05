@@ -22,6 +22,7 @@ router.post('/token', userController.refreshAccessToken);
 // 인증이 필요한 라우트
 router.get('/me', authMiddleware, userController.getUserMe);
 router.patch('/me', authMiddleware, userController.updateUserMe);
+router.post('/change-password', authMiddleware, userController.changePassword);
 router.post('/logout', logoutLimiter, authMiddleware, userController.logout);
 
 export default router;

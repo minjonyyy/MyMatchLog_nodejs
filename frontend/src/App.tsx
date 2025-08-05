@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryProvider } from "./providers/QueryProvider";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import { Toaster } from "./components/ui/toaster";
 import "./App.css";
 import Home from "./pages/public/Home";
 import Login from "./pages/public/Login";
@@ -12,11 +13,10 @@ import MatchLogsPage from "./pages/protected/MatchLogs";
 import MatchLogCreate from "./pages/protected/MatchLogCreate";
 import MatchLogDetail from "./pages/protected/MatchLogDetail";
 import MatchLogEdit from "./pages/protected/MatchLogEdit";
+import MyPage from "./pages/protected/MyPage";
+import Settings from "./pages/protected/Settings";
 import ProtectedRoute from "./components/features/auth/ProtectedRoute";
 import AuthInitializer from "./components/features/auth/AuthInitializer";
-
-const MyPage = () => <div className="p-8">👤 마이페이지</div>;
-const Settings = () => <div className="p-8">⚙️ 설정 페이지</div>;
 const AdminDashboard = () => <div className="p-8">👑 관리자 대시보드</div>;
 const AdminEvents = () => <div className="p-8">👑 이벤트 관리 페이지</div>;
 const AdminParticipants = () => (
@@ -127,6 +127,7 @@ function App() {
 
           <Footer />
         </div>
+        <Toaster />
       </Router>
     </QueryProvider>
   );

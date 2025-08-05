@@ -110,3 +110,23 @@ export const updateUserMe = async (req, res) => {
     return errorResponse(res, error);
   }
 };
+
+export const changePassword = async (req, res) => {
+  try {
+    const userId = req.user.userId; // auth 미들웨어에서 설정된 사용자 ID
+    const { currentPassword, newPassword } = req.body;
+
+    const result = await userService.changePassword(
+      userId,
+      currentPassword,
+      newPassword,
+    );
+    return successResponse(
+      res,
+      result,
+      '비밀번호가 성공적으로 변경되었습니다.',
+    );
+  } catch (error) {
+    return errorResponse(res, error);
+  }
+};
